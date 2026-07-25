@@ -201,20 +201,39 @@
                         <textarea id="report-description" rows="2" placeholder="Ex: Feu au sommet de la colline près de la route nationale, direction vers le village..." class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-sm text-white placeholder-slate-600 focus:border-dzRed outline-none transition"></textarea>
                     </div>
 
-                    <!-- Indication GPS -->
-                    <div class="bg-emerald-950/30 border border-emerald-500/30 p-3 rounded-xl flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 bg-emerald-500/20 text-emerald-400 rounded-lg flex items-center justify-center text-base font-bold">
-                                <i class="fas fa-location-crosshairs"></i>
+                    <!-- Indication GPS Haute Précision & Suivi Continue -->
+                    <div class="bg-gradient-to-r from-emerald-950/50 via-slate-900 to-emerald-950/50 border border-emerald-500/40 p-3.5 rounded-2xl shadow-inner space-y-2.5">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2.5">
+                                <div id="gps-status-icon" class="w-9 h-9 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-xl flex items-center justify-center text-base font-bold transition">
+                                    <i class="fas fa-location-crosshairs animate-pulse"></i>
+                                </div>
+                                <div>
+                                    <div class="flex items-center gap-1.5">
+                                        <p class="text-xs font-black text-emerald-300">Position GPS Satellite</p>
+                                        <span id="gps-badge" class="bg-emerald-500/20 text-emerald-400 text-[9px] px-1.5 py-0.5 rounded font-extrabold border border-emerald-500/30">HET</span>
+                                    </div>
+                                    <p id="gps-coords-display" class="text-[11px] font-mono text-emerald-400 font-bold">Acquisition de la position...</p>
+                                    <p id="gps-accuracy-display" class="text-[10px] text-slate-400">Précision estimée: Recherche...</p>
+                                </div>
                             </div>
-                            <div>
-                                <p class="text-xs font-bold text-emerald-300">Coordonnées GPS Automatiques</p>
-                                <p id="gps-coords-display" class="text-[11px] font-mono text-emerald-400">Acquisition de la position...</p>
-                            </div>
+
+                            <button type="button" onclick="requestGPSLocation(true)" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-3 py-2 rounded-xl font-bold shadow-md transition flex items-center gap-1.5 border border-emerald-400/40 active:scale-95">
+                                <i class="fas fa-crosshairs"></i> Activer GPS
+                            </button>
                         </div>
-                        <button type="button" onclick="refreshGPS()" class="text-xs text-emerald-400 hover:text-emerald-300 bg-emerald-900/40 border border-emerald-600/40 px-2.5 py-1 rounded-lg font-semibold">
-                            <i class="fas fa-sync-alt"></i> Actualiser
-                        </button>
+
+                        <!-- Barres d'action GPS secondaire -->
+                        <div class="flex items-center justify-between border-t border-slate-800 pt-2 text-[11px]">
+                            <label class="flex items-center gap-2 cursor-pointer text-slate-300 font-medium">
+                                <input type="checkbox" id="gps-watch-toggle" onchange="toggleLiveGPSTracking(this.checked)" class="rounded bg-slate-950 border-slate-700 text-emerald-500 focus:ring-emerald-500 h-4 w-4">
+                                <span><i class="fas fa-satellite text-emerald-400"></i> Suivi GPS continu (Mouvement)</span>
+                            </label>
+
+                            <button type="button" onclick="showGPSHelpModal()" class="text-slate-400 hover:text-amber-300 text-[10px] font-bold underline flex items-center gap-1">
+                                <i class="fas fa-circle-question text-amber-400"></i> Problème GPS ?
+                            </button>
+                        </div>
                     </div>
 
                     <button type="submit" id="btn-submit-report" class="w-full bg-gradient-to-r from-dzRed via-red-600 to-dzRed hover:from-red-600 hover:to-red-700 text-white font-extrabold py-3.5 rounded-xl text-sm shadow-lg shadow-red-600/30 flex items-center justify-center gap-2 transition active:scale-98 border border-red-500/40">
@@ -490,6 +509,48 @@
         </div>
     </div>
 
+    <!-- MODAL GUIDE D'ACTIVATION GPS SMARTPHONE -->
+    <div id="gps-help-modal" class="fixed inset-0 bg-slate-950/90 hidden z-[130] flex items-center justify-center p-4 backdrop-blur-md">
+        <div class="bg-slate-900 border border-emerald-500/30 rounded-2xl p-5 max-w-md w-full shadow-2xl space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <h3 class="text-base font-black text-white flex items-center gap-2">
+                    <i class="fas fa-location-dot text-emerald-400"></i> Activer la Localisation sur Smartphone
+                </h3>
+                <button onclick="document.getElementById('gps-help-modal').classList.add('hidden')" class="text-slate-400 hover:text-white p-1">
+                    <i class="fas fa-xmark"></i>
+                </button>
+            </div>
+
+            <p class="text-xs text-slate-300 leading-relaxed">
+                Pour que la Protection Civile reçoive les coordonnées exactes du foyer d'incendie, activez l'accès au GPS :
+            </p>
+
+            <div class="space-y-2.5 text-xs text-slate-300">
+                <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800 flex gap-3 items-start">
+                    <span class="w-6 h-6 bg-emerald-500/20 text-emerald-400 rounded-lg flex items-center justify-center font-bold text-xs shrink-0">1</span>
+                    <div>
+                        <p class="font-bold text-white">Activer le GPS Android / iOS</p>
+                        <p class="text-[11px] text-slate-400">Glissez le menu du haut sur votre téléphone et activez l'icône <strong class="text-emerald-400">"Localisation" / "GPS"</strong>.</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800 flex gap-3 items-start">
+                    <span class="w-6 h-6 bg-emerald-500/20 text-emerald-400 rounded-lg flex items-center justify-center font-bold text-xs shrink-0">2</span>
+                    <div>
+                        <p class="font-bold text-white">Autoriser le Navigateur Chrome / Safari</p>
+                        <p class="text-[11px] text-slate-400">Cliquez sur <strong class="text-emerald-400">"Autoriser"</strong> lorsque votre téléphone demande l'accès à la position.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-2">
+                <button onclick="requestGPSLocation(true); document.getElementById('gps-help-modal').classList.add('hidden');" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold py-3 rounded-xl text-xs transition border border-emerald-400/30">
+                    <i class="fas fa-crosshairs"></i> Réessayer la Localisation GPS
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL D'AUTHENTIFICATION ET DE HIERARCHIE DES ROLES -->
     <div id="login-modal" class="fixed inset-0 bg-slate-950/90 hidden z-[130] flex items-center justify-center p-4 backdrop-blur-md">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 max-w-md w-full shadow-2xl space-y-4">
@@ -570,6 +631,9 @@
             role: 'citizen', // 'citizen', 'officer', 'admin'
             officerInfo: { name: '', phone: '' },
             userCoords: { lat: 36.7538, lng: 3.0588 }, // Default Algeria center/Algiers
+            gpsAccuracy: null,
+            gpsWatchId: null,
+            gpsActive: false,
             reports: [],
             resources: [],
             maps: { client: null, admin: null },
@@ -975,23 +1039,113 @@ Consignes pour l'analyse:
             document.getElementById('photo-preview-container').classList.remove('hidden');
         };
 
-        window.refreshGPS = () => {
+        window.requestGPSLocation = (userTriggered = false) => {
             const disp = document.getElementById('gps-coords-display');
-            if ("geolocation" in navigator) {
-                navigator.geolocation.getCurrentPosition(
-                    pos => {
+            const accDisp = document.getElementById('gps-accuracy-display');
+            const icon = document.getElementById('gps-status-icon');
+            const badge = document.getElementById('gps-badge');
+
+            if (!("geolocation" in navigator)) {
+                if (disp) disp.innerText = "GPS non pris en charge par le navigateur";
+                window.showModal('⚠️', 'GPS NON SUPPORTÉ', 'Votre appareil ou navigateur ne supporte pas le service de géolocalisation.');
+                return;
+            }
+
+            if (disp) disp.innerText = "📡 Connexion satellites GPS...";
+
+            const gpsOptions = {
+                enableHighAccuracy: true,
+                timeout: 15000,
+                maximumAge: 0
+            };
+
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    const lat = pos.coords.latitude;
+                    const lng = pos.coords.longitude;
+                    const accuracy = Math.round(pos.coords.accuracy);
+
+                    window.appState.userCoords = { lat, lng };
+                    window.appState.gpsAccuracy = accuracy;
+                    window.appState.gpsActive = true;
+
+                    if (disp) disp.innerText = `${lat.toFixed(5)}° N, ${lng.toFixed(5)}° E`;
+                    if (accDisp) accDisp.innerHTML = `<i class="fas fa-circle-check text-emerald-400"></i> Précision: <strong class="text-white">± ${accuracy} mètres</strong>`;
+
+                    if (icon) {
+                        icon.className = "w-9 h-9 bg-emerald-500/30 text-emerald-300 border border-emerald-400 rounded-xl flex items-center justify-center text-base font-bold transition shadow-lg shadow-emerald-500/20";
+                    }
+                    if (badge) {
+                        badge.innerText = "GPS ACTIF";
+                        badge.className = "bg-emerald-500/20 text-emerald-300 text-[9px] px-1.5 py-0.5 rounded font-extrabold border border-emerald-400/40";
+                    }
+
+                    // Recenter open maps
+                    if (window.appState.maps.client) {
+                        window.appState.maps.client.setView([lat, lng], 13);
+                    }
+
+                    if (userTriggered) {
+                        window.showModal('📍', 'POSITION GPS ACQUISE', `Coordonnées fixées à ${lat.toFixed(4)}°, ${lng.toFixed(4)}° avec une précision de ±${accuracy}m.`);
+                    }
+                },
+                (err) => {
+                    window.appState.gpsActive = false;
+                    let msg = "Erreur d'acquisition GPS.";
+                    if (err.code === err.PERMISSION_DENIED) {
+                        msg = "Accès GPS refusé sur votre appareil.";
+                        if (userTriggered) window.showGPSHelpModal();
+                    } else if (err.code === err.POSITION_UNAVAILABLE) {
+                        msg = "Signal GPS indisponible (Activez la localisation).";
+                    } else if (err.code === err.TIMEOUT) {
+                        msg = "Délai d'attente GPS dépassé.";
+                    }
+
+                    if (disp) disp.innerText = "GPS Inactif (Mode Manuel)";
+                    if (accDisp) accDisp.innerHTML = `<span class="text-amber-400"><i class="fas fa-triangle-exclamation"></i> ${msg}</span>`;
+
+                    if (icon) {
+                        icon.className = "w-9 h-9 bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-xl flex items-center justify-center text-base font-bold";
+                    }
+                    if (badge) {
+                        badge.innerText = "OFF";
+                        badge.className = "bg-amber-500/20 text-amber-400 text-[9px] px-1.5 py-0.5 rounded font-extrabold border border-amber-500/30";
+                    }
+                },
+                gpsOptions
+            );
+        };
+
+        window.toggleLiveGPSTracking = (enable) => {
+            if (enable) {
+                if (!("geolocation" in navigator)) return;
+                window.appState.gpsWatchId = navigator.geolocation.watchPosition(
+                    (pos) => {
                         window.appState.userCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-                        if (disp) disp.innerText = `${pos.coords.latitude.toFixed(4)}° N, ${pos.coords.longitude.toFixed(4)}° E`;
+                        window.appState.gpsAccuracy = Math.round(pos.coords.accuracy);
+                        const disp = document.getElementById('gps-coords-display');
+                        const accDisp = document.getElementById('gps-accuracy-display');
+                        if (disp) disp.innerText = `${pos.coords.latitude.toFixed(5)}° N, ${pos.coords.longitude.toFixed(5)}° E (En direct)`;
+                        if (accDisp) accDisp.innerHTML = `<i class="fas fa-arrows-rotate fa-spin text-emerald-400"></i> Précision: <strong class="text-white">± ${window.appState.gpsAccuracy} m</strong>`;
                     },
-                    err => {
-                        if (disp) disp.innerText = "GPS fixe à Oran (Default)";
-                    },
-                    { enableHighAccuracy: true, timeout: 10000 }
+                    (err) => console.warn("Watch position error:", err),
+                    { enableHighAccuracy: true }
                 );
+                window.showModal('📡', 'SUIVI GPS EN DIRECT ACTIVÉ', 'Votre position se met à jour en continu lors de vos déplacements.');
             } else {
-                if (disp) disp.innerText = "Géolocalisation non supportée";
+                if (window.appState.gpsWatchId !== null) {
+                    navigator.geolocation.clearWatch(window.appState.gpsWatchId);
+                    window.appState.gpsWatchId = null;
+                }
             }
         };
+
+        window.showGPSHelpModal = () => {
+            const modal = document.getElementById('gps-help-modal');
+            if (modal) modal.classList.remove('hidden');
+        };
+
+        window.refreshGPS = () => window.requestGPSLocation(true);
 
         window.submitReport = async (e) => {
             e.preventDefault();
@@ -1216,7 +1370,7 @@ Consignes pour l'analyse:
         };
 
         window.addEventListener('DOMContentLoaded', () => {
-            window.refreshGPS();
+            window.requestGPSLocation(false);
             initFirebase();
         });
     </script>
