@@ -90,13 +90,13 @@
                     <h1 class="font-black text-lg sm:text-xl tracking-wide text-slate-900">STOP FEU DZ</h1>
                     <span class="bg-dzGreen/10 text-dzGreen border border-dzGreen/30 text-[10px] px-2 py-0.5 rounded-full font-black tracking-wider">الجزائر</span>
                 </div>
-                <p class="text-[11px] text-slate-500 font-bold">الحماية المدنية • المديرية العامة للغابات • المزامنة السحابية</p>
+                <p class="text-[11px] text-slate-500 font-bold">الحماية المدنية • المديرية العامة للغابات • المزامنة السحابية المباشرة</p>
             </div>
         </div>
 
         <div class="flex items-center gap-2">
             <span id="network-status-badge" class="bg-emerald-100 text-emerald-800 border border-emerald-300 px-2.5 py-1 rounded-xl text-[11px] font-black flex items-center gap-1.5 shadow-sm">
-                <span class="w-2 h-2 rounded-full bg-dzGreen animate-pulse"></span> <span id="network-text">متصل بالسحابة</span>
+                <span class="w-2 h-2 rounded-full bg-dzGreen animate-pulse"></span> <span id="network-text">متصل بالسحابة (indrive-95741)</span>
             </span>
             <span id="user-role-badge" class="bg-slate-100 text-slate-700 border border-slate-200 px-3 py-1 rounded-xl text-xs font-black flex items-center gap-1.5 shadow-sm">
                 <i class="fas fa-user-shield text-dzGreen"></i> <span id="role-text">مواطن مبلغ</span>
@@ -512,7 +512,7 @@
                             <span class="font-mono text-emerald-400 font-bold">indrive-95741</span>
                         </div>
                         <div class="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/60">
-                            <span class="text-slate-400 font-bold block text-[10px]">المجموعات النشطة:</span>
+                            <span class="text-slate-400 font-bold block text-[10px]">المجموعات النشطة المباشرة:</span>
                             <span class="font-mono text-blue-400 font-bold">reports, resources & broadcasts</span>
                         </div>
                     </div>
@@ -1026,7 +1026,7 @@ service cloud.firestore {
                 const text = document.getElementById('network-text');
                 if (navigator.onLine) {
                     if (badge) badge.className = "bg-emerald-100 text-emerald-800 border border-emerald-300 px-2.5 py-1 rounded-xl text-[11px] font-black flex items-center gap-1.5 shadow-sm";
-                    if (text) text.textContent = "متصل بالسحابة";
+                    if (text) text.textContent = "متصل بالسحابة (indrive-95741)";
                     syncOfflineQueue();
                 } else {
                     if (badge) badge.className = "bg-amber-100 text-amber-900 border border-amber-300 px-2.5 py-1 rounded-xl text-[11px] font-black flex items-center gap-1.5 shadow-sm";
@@ -1075,7 +1075,7 @@ service cloud.firestore {
                 await signInAnonymously(auth);
                 currentUser = auth.currentUser;
                 window.appState.firestoreStatus = 'Online / Authenticated';
-                updateAdminDBStatusBadge(true, 'متصل ومؤمن');
+                updateAdminDBStatusBadge(true, 'متصل ومؤمن (indrive-95741)');
 
                 syncFirebaseData();
                 syncOfflineQueue();
@@ -1099,36 +1099,45 @@ service cloud.firestore {
         function syncFirebaseData() {
             if (!db) return;
 
-            // 1. Reports Listener
-            const reportsRef = collection(db, 'artifacts', appId, 'public', 'data', 'reports');
-            onSnapshot(reportsRef, (snapshot) => {
-                const cloudItems = snapshot.docs.map(d => ({ fb_id: d.id, ...d.data() }));
+            // Direct sync on ROOT collections 'reports', 'resources', 'broadcasts' + artifacts fallback
+            const handleReportsData = (cloudItems) => {
                 if (cloudItems.length > 0 || window.appState.reports.length > 0) {
-                    window.appState.reports = cloudItems;
+                    // Merge and deduplicate reports
+                    const map = new Map();
+                    [...cloudItems, ...window.appState.reports].forEach(item => {
+                        const key = item.fb_id || item.id;
+                        if (!map.has(key)) map.set(key, item);
+                    });
+                    window.appState.reports = Array.from(map.values());
                     window.appState.reports.sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0));
                     try {
                         localStorage.setItem('stop_feu_local_reports', JSON.stringify(window.appState.reports));
                     } catch(e){}
                 }
                 updateUI();
-            }, (err) => {
-                console.warn("Firestore reports snapshot error:", err);
-                updateAdminDBStatusBadge(false, 'يتعذر السحب السحابي المباشر');
-            });
+            };
 
-            // 2. Resources Listener
-            const resourcesRef = collection(db, 'artifacts', appId, 'public', 'data', 'resources');
-            onSnapshot(resourcesRef, (snapshot) => {
+            // Root collection listener
+            onSnapshot(collection(db, 'reports'), (snapshot) => {
+                const cloudItems = snapshot.docs.map(d => ({ fb_id: d.id, ...d.data() }));
+                handleReportsData(cloudItems);
+            }, (err) => console.warn("Root reports snapshot error:", err));
+
+            // Nested collection listener (legacy compatibility)
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'reports'), (snapshot) => {
+                const cloudItems = snapshot.docs.map(d => ({ fb_id: d.id, ...d.data() }));
+                handleReportsData(cloudItems);
+            }, (err) => console.warn("Artifacts reports snapshot error:", err));
+
+            // Resources Listener (Root level + nested)
+            onSnapshot(collection(db, 'resources'), (snapshot) => {
                 const cloudResources = snapshot.docs.map(d => ({ fb_id: d.id, ...d.data() }));
                 window.appState.resources = cloudResources;
                 updateUI();
-            }, (err) => {
-                console.warn("Firestore resources snapshot error:", err);
-            });
+            }, (err) => console.warn("Root resources snapshot error:", err));
 
-            // 3. Global Broadcast Siren Listener
-            const broadcastRef = collection(db, 'artifacts', appId, 'public', 'data', 'broadcasts');
-            onSnapshot(broadcastRef, (snapshot) => {
+            // Global Broadcast Siren Listener
+            onSnapshot(collection(db, 'broadcasts'), (snapshot) => {
                 snapshot.docChanges().forEach((change) => {
                     if (change.type === "added") {
                         const bData = change.doc.data();
@@ -1151,7 +1160,7 @@ service cloud.firestore {
 
             for (const item of queue) {
                 try {
-                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'reports'), item);
+                    await addDoc(collection(db, 'reports'), item);
                 } catch (e) {
                     console.warn("Offline queue sync item failed, re-queueing:", e);
                     window.appState.offlineQueue.push(item);
@@ -1346,8 +1355,8 @@ service cloud.firestore {
             let savedToCloud = false;
             if (db && navigator.onLine) {
                 try {
-                    const savePromise = addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'reports'), reportData);
-                    const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 3000));
+                    const savePromise = addDoc(collection(db, 'reports'), reportData);
+                    const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 3500));
                     await Promise.race([savePromise, timeoutPromise]);
                     savedToCloud = true;
                 } catch (e) {
@@ -1395,7 +1404,7 @@ service cloud.firestore {
 
             if (db) {
                 try {
-                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'broadcasts'), bData);
+                    await addDoc(collection(db, 'broadcasts'), bData);
                     window.showModal("تم إرسال البث بنجاح", "تم إرسال التنبيه العاجل وصفارة الإنذار إلى جميع المستخدمين والضباط المتصلين بالسحابة.", "📢");
                     if (msgInput) msgInput.value = '';
                 } catch(e) {
@@ -1412,12 +1421,12 @@ service cloud.firestore {
             }
 
             try {
-                const testRef = await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'reports'), {
+                const testRef = await addDoc(collection(db, 'reports'), {
                     id: 'TEST-' + Math.floor(100 + Math.random() * 900),
-                    nom: 'اختبار الاتصال',
+                    nom: 'اختبار الاتصال المباشر',
                     wilaya: '31 - وهران',
                     severity: 'ضعيف',
-                    description: 'فحص أذونات الكتابة في Firestore',
+                    description: 'فحص أذونات الكتابة المباشرة في Firestore',
                     timestamp: Date.now()
                 });
                 updateAdminDBStatusBadge(true, 'متصل ومؤمن (الكتابة شغال)');
@@ -1491,7 +1500,7 @@ service cloud.firestore {
 
             if (db) {
                 try {
-                    const savePromise = addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'resources'), resourceData);
+                    const savePromise = addDoc(collection(db, 'resources'), resourceData);
                     const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 3000));
                     await Promise.race([savePromise, timeoutPromise]);
                 } catch (err) {
@@ -1508,7 +1517,7 @@ service cloud.firestore {
         window.updateReportStatus = async function(docId, newStatus) {
             try {
                 if (db && docId && !docId.startsWith('demo-')) {
-                    const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'reports', docId);
+                    const docRef = doc(db, 'reports', docId);
                     await updateDoc(docRef, { status: newStatus });
                 }
             } catch (err) {
@@ -1523,7 +1532,7 @@ service cloud.firestore {
         window.deleteReport = async function(docId) {
             try {
                 if (db && docId && !docId.startsWith('demo-')) {
-                    const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'reports', docId);
+                    const docRef = doc(db, 'reports', docId);
                     await deleteDoc(docRef);
                 }
             } catch (err) {
