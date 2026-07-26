@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>STOP FEU DZ - الحماية المدنية ومحافظة الغابات الجزائرية</title>
     
-    <!-- Google Tag (gtag.js) - Google Analytics Stream G-2DB1069DB -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2DB1069DB"></script>
+    <!-- Google Tag (gtag.js) - Google Analytics Stream G-2DB1069DB7 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2DB1069DB7"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-2DB1069DB');
+      gtag('config', 'G-2DB1069DB7');
     </script>
 
     <!-- Tailwind CSS CDN -->
@@ -708,7 +708,7 @@
                     </button>
                 </div>
 
-                <!-- Role: Admin (Updated Password Check: 15041978) -->
+                <!-- Role: Admin (Password Check: 15041978) -->
                 <div class="border border-red-200 rounded-xl p-3 bg-red-50/40 space-y-2">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 bg-red-100 text-dzRed border border-red-200 rounded-lg flex items-center justify-center text-lg">
@@ -741,7 +741,7 @@
             storageBucket: "indrive-95741.firebasestorage.app",
             messagingSenderId: "259781133250",
             appId: "1:259781133250:web:f00a40d51d4d995cd2819a",
-            measurementId: "G-2DB1069DB"
+            measurementId: "G-2DB1069DB7"
         };
 
         const appId = 'STOP-FEU-DZ';
@@ -856,12 +856,12 @@
                 const badge = document.getElementById('network-status-badge');
                 const text = document.getElementById('network-text');
                 if (navigator.onLine) {
-                    badge.className = "bg-emerald-100 text-emerald-800 border border-emerald-300 px-2.5 py-1 rounded-xl text-[11px] font-black flex items-center gap-1.5 shadow-sm";
-                    text.textContent = "متصل بالسحابة";
+                    if (badge) badge.className = "bg-emerald-100 text-emerald-800 border border-emerald-300 px-2.5 py-1 rounded-xl text-[11px] font-black flex items-center gap-1.5 shadow-sm";
+                    if (text) text.textContent = "متصل بالسحابة";
                     syncOfflineQueue();
                 } else {
-                    badge.className = "bg-amber-100 text-amber-900 border border-amber-300 px-2.5 py-1 rounded-xl text-[11px] font-black flex items-center gap-1.5 shadow-sm";
-                    text.textContent = "حفظ محلي (أوفلاين)";
+                    if (badge) badge.className = "bg-amber-100 text-amber-900 border border-amber-300 px-2.5 py-1 rounded-xl text-[11px] font-black flex items-center gap-1.5 shadow-sm";
+                    if (text) text.textContent = "حفظ محلي (أوفلاين)";
                 }
             }
 
@@ -910,7 +910,6 @@
                 syncOfflineQueue();
             } catch (err) {
                 console.error("Firebase connection fallback mode engaged:", err);
-                seedMockDataIfEmpty();
             }
         }
 
@@ -930,7 +929,6 @@
                 updateUI();
             }, (err) => {
                 console.warn("Firestore reports snapshot error:", err);
-                seedMockDataIfEmpty();
             });
 
             const resourcesRef = collection(db, 'artifacts', appId, 'public', 'data', 'resources');
@@ -981,12 +979,14 @@
 
             const otpContainer = document.getElementById('otp-container');
             const demoOtpBadge = document.getElementById('demo-otp-badge');
-            otpContainer.classList.remove('hidden');
-            demoOtpBadge.textContent = `رمز التحقق المولد: ${generatedOTP}`;
+            if (otpContainer) otpContainer.classList.remove('hidden');
+            if (demoOtpBadge) demoOtpBadge.textContent = `رمز التحقق المولد: ${generatedOTP}`;
 
             const btn = document.getElementById('btn-send-whatsapp');
-            btn.disabled = true;
-            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...`;
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...`;
+            }
 
             try {
                 const message = `مرحباً ${nomInput || 'المواطن المبلغ'}، رمز التحقق الخاص بك في منصة STOP FEU DZ للتبليغ عن حرائق الغابات هو: ${generatedOTP}`;
@@ -1019,8 +1019,10 @@
                 console.warn("WhatsApp API direct fetch fallback engaged:", err);
                 showModal("رمز التوثيق الفوري", `يمكنك إدخال الرمز [ ${generatedOTP} ] الموضح بالأعلى لإتمام التوثيق الفوري.`, "🔑");
             } finally {
-                btn.disabled = false;
-                btn.innerHTML = `<i class="fab fa-whatsapp text-base"></i> إعادة الإرسال`;
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = `<i class="fab fa-whatsapp text-base"></i> إعادة الإرسال`;
+                }
             }
         };
 
@@ -1033,9 +1035,12 @@
                 isWhatsAppVerified = true;
                 localStorage.setItem('stop_feu_verified_phone', phoneInput);
 
-                statusLabel.innerHTML = `<i class="fas fa-circle-check text-dzGreen"></i> تم التحقق بنجاح وحفظ التوثيق دائماً برقم (${phoneInput})`;
-                statusLabel.className = "text-[11px] font-extrabold text-dzGreen mt-1 flex items-center gap-1";
-                document.getElementById('otp-container').classList.add('hidden');
+                if (statusLabel) {
+                    statusLabel.innerHTML = `<i class="fas fa-circle-check text-dzGreen"></i> تم التحقق بنجاح وحفظ التوثيق دائماً برقم (${phoneInput})`;
+                    statusLabel.className = "text-[11px] font-extrabold text-dzGreen mt-1 flex items-center gap-1";
+                }
+                const otpContainer = document.getElementById('otp-container');
+                if (otpContainer) otpContainer.classList.add('hidden');
                 showModal("تم التوثيق بنجاح", "تم توثيق الرقم وحفظه بشكل دائم على التطبيق حتى في حالة إغلاقه أو انقطاع الإنترنت.", "✅");
             } else {
                 showModal("رمز غير صحيح", "الرمز الذي أدخلته غير مطابق. يرجى التأكد وإعادة المحاولة.", "❌");
@@ -1057,8 +1062,10 @@
                 return;
             }
 
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> جاري حفظ التبليغ محلياً ورَفعه للسحابة...`;
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> جاري حفظ التبليغ محلياً ورَفعه للسحابة...`;
+            }
 
             const now = new Date();
             const reportData = {
@@ -1083,6 +1090,17 @@
             try {
                 localStorage.setItem('stop_feu_local_reports', JSON.stringify(window.appState.reports));
             } catch(e){}
+
+            // Log event to Google Analytics via gtag
+            try {
+                if (typeof window.gtag === 'function') {
+                    window.gtag('event', 'fire_report_submitted', {
+                        event_category: 'Emergencies',
+                        event_label: wilaya,
+                        severity: severity
+                    });
+                }
+            } catch(e) { console.warn("Analytics event tracking warning:", e); }
 
             let savedToCloud = false;
             if (db && navigator.onLine) {
@@ -1111,8 +1129,10 @@
             clearPhoto();
             checkVerifiedPhoneState();
 
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = `<i class="fas fa-paper-plane text-lg"></i> إرسال التبليغ العاجل والموقع للسحابة وللجهات المختصة`;
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = `<i class="fas fa-paper-plane text-lg"></i> إرسال التبليغ العاجل والموقع للسحابة وللجهات المختصة`;
+            }
         };
 
         window.handleResourceSubmit = async function(event) {
@@ -1204,9 +1224,11 @@
                 : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
             const layerBtn = document.getElementById('btn-map-layer');
-            layerBtn.innerHTML = window.appState.mapSatelliteMode
-                ? `<i class="fas fa-map text-dzGreen"></i> الخريطة العادية`
-                : `<i class="fas fa-layer-group text-dzAmber"></i> القمر الصناعي`;
+            if (layerBtn) {
+                layerBtn.innerHTML = window.appState.mapSatelliteMode
+                    ? `<i class="fas fa-map text-dzGreen"></i> الخريطة العادية`
+                    : `<i class="fas fa-layer-group text-dzAmber"></i> القمر الصناعي`;
+            }
 
             [window.appState.maps.client, window.appState.maps.admin].forEach(m => {
                 if (m) {
@@ -1292,90 +1314,105 @@
             const reports = window.appState.reports;
             const resources = window.appState.resources;
 
-            document.getElementById('stat-total-fires').textContent = reports.length;
-            document.getElementById('stat-verified-citizens').textContent = reports.filter(r => r.verifiedWhatsApp).length;
+            const elTotalFires = document.getElementById('stat-total-fires');
+            const elVerifiedCitizens = document.getElementById('stat-verified-citizens');
+            const elTotalVehicles = document.getElementById('stat-total-vehicles');
+            const elOfficerAlertCount = document.getElementById('officer-alert-count');
+            const elAdminReportsCount = document.getElementById('admin-reports-count');
+            const elAdminResourcesCount = document.getElementById('admin-resources-count');
+
+            if (elTotalFires) elTotalFires.textContent = reports.length;
+            if (elVerifiedCitizens) elVerifiedCitizens.textContent = reports.filter(r => r.verifiedWhatsApp).length;
             
             const totalVehicles = resources.reduce((acc, curr) => acc + (curr.trucks || 0) + (curr.planes || 0), 0);
-            document.getElementById('stat-total-vehicles').textContent = totalVehicles;
+            if (elTotalVehicles) elTotalVehicles.textContent = totalVehicles;
 
-            document.getElementById('officer-alert-count').textContent = `${reports.filter(r => r.status !== 'تم_الإخماد').length} نشطة`;
-            document.getElementById('admin-reports-count').textContent = reports.length;
-            document.getElementById('admin-resources-count').textContent = resources.length;
+            if (elOfficerAlertCount) elOfficerAlertCount.textContent = `${reports.filter(r => r.status !== 'تم_الإخماد').length} نشطة`;
+            if (elAdminReportsCount) elAdminReportsCount.textContent = reports.length;
+            if (elAdminResourcesCount) elAdminResourcesCount.textContent = resources.length;
 
             const mapSummaryContainer = document.getElementById('map-reports-summary');
-            if (reports.length === 0) {
-                mapSummaryContainer.innerHTML = `<p class="text-xs text-slate-400 text-center py-4">لا توجد بلاغات حرائق مسجلة حالياً بالسحابة.</p>`;
-            } else {
-                mapSummaryContainer.innerHTML = reports.map(r => `
-                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between text-xs">
-                        <div class="flex items-center gap-2.5">
-                            <span class="w-2.5 h-2.5 rounded-full ${r.severity === 'حرج' ? 'bg-dzRed animate-ping' : r.severity === 'متوسط' ? 'bg-dzOrange' : 'bg-dzGreen'}"></span>
-                            <div>
-                                <strong class="text-slate-900 font-black block">${r.wilaya} (${r.id || 'حريق'})</strong>
-                                <span class="text-[11px] text-slate-500">${r.description || 'بدون وصف'} • ${r.time || ''}</span>
+            if (mapSummaryContainer) {
+                if (reports.length === 0) {
+                    mapSummaryContainer.innerHTML = `<p class="text-xs text-slate-400 text-center py-4">لا توجد بلاغات حرائق مسجلة حالياً بالسحابة.</p>`;
+                } else {
+                    mapSummaryContainer.innerHTML = reports.map(r => `
+                        <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between text-xs">
+                            <div class="flex items-center gap-2.5">
+                                <span class="w-2.5 h-2.5 rounded-full ${r.severity === 'حرج' ? 'bg-dzRed animate-ping' : r.severity === 'متوسط' ? 'bg-dzOrange' : 'bg-dzGreen'}"></span>
+                                <div>
+                                    <strong class="text-slate-900 font-black block">${r.wilaya} (${r.id || 'حريق'})</strong>
+                                    <span class="text-[11px] text-slate-500">${r.description || 'بدون وصف'} • ${r.time || ''}</span>
+                                </div>
                             </div>
+                            <span class="bg-slate-200 text-slate-700 text-[10px] px-2 py-0.5 rounded font-bold">${r.status || 'في الانتظار'}</span>
                         </div>
-                        <span class="bg-slate-200 text-slate-700 text-[10px] px-2 py-0.5 rounded font-bold">${r.status || 'في الانتظار'}</span>
+                    `).join('');
+                }
+            }
+
+            const officerList = document.getElementById('officer-reports-list');
+            if (officerList) {
+                officerList.innerHTML = reports.map(r => `
+                    <div class="p-3.5 bg-white border border-slate-200 rounded-xl shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2">
+                                <span class="bg-red-100 text-dzRed font-black text-[10px] px-2 py-0.5 rounded">${r.id}</span>
+                                <h4 class="font-black text-xs text-slate-900">${r.wilaya} - ${r.severity}</h4>
+                                ${r.verifiedWhatsApp ? '<span class="bg-emerald-100 text-dzGreen text-[9px] px-1.5 py-0.5 rounded font-bold"><i class="fab fa-whatsapp"></i> موثق</span>' : ''}
+                            </div>
+                            <p class="text-xs text-slate-600">${r.description || 'لا يوجد وصف مضاف'}</p>
+                            <p class="text-[10px] text-slate-400">المبلغ: ${r.nom} (${r.phone})</p>
+                        </div>
+                        <div class="flex items-center gap-2 w-full sm:w-auto">
+                            <button onclick="updateReportStatus('${r.fb_id || r.id}', 'جاري_التدخل')" class="bg-dzBlue hover:bg-blue-700 text-white font-bold px-2.5 py-1.5 rounded-lg text-[11px] flex-1 sm:flex-none">
+                                تأكيد التدخل
+                            </button>
+                            <button onclick="updateReportStatus('${r.fb_id || r.id}', 'تم_الإخماد')" class="bg-dzGreen hover:bg-emerald-700 text-white font-bold px-2.5 py-1.5 rounded-lg text-[11px] flex-1 sm:flex-none">
+                                تم الإخماد
+                            </button>
+                        </div>
                     </div>
                 `).join('');
             }
 
-            const officerList = document.getElementById('officer-reports-list');
-            officerList.innerHTML = reports.map(r => `
-                <div class="p-3.5 bg-white border border-slate-200 rounded-xl shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                    <div class="space-y-1">
-                        <div class="flex items-center gap-2">
-                            <span class="bg-red-100 text-dzRed font-black text-[10px] px-2 py-0.5 rounded">${r.id}</span>
-                            <h4 class="font-black text-xs text-slate-900">${r.wilaya} - ${r.severity}</h4>
-                            ${r.verifiedWhatsApp ? '<span class="bg-emerald-100 text-dzGreen text-[9px] px-1.5 py-0.5 rounded font-bold"><i class="fab fa-whatsapp"></i> موثق</span>' : ''}
-                        </div>
-                        <p class="text-xs text-slate-600">${r.description || 'لا يوجد وصف مضاف'}</p>
-                        <p class="text-[10px] text-slate-400">المبلغ: ${r.nom} (${r.phone})</p>
-                    </div>
-                    <div class="flex items-center gap-2 w-full sm:w-auto">
-                        <button onclick="updateReportStatus('${r.fb_id || r.id}', 'جاري_التدخل')" class="bg-dzBlue hover:bg-blue-700 text-white font-bold px-2.5 py-1.5 rounded-lg text-[11px] flex-1 sm:flex-none">
-                            تأكيد التدخل
-                        </button>
-                        <button onclick="updateReportStatus('${r.fb_id || r.id}', 'تم_الإخماد')" class="bg-dzGreen hover:bg-emerald-700 text-white font-bold px-2.5 py-1.5 rounded-lg text-[11px] flex-1 sm:flex-none">
-                            تم الإخماد
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-
             const adminReportsList = document.getElementById('admin-reports-list');
-            adminReportsList.innerHTML = reports.map(r => `
-                <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2 text-xs">
-                    <div class="flex justify-between items-center">
-                        <span class="font-black text-slate-900">${r.id} - ${r.wilaya} (${r.severity})</span>
-                        <div class="flex items-center gap-1">
-                            <button onclick="deleteReport('${r.fb_id || r.id}')" class="text-red-500 hover:text-red-700 p-1" title="حذف البلاغ">
-                                <i class="fas fa-trash-can"></i>
-                            </button>
+            if (adminReportsList) {
+                adminReportsList.innerHTML = reports.map(r => `
+                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2 text-xs">
+                        <div class="flex justify-between items-center">
+                            <span class="font-black text-slate-900">${r.id} - ${r.wilaya} (${r.severity})</span>
+                            <div class="flex items-center gap-1">
+                                <button onclick="deleteReport('${r.fb_id || r.id}')" class="text-red-500 hover:text-red-700 p-1" title="حذف البلاغ">
+                                    <i class="fas fa-trash-can"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-slate-600">${r.description || 'لا يوجد وصف'}</p>
+                        <div class="flex justify-between items-center text-[10px] text-slate-500 pt-1 border-t border-slate-200">
+                            <span>المبلغ: ${r.nom} | ${r.phone}</span>
+                            <span class="font-bold ${r.verifiedWhatsApp ? 'text-dzGreen' : 'text-slate-400'}">${r.verifiedWhatsApp ? 'موثق بالواتساب ✅' : 'غير موثق ❌'}</span>
                         </div>
                     </div>
-                    <p class="text-slate-600">${r.description || 'لا يوجد وصف'}</p>
-                    <div class="flex justify-between items-center text-[10px] text-slate-500 pt-1 border-t border-slate-200">
-                        <span>المبلغ: ${r.nom} | ${r.phone}</span>
-                        <span class="font-bold ${r.verifiedWhatsApp ? 'text-dzGreen' : 'text-slate-400'}">${r.verifiedWhatsApp ? 'موثق بالواتساب ✅' : 'غير موثق ❌'}</span>
-                    </div>
-                </div>
-            `).join('');
+                `).join('');
+            }
 
             const adminResList = document.getElementById('admin-resources-list');
-            adminResList.innerHTML = resources.map(res => `
-                <div class="p-3 bg-blue-50/50 border border-blue-100 rounded-xl space-y-1 text-xs">
-                    <div class="flex justify-between items-center">
-                        <strong class="text-blue-900">${res.officerName}</strong>
-                        <span class="text-[10px] text-blue-700 font-bold">${res.phone}</span>
+            if (adminResList) {
+                adminResList.innerHTML = resources.map(res => `
+                    <div class="p-3 bg-blue-50/50 border border-blue-100 rounded-xl space-y-1 text-xs">
+                        <div class="flex justify-between items-center">
+                            <strong class="text-blue-900">${res.officerName}</strong>
+                            <span class="text-[10px] text-blue-700 font-bold">${res.phone}</span>
+                        </div>
+                        <p class="text-slate-600">${res.brigade || 'بدون تحديد كتيبة'}</p>
+                        <div class="text-[11px] font-bold text-slate-700 flex gap-3 pt-1">
+                            <span>🚒 شاحنات (CCF): ${res.trucks}</span>
+                            <span>🛩️ طائرات: ${res.planes}</span>
+                        </div>
                     </div>
-                    <p class="text-slate-600">${res.brigade || 'بدون تحديد كتيبة'}</p>
-                    <div class="text-[11px] font-bold text-slate-700 flex gap-3 pt-1">
-                        <span>🚒 شاحنات (CCF): ${res.trucks}</span>
-                        <span>🛩️ طائرات: ${res.planes}</span>
-                    </div>
-                </div>
-            `).join('');
+                `).join('');
+            }
 
             updateCharts();
         }
@@ -1385,15 +1422,15 @@
             const aiLoading = document.getElementById('ai-loading');
             const aiContent = document.getElementById('ai-content');
 
-            aiResult.classList.remove('hidden');
-            aiLoading.classList.remove('hidden');
-            aiContent.innerHTML = '';
+            if (aiResult) aiResult.classList.remove('hidden');
+            if (aiLoading) aiLoading.classList.remove('hidden');
+            if (aiContent) aiContent.innerHTML = '';
 
             const reports = window.appState.reports;
             const resources = window.appState.resources;
 
             setTimeout(() => {
-                aiLoading.classList.add('hidden');
+                if (aiLoading) aiLoading.classList.add('hidden');
 
                 const totalReports = reports.length;
                 const criticalCount = reports.filter(r => r.severity === 'حرج').length;
@@ -1443,12 +1480,16 @@
                     </div>
                 `;
 
-                aiContent.innerHTML = planHtml;
+                if (aiContent) aiContent.innerHTML = planHtml;
             }, 800);
         };
 
         function initAnalyticsCharts() {
-            const ctxSev = document.getElementById('chart-severity').getContext('2d');
+            const elSev = document.getElementById('chart-severity');
+            const elWil = document.getElementById('chart-wilayas');
+            if (!elSev || !elWil) return;
+
+            const ctxSev = elSev.getContext('2d');
             chartSeverityInstance = new Chart(ctxSev, {
                 type: 'doughnut',
                 data: {
@@ -1461,7 +1502,7 @@
                 options: { responsive: true, maintainAspectRatio: false }
             });
 
-            const ctxWil = document.getElementById('chart-wilayas').getContext('2d');
+            const ctxWil = elWil.getContext('2d');
             chartWilayasInstance = new Chart(ctxWil, {
                 type: 'bar',
                 data: {
@@ -1500,7 +1541,6 @@
             chartWilayasInstance.update();
         }
 
-        // Image compression helper (Downscales image to max 500px width/height)
         window.previewPhoto = function(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -1534,9 +1574,13 @@
                     const compressedBase64 = canvas.toDataURL('image/jpeg', 0.6);
                     window.appState.photoBase64 = compressedBase64;
 
-                    document.getElementById('photo-preview').src = compressedBase64;
-                    document.getElementById('photo-preview-container').classList.add('hidden');
-                    document.getElementById('photo-preview-wrapper').classList.remove('hidden');
+                    const photoPreview = document.getElementById('photo-preview');
+                    const photoPreviewContainer = document.getElementById('photo-preview-container');
+                    const photoPreviewWrapper = document.getElementById('photo-preview-wrapper');
+
+                    if (photoPreview) photoPreview.src = compressedBase64;
+                    if (photoPreviewContainer) photoPreviewContainer.classList.add('hidden');
+                    if (photoPreviewWrapper) photoPreviewWrapper.classList.remove('hidden');
                 };
                 img.src = e.target.result;
             };
@@ -1546,14 +1590,20 @@
         window.clearPhoto = function(event) {
             if (event) event.stopPropagation();
             window.appState.photoBase64 = null;
-            document.getElementById('photo-input').value = '';
-            document.getElementById('photo-preview').src = '';
-            document.getElementById('photo-preview-container').classList.remove('hidden');
-            document.getElementById('photo-preview-wrapper').classList.add('hidden');
+            const photoInput = document.getElementById('photo-input');
+            const photoPreview = document.getElementById('photo-preview');
+            const photoPreviewContainer = document.getElementById('photo-preview-container');
+            const photoPreviewWrapper = document.getElementById('photo-preview-wrapper');
+
+            if (photoInput) photoInput.value = '';
+            if (photoPreview) photoPreview.src = '';
+            if (photoPreviewContainer) photoPreviewContainer.classList.remove('hidden');
+            if (photoPreviewWrapper) photoPreviewWrapper.classList.add('hidden');
         };
 
         window.adjustValue = function(id, delta) {
             const el = document.getElementById(id);
+            if (!el) return;
             let val = parseInt(el.value) || 0;
             val = Math.max(0, val + delta);
             el.value = val;
@@ -1561,7 +1611,8 @@
 
         window.switchTab = function(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
+            const targetTab = document.getElementById(tabId);
+            if (targetTab) targetTab.classList.add('active');
 
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.remove('text-dzRed', 'font-black');
@@ -1583,44 +1634,52 @@
         };
 
         window.openLoginModal = function() {
-            document.getElementById('login-modal').classList.remove('hidden');
+            const loginModal = document.getElementById('login-modal');
+            if (loginModal) loginModal.classList.remove('hidden');
         };
 
         window.setRole = function(role) {
             const badgeText = document.getElementById('role-text');
             const navOfficer = document.getElementById('nav-officer');
             const navAdmin = document.getElementById('nav-admin');
+            const loginModal = document.getElementById('login-modal');
 
             if (role === 'citizen') {
                 window.appState.role = 'citizen';
-                badgeText.textContent = "مواطن مبلغ";
-                navOfficer.classList.add('hidden');
-                navAdmin.classList.add('hidden');
+                if (badgeText) badgeText.textContent = "مواطن مبلغ";
+                if (navOfficer) navOfficer.classList.add('hidden');
+                if (navAdmin) navAdmin.classList.add('hidden');
                 switchTab('tab-report');
-                document.getElementById('login-modal').classList.add('hidden');
+                if (loginModal) loginModal.classList.add('hidden');
             } else if (role === 'officer') {
                 window.appState.role = 'officer';
-                const name = document.getElementById('login-officer-name').value || 'الضابط الميداني';
-                const phone = document.getElementById('login-officer-phone').value || '';
+                const nameInp = document.getElementById('login-officer-name');
+                const phoneInp = document.getElementById('login-officer-phone');
+                const name = nameInp ? nameInp.value || 'الضابط الميداني' : 'الضابط الميداني';
+                const phone = phoneInp ? phoneInp.value || '' : '';
+                
                 window.appState.officerInfo = { name, phone };
-                document.getElementById('officer-name-input').value = name;
-                document.getElementById('officer-phone-input').value = phone;
+                const offNameInput = document.getElementById('officer-name-input');
+                const offPhoneInput = document.getElementById('officer-phone-input');
+                if (offNameInput) offNameInput.value = name;
+                if (offPhoneInput) offPhoneInput.value = phone;
 
-                badgeText.textContent = `ضابط: ${name}`;
-                navOfficer.classList.remove('hidden');
-                navAdmin.classList.add('hidden');
+                if (badgeText) badgeText.textContent = `ضابط: ${name}`;
+                if (navOfficer) navOfficer.classList.remove('hidden');
+                if (navAdmin) navAdmin.classList.add('hidden');
                 switchTab('tab-officer');
-                document.getElementById('login-modal').classList.add('hidden');
+                if (loginModal) loginModal.classList.add('hidden');
             } else if (role === 'admin') {
-                // Admin Password Check: Updated to 15041978
-                const adminPwd = document.getElementById('login-admin-pwd').value.trim();
+                // Admin Password Verification (Code: 15041978)
+                const pwdInput = document.getElementById('login-admin-pwd');
+                const adminPwd = pwdInput ? pwdInput.value.trim() : '';
                 if (adminPwd === '15041978') {
                     window.appState.role = 'admin';
-                    badgeText.textContent = "غرفة القيادة";
-                    navOfficer.classList.remove('hidden');
-                    navAdmin.classList.remove('hidden');
+                    if (badgeText) badgeText.textContent = "غرفة القيادة";
+                    if (navOfficer) navOfficer.classList.remove('hidden');
+                    if (navAdmin) navAdmin.classList.remove('hidden');
                     switchTab('tab-admin');
-                    document.getElementById('login-modal').classList.add('hidden');
+                    if (loginModal) loginModal.classList.add('hidden');
                 } else {
                     showModal("رمز المرور خاطئ", "كلمة المرور الخاصة بغرفة القيادة غير صحيحة.", "❌");
                 }
@@ -1628,18 +1687,25 @@
         };
 
         window.showModal = function(title, desc, icon = "✅") {
-            document.getElementById('modal-icon').textContent = icon;
-            document.getElementById('modal-title').textContent = title;
-            document.getElementById('modal-desc').textContent = desc;
-            document.getElementById('custom-modal').classList.remove('hidden');
+            const modalIcon = document.getElementById('modal-icon');
+            const modalTitle = document.getElementById('modal-title');
+            const modalDesc = document.getElementById('modal-desc');
+            const customModal = document.getElementById('custom-modal');
+
+            if (modalIcon) modalIcon.textContent = icon;
+            if (modalTitle) modalTitle.textContent = title;
+            if (modalDesc) modalDesc.textContent = desc;
+            if (customModal) customModal.classList.remove('hidden');
         };
 
         window.closeModal = function() {
-            document.getElementById('custom-modal').classList.add('hidden');
+            const customModal = document.getElementById('custom-modal');
+            if (customModal) customModal.classList.add('hidden');
         };
 
         window.showGPSHelpModal = function() {
-            document.getElementById('gps-help-modal').classList.remove('hidden');
+            const gpsModal = document.getElementById('gps-help-modal');
+            if (gpsModal) gpsModal.classList.remove('hidden');
         };
     </script>
 </body>
