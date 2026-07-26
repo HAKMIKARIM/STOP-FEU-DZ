@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>STOP FEU DZ - الحماية المدنية ومحافظة الغابات الجزائرية</title>
-    
+
     <!-- Google Tag (gtag.js) - Google Analytics Stream G-2DB1069DB7 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-2DB1069DB7"></script>
     <script>
@@ -14,16 +14,23 @@
       gtag('config', 'G-2DB1069DB7');
     </script>
 
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Icons & Leaflet CSS/JS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <!-- Tailwind Configuration -->
     <script>
         tailwind.config = {
             theme: {
@@ -72,6 +79,7 @@
 </head>
 <body class="pb-24 text-slate-800 min-h-screen flex flex-col justify-between selection:bg-dzRed selection:text-white bg-slate-100">
 
+    <!-- HEADER -->
     <header class="bg-white/95 backdrop-blur-md text-slate-800 p-3 sm:p-4 sticky top-0 z-40 border-b border-red-500/20 shadow-sm flex justify-between items-center">
         <div class="flex items-center gap-3">
             <div class="w-11 h-11 bg-gradient-to-tr from-dzRed to-red-600 rounded-2xl flex items-center justify-center text-white text-xl font-black shadow-md shadow-red-500/20 ring-2 ring-red-500/30">
@@ -99,6 +107,7 @@
         </div>
     </header>
 
+    <!-- EMERGENCY HOTLINES BANNER -->
     <div class="bg-gradient-to-r from-dzRed via-red-600 to-dzRed text-white px-3 py-2 flex justify-between items-center text-xs font-bold shadow-sm overflow-x-auto whitespace-nowrap border-b border-red-700">
         <div class="flex items-center gap-2 shrink-0">
             <span class="relative flex h-2.5 w-2.5">
@@ -126,6 +135,7 @@
     <!-- MAIN CONTAINER -->
     <main class="p-3 sm:p-5 max-w-5xl mx-auto w-full flex-1 space-y-4">
 
+        <!-- TAB 1: CITIZEN REPORT FORM -->
         <section id="tab-report" class="tab-content active space-y-4">
             <div class="bg-amber-50 border-r-4 border-dzOrange p-4 rounded-xl shadow-sm flex items-start gap-3">
                 <i class="fas fa-triangle-exclamation text-dzOrange text-xl mt-0.5"></i>
@@ -332,6 +342,7 @@
             </div>
         </section>
 
+        <!-- TAB 2: TACTICAL MAP -->
         <section id="tab-map" class="tab-content space-y-4">
             <div class="bg-white border border-slate-200 p-4 rounded-2xl shadow-sm">
                 <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
@@ -381,6 +392,7 @@
             </div>
         </section>
 
+        <!-- TAB 3: OFFICER PANEL -->
         <section id="tab-officer" class="tab-content space-y-4">
             <div class="bg-white border border-blue-200 p-5 rounded-2xl shadow-sm">
                 <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
@@ -449,6 +461,7 @@
             </div>
         </section>
 
+        <!-- TAB 4: ADMIN CONTROL PANEL -->
         <section id="tab-admin" class="tab-content space-y-4">
             <div class="bg-white border border-red-200 p-5 rounded-2xl shadow-sm space-y-5">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-100">
@@ -463,6 +476,7 @@
                     </span>
                 </div>
 
+                <!-- ADMIN GLOBAL BROADCAST BOX -->
                 <div class="bg-gradient-to-r from-dzRed via-red-700 to-dzRed text-white p-4 rounded-2xl space-y-3 shadow-lg border border-red-500/40">
                     <div class="flex items-center justify-between border-b border-white/20 pb-2">
                         <div class="flex items-center gap-2">
@@ -480,6 +494,7 @@
                     </div>
                 </div>
 
+                <!-- FIRESTORE CLOUD DIAGNOSTIC & CONTROL BOX -->
                 <div class="bg-slate-900 text-white p-4 rounded-2xl space-y-3 shadow-md">
                     <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2">
                         <div class="flex items-center gap-2">
@@ -522,6 +537,7 @@
                     </div>
                 </div>
 
+                <!-- KEY METRICS -->
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div class="bg-slate-50 border border-slate-200 p-3.5 rounded-xl">
                         <div class="flex justify-between items-center mb-2">
@@ -549,6 +565,7 @@
                     </div>
                 </div>
 
+                <!-- CHARTS -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
                         <h4 class="text-xs font-black text-slate-800 mb-2 flex items-center gap-1.5">
@@ -568,6 +585,7 @@
                     </div>
                 </div>
 
+                <!-- WHATSAPP TEST TOOL -->
                 <div class="bg-emerald-950/90 text-emerald-100 p-4 rounded-2xl border border-emerald-500/40 space-y-3">
                     <div class="flex items-center justify-between">
                         <h3 class="font-black text-sm text-emerald-300 flex items-center gap-2">
@@ -591,12 +609,13 @@
                     </div>
                 </div>
 
+                <!-- GEMINI AI ENGINE -->
                 <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 p-4 sm:p-5 rounded-2xl text-white relative overflow-hidden shadow-md">
                     <div class="flex items-center justify-between mb-2">
                         <h3 class="font-black text-indigo-200 text-sm flex items-center gap-2">
                             <i class="fas fa-brain text-indigo-400 text-lg"></i> المساعد التكتيكي الذكي للإخماد (Gemini 3 Flash AI Engine)
                         </h3>
-                        <span class="bg-indigo-500/20 text-indigo-300 text-[10px] px-2.5 py-0.5 rounded border border-indigo-400/30 font-extrabold">استجابة < 3 دقائق</span>
+                        <span class="bg-indigo-500/20 text-indigo-300 text-[10px] px-2.5 py-0.5 rounded border border-indigo-400/30 font-extrabold">استجابة &lt; 3 دقائق</span>
                     </div>
 
                     <p class="text-xs text-slate-300 mb-4 leading-relaxed">
@@ -615,6 +634,7 @@
                     </div>
                 </div>
 
+                <!-- ADMIN MAP -->
                 <div>
                     <h3 class="text-xs font-black text-slate-800 uppercase tracking-wider mb-2 flex items-center gap-2">
                         <i class="fas fa-earth-africa text-dzGreen"></i> خريطة القيادة العامة وإدارة الميدان
@@ -622,6 +642,7 @@
                     <div id="admin-map" class="shadow-md border border-slate-200"></div>
                 </div>
 
+                <!-- ADMIN DATA LISTS -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     <div>
                         <h3 class="font-extrabold text-xs text-slate-800 uppercase tracking-wider mb-2 flex items-center justify-between">
@@ -644,6 +665,7 @@
 
     </main>
 
+    <!-- BOTTOM NAVIGATION -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-lg border-t border-slate-200 py-2.5 px-3 flex justify-around items-center z-50 shadow-lg">
         <button onclick="switchTab('tab-report')" id="nav-report" class="nav-btn text-dzRed font-black flex flex-col items-center gap-1 w-1/4 transition">
             <i class="fas fa-bullhorn text-lg"></i>
@@ -663,6 +685,7 @@
         </button>
     </nav>
 
+    <!-- CUSTOM MODAL -->
     <div id="custom-modal" class="fixed inset-0 bg-slate-900/60 hidden z-[120] flex items-center justify-center p-4 backdrop-blur-sm transition-opacity">
         <div class="bg-white border border-slate-200 rounded-2xl p-6 max-w-sm w-full shadow-2xl text-center space-y-4">
             <div id="modal-icon" class="text-5xl mx-auto">✅</div>
@@ -809,7 +832,7 @@ service cloud.firestore {
                     </button>
                 </div>
 
-                <!-- Role: Admin (Password: 15041978) -->
+                <!-- Role: Admin (Password: ********) -->
                 <div class="border border-red-200 rounded-xl p-3 bg-red-50/40 space-y-2">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 bg-red-100 text-dzRed border border-red-200 rounded-lg flex items-center justify-center text-lg">
@@ -820,7 +843,7 @@ service cloud.firestore {
                             <p class="text-[10px] text-slate-500">خاص برؤساء القطاعات والمسؤولين</p>
                         </div>
                     </div>
-                    <input type="password" id="login-admin-pwd" placeholder="أدخل كلمة المرور (15041978)" class="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs text-slate-800 outline-none font-mono">
+                    <input type="password" id="login-admin-pwd" placeholder="أدخل كلمة المرور (********)" class="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs text-slate-800 outline-none font-mono">
                     <button onclick="setRole('admin')" class="w-full bg-dzRed hover:bg-red-700 text-white font-bold py-2 rounded-lg text-xs transition">
                         دخول غرفة القيادة
                     </button>
@@ -829,6 +852,7 @@ service cloud.firestore {
         </div>
     </div>
 
+    <!-- CORE JAVASCRIPT MODULE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
