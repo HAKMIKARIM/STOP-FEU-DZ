@@ -58,7 +58,7 @@
         body { font-family: 'Cairo', 'Tajawal', sans-serif; background-color: #f8fafc; color: #0f172a; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        #map, #admin-map { height: 50vh; min-height: 360px; width: 100%; border-radius: 1rem; z-index: 10; }
+        #map, #admin-map { height: 48vh; min-height: 350px; width: 100%; border-radius: 1rem; z-index: 10; }
         
         .pulse-flame { animation: pulseFlame 1.3s infinite alternate; }
         @keyframes pulseFlame {
@@ -166,12 +166,12 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                             <label class="block text-xs font-black text-slate-700 mb-1">اسم ولقب المبلغ *</label>
-                            <input type="text" id="citizen-nom" required placeholder="مثال: محمد بن علي" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm text-slate-800 placeholder-slate-400 focus:border-dzRed focus:bg-white outline-none transition font-semibold">
+                            <input type="text" id="citizen-nom" required placeholder="مثال: عبد الكريم حكيمي" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm text-slate-800 placeholder-slate-400 focus:border-dzRed focus:bg-white outline-none transition font-semibold">
                         </div>
                         <div>
-                            <label class="block text-xs font-black text-slate-700 mb-1">رقم الهاتف (مع التحقق عبر الواتساب) *</label>
+                            <label class="block text-xs font-black text-slate-700 mb-1">رقم الهاتف (التحقق عبر الواتساب) *</label>
                             <div class="flex gap-2">
-                                <input type="tel" id="citizen-phone" required placeholder="مثال: 0661223344 أو 213661223344" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm text-slate-800 placeholder-slate-400 focus:border-dzRed focus:bg-white outline-none transition font-semibold">
+                                <input type="tel" id="citizen-phone" required placeholder="مثال: 0798924956" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm text-slate-800 placeholder-slate-400 focus:border-dzRed focus:bg-white outline-none transition font-semibold">
                                 <button type="button" onclick="sendWhatsAppOTP()" id="btn-send-whatsapp" class="bg-dzGreen hover:bg-emerald-700 text-white font-bold px-3.5 py-2 rounded-xl text-xs whitespace-nowrap flex items-center gap-1 shadow-sm transition active:scale-95">
                                     <i class="fab fa-whatsapp text-base"></i> تأكيد الواتساب
                                 </button>
@@ -186,7 +186,7 @@
                     <div id="otp-container" class="hidden bg-emerald-50 border border-emerald-300 p-4 rounded-xl space-y-2.5">
                         <div class="flex items-center justify-between">
                             <p class="text-xs font-black text-emerald-900 flex items-center gap-1.5">
-                                <i class="fab fa-whatsapp text-dzGreen text-base"></i> رمز التحقق عبر الواتساب (UltraMsg):
+                                <i class="fab fa-whatsapp text-dzGreen text-base"></i> أدخل رمز التحقق المرسل إلى الواتساب (UltraMsg):
                             </p>
                             <span id="demo-otp-badge" class="bg-emerald-200 text-emerald-900 text-[10px] px-2 py-0.5 rounded font-black"></span>
                         </div>
@@ -196,11 +196,13 @@
                                 تأكيد الرمز
                             </button>
                         </div>
+                        <p class="text-[10px] text-slate-500">في حالة تأخر الخادم، اضغط زر التأكيد مباشرة فور ظهور الرمز المؤقت الموضح بالأعلى.</p>
                     </div>
 
+                    <!-- All 69 Wilayas Dropdown -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-xs font-black text-slate-700 mb-1">الولاية المعنية (كافة الولايات الـ 69) *</label>
+                            <label class="block text-xs font-black text-slate-700 mb-1">الولاية المعنية (الـ 69 ولاية كاملة) *</label>
                             <select id="report-wilaya" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm text-slate-800 focus:border-dzRed outline-none transition font-semibold">
                                 <option value="01 - أدرار">01 - أدرار</option>
                                 <option value="02 - الشلف">02 - الشلف</option>
@@ -293,7 +295,7 @@
                                     <i class="fas fa-camera"></i>
                                 </div>
                                 <p class="text-xs font-black text-slate-800">اضغط هنا لفتح كاميرا الهاتف وتصوير الحريق</p>
-                                <p class="text-[11px] text-slate-500">تساعد الصورة الذكاء الاصطناعي وضباط الحماية في تقييم مستوى الدخان والرياح</p>
+                                <p class="text-[11px] text-slate-500">تم دمج ضغط آلي للصور لتسريع التخزين السحابي فورياً</p>
                             </div>
                             <div id="photo-preview-wrapper" class="hidden relative group">
                                 <img id="photo-preview" class="w-full h-52 object-cover rounded-xl shadow-md border border-slate-300">
@@ -306,7 +308,7 @@
 
                     <div>
                         <label class="block text-xs font-black text-slate-700 mb-1">وصف المكان والمطالب الميدانية</label>
-                        <textarea id="report-description" rows="2" placeholder="مثال: حريق بالقرب من الطريق الوطني، اتجاه الرياح نحو قرية آيت زاي..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm text-slate-800 placeholder-slate-400 focus:border-dzRed outline-none transition font-semibold"></textarea>
+                        <textarea id="report-description" rows="2" placeholder="مثال: حريق بالقرب من الطريق الوطني، اتجاه الرياح نحو القرية..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm text-slate-800 placeholder-slate-400 focus:border-dzRed outline-none transition font-semibold"></textarea>
                     </div>
 
                     <!-- GPS Location Box -->
@@ -318,7 +320,7 @@
                                 </div>
                                 <div>
                                     <div class="flex items-center gap-1.5">
-                                        <p class="text-xs font-black text-emerald-900">موقع بداية الطريق بالجي بي اس (GPS)</p>
+                                        <p class="text-xs font-black text-emerald-900">موقع الجي بي اس (GPS)</p>
                                         <span id="gps-badge" class="bg-emerald-200 text-emerald-800 text-[9px] px-1.5 py-0.5 rounded font-black">نشط</span>
                                     </div>
                                     <p id="gps-coords-display" class="text-xs font-mono text-emerald-700 font-bold">جاري تحديد الموقع الفعلي بالجي بي اس...</p>
@@ -334,7 +336,7 @@
                         <div class="flex items-center justify-between border-t border-emerald-200/80 pt-2 text-xs">
                             <label class="flex items-center gap-2 cursor-pointer text-slate-700 font-bold">
                                 <input type="checkbox" id="gps-watch-toggle" onchange="toggleLiveGPSTracking(this.checked)" class="rounded border-slate-300 text-dzGreen focus:ring-dzGreen h-4 w-4">
-                                <span><i class="fas fa-satellite text-emerald-600"></i> التتبع المستمر للموقع في حالة التنقل</span>
+                                <span><i class="fas fa-satellite text-emerald-600"></i> التتبع المستمر للموقع</span>
                             </label>
 
                             <button type="button" onclick="showGPSHelpModal()" class="text-slate-500 hover:text-dzRed text-[11px] font-bold underline flex items-center gap-1">
@@ -387,7 +389,7 @@
                         </span>
                     </div>
 
-                    <span class="text-[10px] text-slate-400 font-bold">تحديث سحابي مباشر (Firestore)</span>
+                    <span class="text-[10px] text-slate-400 font-bold">مزامنة هجينة (Direct Sync)</span>
                 </div>
             </div>
 
@@ -470,34 +472,70 @@
             </div>
         </section>
 
-        <!-- TAB 4 - ADMIN & AI ANALYTICS -->
+        <!-- TAB 4 - ADMIN & DATABASE CONTROL PANEL -->
         <section id="tab-admin" class="tab-content space-y-4">
-            <div class="bg-white border border-red-200 p-5 rounded-2xl shadow-sm">
-                <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+            <div class="bg-white border border-red-200 p-5 rounded-2xl shadow-sm space-y-5">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                     <div>
                         <h2 class="text-xl font-black text-slate-900 flex items-center gap-2">
-                            <i class="fas fa-chess-knight text-dzRed"></i> القيادة المركزية وتحليلات الذكاء الاصطناعي (AI Response Engine)
+                            <i class="fas fa-chess-knight text-dzRed"></i> القيادة المركزية وإدارة قاعدة البيانات السحابية
                         </h2>
-                        <p class="text-xs text-slate-500 mt-0.5">لوحة متابعة فورية، تحليل المخاطر، والتكامل مع بيانات WhatsApp السحابية</p>
+                        <p class="text-xs text-slate-500 mt-0.5">تحليلات الميدان، التحكم التام بالبيانات، وتدقيق خدمات الواتساب</p>
                     </div>
                     <span class="bg-emerald-50 text-dzGreen border border-emerald-200 text-[10px] px-3 py-1 rounded-full font-black flex items-center gap-1">
-                        <span class="w-2 h-2 rounded-full bg-dzGreen animate-ping"></span> متصل بالسحابة
+                        <span class="w-2 h-2 rounded-full bg-dzGreen animate-ping"></span> تحكم شامل
                     </span>
                 </div>
 
-                <!-- AI ANALYTICS CHARTS DASHBOARD -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-5">
+                <!-- CLOUD DIAGNOSTICS & DB CONTROLLER BANNER -->
+                <div class="bg-slate-900 text-white p-4 rounded-2xl space-y-3 shadow-md">
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2">
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-database text-dzGreen text-lg"></i>
+                            <h3 class="font-black text-sm">حالة قاعدة البيانات السحابية (Firestore Diagnostic)</h3>
+                        </div>
+                        <span id="admin-db-status-badge" class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[10px] px-2.5 py-1 rounded-lg font-bold">
+                            جاري الفحص...
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                        <div class="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/60">
+                            <span class="text-slate-400 font-bold block text-[10px]">المشروع السحابي المرتبط:</span>
+                            <span class="font-mono text-emerald-400 font-bold">indrive-95741</span>
+                        </div>
+                        <div class="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/60">
+                            <span class="text-slate-400 font-bold block text-[10px]">المجموعة المستخدمة:</span>
+                            <span class="font-mono text-blue-400 font-bold">reports & resources</span>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-2 pt-1">
+                        <button onclick="testCloudWrite()" class="bg-dzGreen hover:bg-emerald-700 text-white text-xs px-3 py-2 rounded-xl font-bold flex items-center gap-1.5 transition">
+                            <i class="fas fa-vial"></i> تجربة أذونات الكتابة في السحابة الآن
+                        </button>
+                        <button onclick="exportDataJSON()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs px-3 py-2 rounded-xl font-bold flex items-center gap-1.5 border border-slate-700 transition">
+                            <i class="fas fa-download"></i> تصدير البيانات (JSON)
+                        </button>
+                        <button onclick="showFirestoreRulesGuide()" class="bg-dzAmber hover:bg-amber-700 text-white text-xs px-3 py-2 rounded-xl font-bold flex items-center gap-1.5 transition">
+                            <i class="fas fa-shield-halved"></i> تعليمات قواعد الأمان (Firestore Rules)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- STATS CARDS -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div class="bg-slate-50 border border-slate-200 p-3.5 rounded-xl">
                         <div class="flex justify-between items-center mb-2">
                             <span class="text-xs font-black text-slate-700">إجمالي البلاغات</span>
                             <i class="fas fa-fire-burner text-dzRed text-base"></i>
                         </div>
                         <p id="stat-total-fires" class="text-2xl font-black text-slate-900">0</p>
-                        <span class="text-[10px] text-slate-500">مخزنة بسحابة Firestore</span>
+                        <span class="text-[10px] text-slate-500">مخزنة بسحابة / محلياً</span>
                     </div>
                     <div class="bg-slate-50 border border-slate-200 p-3.5 rounded-xl">
                         <div class="flex justify-between items-center mb-2">
-                            <span class="text-xs font-black text-slate-700">المبلغين المعاينين بالواتساب</span>
+                            <span class="text-xs font-black text-slate-700">المبلغين الموثقين بالواتساب</span>
                             <i class="fab fa-whatsapp text-dzGreen text-base"></i>
                         </div>
                         <p id="stat-verified-citizens" class="text-2xl font-black text-slate-900">0</p>
@@ -509,12 +547,12 @@
                             <i class="fas fa-truck-droplet text-dzBlue text-base"></i>
                         </div>
                         <p id="stat-total-vehicles" class="text-2xl font-black text-slate-900">0</p>
-                        <span class="text-[10px] text-slate-500">جاهزة للتدخل</span>
+                        <span class="text-[10px] text-slate-500">جاهزة للتدخل الميداني</span>
                     </div>
                 </div>
 
                 <!-- CHARTS ROW -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
                         <h4 class="text-xs font-black text-slate-800 mb-2 flex items-center gap-1.5">
                             <i class="fas fa-chart-pie text-dzRed"></i> توزيع الحرائق حسب مستوى الخطورة
@@ -525,7 +563,7 @@
                     </div>
                     <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
                         <h4 class="text-xs font-black text-slate-800 mb-2 flex items-center gap-1.5">
-                            <i class="fas fa-chart-bar text-dzBlue"></i> تووزع البلاغات والإمكانيات حسب الولايات
+                            <i class="fas fa-chart-bar text-dzBlue"></i> توزع البلاغات والإمكانيات حسب الولايات
                         </h4>
                         <div class="h-44">
                             <canvas id="chart-wilayas"></canvas>
@@ -533,8 +571,33 @@
                     </div>
                 </div>
 
+                <!-- WHATSAPP ULTRAMSG DIAGNOSTIC TESTER TOOL (Targeting 0798924956) -->
+                <div class="bg-emerald-950/90 text-emerald-100 p-4 rounded-2xl border border-emerald-500/40 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-black text-sm text-emerald-300 flex items-center gap-2">
+                            <i class="fab fa-whatsapp text-lg text-dzGreen"></i> أداة اختبار إرسال الواتساب الفوري (UltraMsg Inspector)
+                        </h3>
+                        <span class="bg-dzGreen text-white text-[9px] px-2 py-0.5 rounded font-black">جاهز للاختبار</span>
+                    </div>
+                    
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        اختبار خادم UltraMsg لإرسال رسائل التوثيق مباشرة إلى رقم هاتف المبلغين (مثل <strong>0798924956</strong>):
+                    </p>
+
+                    <div class="flex flex-wrap gap-2">
+                        <input type="tel" id="admin-test-whatsapp-num" value="0798924956" placeholder="مثال: 0798924956" class="bg-slate-900 border border-emerald-500/50 rounded-xl p-2.5 text-xs text-white font-mono outline-none focus:ring-2 focus:ring-dzGreen flex-1 min-w-[180px]">
+                        <button onclick="adminTestWhatsAppSend()" id="btn-admin-test-wa" class="bg-dzGreen hover:bg-emerald-700 text-white text-xs font-extrabold px-4 py-2.5 rounded-xl transition shadow-md whitespace-nowrap">
+                            <i class="fab fa-whatsapp"></i> إرسال رمز تجريبي للرقم
+                        </button>
+                    </div>
+
+                    <div id="admin-wa-log" class="text-[11px] font-mono bg-slate-900/90 p-2.5 rounded-xl border border-emerald-500/30 text-emerald-300 hidden">
+                        <!-- Log messages appear here -->
+                    </div>
+                </div>
+
                 <!-- GEMINI AI TACTICAL ADVISOR MODULE -->
-                <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 p-4 sm:p-5 rounded-2xl text-white relative overflow-hidden shadow-md mb-5">
+                <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 p-4 sm:p-5 rounded-2xl text-white relative overflow-hidden shadow-md">
                     <div class="flex items-center justify-between mb-2">
                         <h3 class="font-black text-indigo-200 text-sm flex items-center gap-2">
                             <i class="fas fa-brain text-indigo-400 text-lg"></i> المساعد التكتيكي الذكي للتدخل الفوري (AI Engine)
@@ -560,7 +623,7 @@
                 </div>
 
                 <!-- Tactical Admin Map -->
-                <div class="mb-5">
+                <div>
                     <h3 class="text-xs font-black text-slate-800 uppercase tracking-wider mb-2 flex items-center gap-2">
                         <i class="fas fa-earth-africa text-dzGreen"></i> خريطة القيادة العامة وإدارة الميدان
                     </h3>
@@ -618,6 +681,41 @@
             <p id="modal-desc" class="text-xs text-slate-600 leading-relaxed font-semibold"></p>
             <button onclick="closeModal()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-3 rounded-xl text-xs transition">
                 إغلاق
+            </button>
+        </div>
+    </div>
+
+    <!-- FIRESTORE RULES INSTRUCTIONS MODAL -->
+    <div id="rules-guide-modal" class="fixed inset-0 bg-slate-900/70 hidden z-[130] flex items-center justify-center p-4 backdrop-blur-md">
+        <div class="bg-white border border-amber-300 rounded-2xl p-5 max-w-lg w-full shadow-2xl space-y-4 text-right">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 class="text-base font-black text-slate-900 flex items-center gap-2">
+                    <i class="fas fa-shield-halved text-dzAmber"></i> ضبط قواعد أمان Firestore للتخزين المباشر
+                </h3>
+                <button onclick="document.getElementById('rules-guide-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-700 p-1">
+                    <i class="fas fa-xmark"></i>
+                </button>
+            </div>
+
+            <p class="text-xs text-slate-600 leading-relaxed font-semibold">
+                إذا كانت قاعدة البيانات السحابية ترفض الحفظ المباشر، يرجى التوجه لـ <strong>Firebase Console</strong> ثم اختيار <strong>Firestore Database &gt; Rules</strong> ولصق الكود التالي:
+            </p>
+
+            <div class="bg-slate-900 text-emerald-400 p-3 rounded-xl font-mono text-xs overflow-x-auto text-left" dir="ltr">
+<pre>
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}
+</pre>
+            </div>
+
+            <button onclick="navigator.clipboard.writeText('rules_version = \'2\';\nservice cloud.firestore {\n  match /databases/{database}/documents {\n    match /{document=**} {\n      allow read, write: if true;\n    }\n  }\n}'); showModal('تم النسخ', 'تم نسخ قواعد الأمان إلى الحافظة بنجاح.', '📋');" class="w-full bg-slate-800 text-white font-bold py-2.5 rounded-xl text-xs">
+                <i class="fas fa-copy"></i> نسخ كود القواعد لـ Firebase Console
             </button>
         </div>
     </div>
@@ -734,6 +832,7 @@
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+        // Verified Firebase Project Config
         const firebaseConfig = {
             apiKey: "AIzaSyCsoqh7L_lhjKU5U94ra5T5GmoiPGpGWc4",
             authDomain: "indrive-95741.firebaseapp.com",
@@ -746,6 +845,7 @@
 
         const appId = 'STOP-FEU-DZ';
         
+        // WhatsApp UltraMsg Credentials
         const ULTRAMSG_TOKEN = "0slilsu9t71ld540";
         const ULTRAMSG_INSTANCE = "instance181309";
         const ULTRAMSG_API_URL = `https://api.ultramsg.com/${ULTRAMSG_INSTANCE}/messages/chat`;
@@ -769,9 +869,22 @@
             maps: { client: null, admin: null },
             markers: { client: [], admin: [] },
             mapSatelliteMode: false,
-            photoBase64: null
+            photoBase64: null,
+            firestoreStatus: 'Initializing...'
         };
 
+        // Phone Formatter for Algerian Numbers
+        function formatAlgerianPhone(phone) {
+            let cleaned = phone.replace(/\D/g, '');
+            if (cleaned.startsWith('0')) {
+                cleaned = '213' + cleaned.substring(1);
+            } else if (cleaned.length === 9 && (cleaned.startsWith('5') || cleaned.startsWith('6') || cleaned.startsWith('7'))) {
+                cleaned = '213' + cleaned;
+            }
+            return cleaned;
+        }
+
+        // Load Persistent Local Storage on Startup
         try {
             const savedLocalReports = localStorage.getItem('stop_feu_local_reports');
             if (savedLocalReports) {
@@ -905,11 +1018,25 @@
 
                 await signInAnonymously(auth);
                 currentUser = auth.currentUser;
-                
+                window.appState.firestoreStatus = 'Online / Authenticated';
+                updateAdminDBStatusBadge(true, 'متصل ومؤمن');
+
                 syncFirebaseData();
                 syncOfflineQueue();
             } catch (err) {
                 console.error("Firebase connection fallback mode engaged:", err);
+                window.appState.firestoreStatus = 'Permission/Connection Issue';
+                updateAdminDBStatusBadge(false, 'وضع الحفظ المحلي (راجع القواعد)');
+            }
+        }
+
+        function updateAdminDBStatusBadge(isOk, text) {
+            const badge = document.getElementById('admin-db-status-badge');
+            if (badge) {
+                badge.className = isOk 
+                    ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[10px] px-2.5 py-1 rounded-lg font-bold"
+                    : "bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] px-2.5 py-1 rounded-lg font-bold";
+                badge.textContent = text;
             }
         }
 
@@ -929,6 +1056,7 @@
                 updateUI();
             }, (err) => {
                 console.warn("Firestore reports snapshot error:", err);
+                updateAdminDBStatusBadge(false, 'يتعذر السحب السحابي المباشر');
             });
 
             const resourcesRef = collection(db, 'artifacts', appId, 'public', 'data', 'resources');
@@ -961,20 +1089,17 @@
             localStorage.setItem('stop_feu_offline_queue', JSON.stringify(window.appState.offlineQueue));
         }
 
-        window.sendWhatsAppOTP = async function() {
-            const phoneInput = document.getElementById('citizen-phone').value.trim();
-            const nomInput = document.getElementById('citizen-nom').value.trim();
+        // WhatsApp Sender for both citizen verification and admin inspector
+        window.sendWhatsAppOTP = async function(targetNumberOverride = null) {
+            const rawPhone = targetNumberOverride || document.getElementById('citizen-phone')?.value.trim();
+            const nomInput = document.getElementById('citizen-nom')?.value.trim() || 'المواطن المبلغ';
 
-            if (!phoneInput) {
-                showModal("تنبيه", "يرجى إدخال رقم هاتف المبلغ أولاً قبل طلب رمز التحقق.", "⚠️");
+            if (!rawPhone) {
+                window.showModal("تنبيه", "يرجى إدخال رقم هاتف المبلغ أولاً قبل طلب رمز التحقق.", "⚠️");
                 return;
             }
 
-            let formattedPhone = phoneInput.replace(/\s+/g, '').replace('+', '');
-            if (formattedPhone.startsWith('0')) {
-                formattedPhone = '213' + formattedPhone.substring(1);
-            }
-
+            const formattedPhone = formatAlgerianPhone(rawPhone);
             generatedOTP = Math.floor(1000 + Math.random() * 9000).toString();
 
             const otpContainer = document.getElementById('otp-container');
@@ -989,7 +1114,7 @@
             }
 
             try {
-                const message = `مرحباً ${nomInput || 'المواطن المبلغ'}، رمز التحقق الخاص بك في منصة STOP FEU DZ للتبليغ عن حرائق الغابات هو: ${generatedOTP}`;
+                const message = `مرحباً ${nomInput}، رمز التحقق الخاص بك في منصة STOP FEU DZ للتبليغ عن حرائق الغابات هو: ${generatedOTP}`;
                 
                 const params = new URLSearchParams({
                     token: ULTRAMSG_TOKEN,
@@ -1011,13 +1136,13 @@
                 const result = await response.json();
 
                 if (result.status === 'success' || result.sent === 'true' || result.sent === true) {
-                    showModal("تم الإرسال عبر الواتساب", `تم إرسال رمز التحقق إلى الرقم ${formattedPhone} عبر الواتساب بنجاح.`, "💬");
+                    window.showModal("تم الإرسال عبر الواتساب", `تم إرسال رمز التحقق إلى الرقم ${formattedPhone} عبر الواتساب بنجاح.`, "💬");
                 } else {
-                    showModal("رمز التحقق التلقائي", `رمز التوثيق الخاص بك هو [ ${generatedOTP} ]. ادخله في الخانة المخصصة للتأكيد الفوري.`, "ℹ️");
+                    window.showModal("رمز التحقق التلقائي", `رمز التوثيق الخاص بك هو [ ${generatedOTP} ]. أدخله في الخانة المخصصة للتأكيد الفوري.\n(أو اضغط زر التواصل المباشر بالواتساب).`, "ℹ️");
                 }
             } catch (err) {
                 console.warn("WhatsApp API direct fetch fallback engaged:", err);
-                showModal("رمز التوثيق الفوري", `يمكنك إدخال الرمز [ ${generatedOTP} ] الموضح بالأعلى لإتمام التوثيق الفوري.`, "🔑");
+                window.showModal("رمز التوثيق الفوري", `يمكنك إدخال الرمز [ ${generatedOTP} ] الموضح بالأعلى لإتمام التوثيق الفوري.`, "🔑");
             } finally {
                 if (btn) {
                     btn.disabled = false;
@@ -1026,9 +1151,45 @@
             }
         };
 
+        window.adminTestWhatsAppSend = async function() {
+            const inputEl = document.getElementById('admin-test-whatsapp-num');
+            const logEl = document.getElementById('admin-wa-log');
+            const num = inputEl ? inputEl.value.trim() : '0798924956';
+            const formatted = formatAlgerianPhone(num);
+
+            if (logEl) {
+                logEl.classList.remove('hidden');
+                logEl.innerHTML = `<i class="fas fa-spinner fa-spin"></i> جاري إرسال الرسالة عبر UltraMsg لـ ${formatted}...`;
+            }
+
+            try {
+                const testMsg = `اختبار التوثيق المباشر لمنصة STOP FEU DZ للحماية المدنية. رمز التوثيق التجريبي هو: 1504`;
+                const params = new URLSearchParams({
+                    token: ULTRAMSG_TOKEN,
+                    to: formatted,
+                    body: testMsg
+                });
+
+                const response = await fetch(ULTRAMSG_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: params.toString()
+                });
+
+                const res = await response.json();
+                if (logEl) {
+                    logEl.innerHTML = `<strong>الاستجابة من UltraMsg:</strong><br>${JSON.stringify(res)}<br><a href="https://wa.me/${formatted}" target="_blank" class="text-emerald-400 font-bold underline mt-1 inline-block"><i class="fab fa-whatsapp"></i> فتح محادثة WhatsApp مباشرة لـ ${formatted}</a>`;
+                }
+            } catch(e) {
+                if (logEl) {
+                    logEl.innerHTML = `⚠️ تعذر الوصول المباشر للخدمة: ${e.message}.<br><a href="https://wa.me/${formatted}" target="_blank" class="text-emerald-400 font-bold underline mt-1 inline-block"><i class="fab fa-whatsapp"></i> فتح محادثة WhatsApp مباشرة مع الرقم ${formatted}</a>`;
+                }
+            }
+        };
+
         window.verifyOTP = function() {
-            const enteredOTP = document.getElementById('otp-input').value.trim();
-            const phoneInput = document.getElementById('citizen-phone').value.trim();
+            const enteredOTP = document.getElementById('otp-input')?.value.trim();
+            const phoneInput = document.getElementById('citizen-phone')?.value.trim();
             const statusLabel = document.getElementById('whatsapp-status');
 
             if (enteredOTP === generatedOTP && generatedOTP !== null) {
@@ -1041,24 +1202,24 @@
                 }
                 const otpContainer = document.getElementById('otp-container');
                 if (otpContainer) otpContainer.classList.add('hidden');
-                showModal("تم التوثيق بنجاح", "تم توثيق الرقم وحفظه بشكل دائم على التطبيق حتى في حالة إغلاقه أو انقطاع الإنترنت.", "✅");
+                window.showModal("تم التوثيق بنجاح", "تم توثيق الرقم وحفظه بشكل دائم على التطبيق حتى في حالة إغلاقه أو انقطاع الإنترنت.", "✅");
             } else {
-                showModal("رمز غير صحيح", "الرمز الذي أدخلته غير مطابق. يرجى التأكد وإعادة المحاولة.", "❌");
+                window.showModal("رمز غير صحيح", "الرمز الذي أدخلته غير مطابق. يرجى التأكد وإعادة المحاولة.", "❌");
             }
         };
 
         window.handleReportSubmit = async function(event) {
             event.preventDefault();
 
-            const nom = document.getElementById('citizen-nom').value.trim();
-            const phone = document.getElementById('citizen-phone').value.trim();
-            const wilaya = document.getElementById('report-wilaya').value;
-            const severity = document.getElementById('report-severity').value;
-            const description = document.getElementById('report-description').value.trim();
+            const nom = document.getElementById('citizen-nom')?.value.trim();
+            const phone = document.getElementById('citizen-phone')?.value.trim();
+            const wilaya = document.getElementById('report-wilaya')?.value;
+            const severity = document.getElementById('report-severity')?.value;
+            const description = document.getElementById('report-description')?.value.trim();
             const submitBtn = document.getElementById('btn-submit-report');
 
             if (!isWhatsAppVerified) {
-                showModal("التوثيق مطلوب", "يرجى الضغط على زر 'تأكيد الواتساب' وتأكيد الرقم قبل إرسال التبليغ النهائي.", "⚠️");
+                window.showModal("التوثيق مطلوب", "يرجى الضغط على زر 'تأكيد الواتساب' وتأكيد الرقم قبل إرسال التبليغ النهائي.", "⚠️");
                 return;
             }
 
@@ -1085,13 +1246,13 @@
                 timestamp: Date.now()
             };
 
-            // Always immediately add to local state and persistent storage
+            // Instant Local Persistence
             window.appState.reports.unshift(reportData);
             try {
                 localStorage.setItem('stop_feu_local_reports', JSON.stringify(window.appState.reports));
             } catch(e){}
 
-            // Log event to Google Analytics via gtag
+            // Analytics Tracking
             try {
                 if (typeof window.gtag === 'function') {
                     window.gtag('event', 'fire_report_submitted', {
@@ -1121,12 +1282,12 @@
 
             updateUI();
 
-            showModal("تم تسليم التبليغ بنجاح", savedToCloud 
+            window.showModal("تم تسليم التبليغ بنجاح", savedToCloud 
                 ? "تم رفع التبليغ مع إحداثيات GPS والصورة المرفقة مباشرة إلى السحابة والغرفة المركزية." 
                 : "تم تسجيل وحفظ التبليغ بنجاح داخل ذاكرة الهاتف (أوفلاين)، وسوف يُرفع تلقائياً للسحابة فور توفر الإنترنت.", "🚨");
 
-            document.getElementById('reportForm').reset();
-            clearPhoto();
+            document.getElementById('reportForm')?.reset();
+            window.clearPhoto();
             checkVerifiedPhoneState();
 
             if (submitBtn) {
@@ -1135,13 +1296,51 @@
             }
         };
 
+        window.testCloudWrite = async function() {
+            if (!db) {
+                window.showModal("فحص السحابة", "السحابة غير متصلة حالياً. يرجى التحقق من الاتصال بالإنترنت.", "❌");
+                return;
+            }
+
+            try {
+                const testRef = await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'reports'), {
+                    id: 'TEST-' + Math.floor(100 + Math.random() * 900),
+                    nom: 'اختبار الاتصال',
+                    wilaya: '31 - وهران',
+                    severity: 'ضعيف',
+                    description: 'فحص أذونات الكتابة في Firestore',
+                    timestamp: Date.now()
+                });
+                updateAdminDBStatusBadge(true, 'متصل ومؤمن (الكتابة شغال)');
+                window.showModal("اختبار السحابة ناجح", `تم كتابة مستند تجريبي في Firestore بنجاح! المعرف: ${testRef.id}`, "✅");
+            } catch(e) {
+                updateAdminDBStatusBadge(false, 'مرفوض من القواعد (Permission Denied)');
+                window.showFirestoreRulesGuide();
+            }
+        };
+
+        window.exportDataJSON = function() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(window.appState.reports, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `STOP_FEU_DZ_REPORTS_${Date.now()}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        };
+
+        window.showFirestoreRulesGuide = function() {
+            const modal = document.getElementById('rules-guide-modal');
+            if (modal) modal.classList.remove('hidden');
+        };
+
         window.handleResourceSubmit = async function(event) {
             event.preventDefault();
-            const officerName = document.getElementById('officer-name-input').value.trim();
-            const phone = document.getElementById('officer-phone-input').value.trim();
-            const trucks = parseInt(document.getElementById('res-trucks').value) || 0;
-            const planes = parseInt(document.getElementById('res-air').value) || 0;
-            const brigade = document.getElementById('res-brigade').value.trim();
+            const officerName = document.getElementById('officer-name-input')?.value.trim();
+            const phone = document.getElementById('officer-phone-input')?.value.trim();
+            const trucks = parseInt(document.getElementById('res-trucks')?.value) || 0;
+            const planes = parseInt(document.getElementById('res-air')?.value) || 0;
+            const brigade = document.getElementById('res-brigade')?.value.trim();
 
             const resourceData = {
                 officerName: officerName,
@@ -1166,7 +1365,7 @@
             
             window.appState.resources.unshift(resourceData);
             updateUI();
-            showModal("تم التسجيل الميداني", "تم تسجيل موقع القوات الميدانية والعتاد بنجاح في الخريطة التكتيكية.", "🚒");
+            window.showModal("تم التسجيل الميداني", "تم تسجيل موقع القوات الميدانية والعتاد بنجاح في الخريطة التكتيكية.", "🚒");
         };
 
         window.updateReportStatus = async function(docId, newStatus) {
@@ -1181,7 +1380,7 @@
             const report = window.appState.reports.find(r => r.fb_id === docId || r.id === docId);
             if (report) report.status = newStatus;
             updateUI();
-            showModal("تحديث الحالة", `تم تحديث حالة البلاغ إلى: ${newStatus.replace('_', ' ')}`, "🔄");
+            window.showModal("تحديث الحالة", `تم تحديث حالة البلاغ إلى: ${newStatus.replace('_', ' ')}`, "🔄");
         };
 
         window.deleteReport = async function(docId) {
@@ -1198,7 +1397,7 @@
                 localStorage.setItem('stop_feu_local_reports', JSON.stringify(window.appState.reports));
             } catch(e){}
             updateUI();
-            showModal("حذف البلاغ", "تم حذف البلاغ بنجاح.", "🗑️");
+            window.showModal("حذف البلاغ", "تم حذف البلاغ بنجاح.", "🗑️");
         };
 
         function initMaps() {
@@ -1274,7 +1473,7 @@
                         <p class="text-xs text-slate-600 mt-1">الخطورة: <strong>${r.severity}</strong></p>
                         <p class="text-[11px] text-slate-500 mt-0.5">المبلغ: ${r.nom} (${r.verifiedWhatsApp ? 'موثق ✅' : 'غير موثق'})</p>
                         ${r.photo ? `<img src="${r.photo}" class="w-full h-24 object-cover rounded-lg mt-2 border">` : ''}
-                        <a href="https://wa.me/${r.phone?.replace(/\+/g,'').replace(/^0/, '213')}" target="_blank" class="mt-2 w-full bg-dzGreen text-white text-[10px] font-bold py-1 px-2 rounded flex items-center justify-center gap-1">
+                        <a href="https://wa.me/${formatAlgerianPhone(r.phone || '')}" target="_blank" class="mt-2 w-full bg-dzGreen text-white text-[10px] font-bold py-1 px-2 rounded flex items-center justify-center gap-1">
                             <i class="fab fa-whatsapp"></i> مراسلة المبلغ بالواتساب
                         </a>
                     </div>
@@ -1681,7 +1880,7 @@
                     switchTab('tab-admin');
                     if (loginModal) loginModal.classList.add('hidden');
                 } else {
-                    showModal("رمز المرور خاطئ", "كلمة المرور الخاصة بغرفة القيادة غير صحيحة.", "❌");
+                    window.showModal("رمز المرور خاطئ", "كلمة المرور الخاصة بغرفة القيادة غير صحيحة.", "❌");
                 }
             }
         };
