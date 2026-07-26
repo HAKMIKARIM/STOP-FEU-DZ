@@ -91,14 +91,10 @@
             </div>
             <div>
                 <div class="flex items-center gap-2">
-                    <h1 class="font-black text-lg sm:text-xl tracking-wide text-slate-900">STOP FEU DZ</h1>
-                    <span class="bg-dzGreen/10 text-dzGreen border border-dzGreen/30 text-[10px] px-2 py-0.5 rounded-full font-black tracking-wider">الجزائر</span>
-                </div>
-                <p class="text-[11px] text-slate-500 font-bold">الحماية المدنية • المديرية العامة للغابات • المنصة السحابية</p>
-            </div>
-        </div>
-
-        <div class="flex items-center gap-2">
+            <!-- Network Connection Status Badge -->
+            <span id="network-status-badge" class="bg-emerald-100 text-emerald-800 border border-emerald-300 px-2.5 py-1 rounded-xl text-[11px] font-black flex items-center gap-1.5 shadow-sm">
+                <span class="w-2 h-2 rounded-full bg-dzGreen animate-pulse"></span> <span id="network-text">متصل بالسحابة</span>
+            </span>
             <span id="user-role-badge" class="bg-slate-100 text-slate-700 border border-slate-200 px-3 py-1 rounded-xl text-xs font-black flex items-center gap-1.5 shadow-sm">
                 <i class="fas fa-user-shield text-dzGreen"></i> <span id="role-text">مواطن مبلغ</span>
             </span>
@@ -158,6 +154,7 @@
                 </div>
 
                 <form id="reportForm" onsubmit="handleReportSubmit(event)" class="space-y-4">
+                    <!-- Name & Phone with WhatsApp Verification -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                             <label class="block text-xs font-black text-slate-700 mb-1">اسم ولقب المبلغ *</label>
@@ -177,7 +174,7 @@
                         </div>
                     </div>
 
-                    <!-- OTP Box -->
+                    <!-- OTP Verification Box (Hidden by default) -->
                     <div id="otp-container" class="hidden bg-emerald-50 border border-emerald-300 p-4 rounded-xl space-y-2.5">
                         <div class="flex items-center justify-between">
                             <p class="text-xs font-black text-emerald-900 flex items-center gap-1.5">
@@ -195,23 +192,77 @@
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-xs font-black text-slate-700 mb-1">الولاية المعنية *</label>
+                            <label class="block text-xs font-black text-slate-700 mb-1">الولاية المعنية (كافة الولايات الـ 69) *</label>
                             <select id="report-wilaya" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm text-slate-800 focus:border-dzRed outline-none transition font-semibold">
-                                <option value="15 - تيزي وزو">15 - تيزي وزو</option>
-                                <option value="06 - بجاية">06 - بجاية</option>
-                                <option value="18 - جيجل">18 - جيجل</option>
-                                <option value="36 - الطارف">36 - الطارف</option>
-                                <option value="25 - قسنطينة">25 - قسنطينة</option>
-                                <option value="23 - عنابة">23 - عنابة</option>
-                                <option value="35 - بومرداس">35 - بومرداس</option>
-                                <option value="16 - الجزائر العاصمة">16 - الجزائر العاصمة</option>
-                                <option value="09 - البليدة">09 - البليدة</option>
-                                <option value="42 - تيبازة">42 - تيبازة</option>
-                                <option value="31 - وهران" selected>31 - وهران</option>
-                                <option value="13 - تلمسان">13 - تلمسان</option>
+                                <option value="01 - أدرار">01 - أدرار</option>
+                                <option value="02 - الشلف">02 - الشلف</option>
+                                <option value="03 - الأغواط">03 - الأغواط</option>
+                                <option value="04 - أم البواقي">04 - أم البواقي</option>
                                 <option value="05 - باتنة">05 - باتنة</option>
+                                <option value="06 - بجاية">06 - بجاية</option>
+                                <option value="07 - بسكرة">07 - بسكرة</option>
+                                <option value="08 - بشار">08 - بشار</option>
+                                <option value="09 - البليدة">09 - البليدة</option>
+                                <option value="10 - البويرة">10 - البويرة</option>
+                                <option value="11 - تمنراست">11 - تمنراست</option>
+                                <option value="12 - تبسة">12 - تبسة</option>
+                                <option value="13 - تلمسان">13 - تلمسان</option>
+                                <option value="14 - تيارت">14 - تيارت</option>
+                                <option value="15 - تيزي وزو">15 - تيزي وزو</option>
+                                <option value="16 - الجزائر العاصمة">16 - الجزائر العاصمة</option>
+                                <option value="17 - الجلفة">17 - الجلفة</option>
+                                <option value="18 - جيجل">18 - جيجل</option>
                                 <option value="19 - سطيف">19 - سطيف</option>
-                                <option value="ولاية أخرى">ولاية أخرى...</option>
+                                <option value="20 - سعيدة">20 - سعيدة</option>
+                                <option value="21 - سكيكدة">21 - سكيكدة</option>
+                                <option value="22 - سيدي بلعباس">22 - سيدي بلعباس</option>
+                                <option value="23 - عنابة">23 - عنابة</option>
+                                <option value="24 - قالمة">24 - قالمة</option>
+                                <option value="25 - قسنطينة">25 - قسنطينة</option>
+                                <option value="26 - المدية">26 - المدية</option>
+                                <option value="27 - مستغانم">27 - مستغانم</option>
+                                <option value="28 - المسيلة">28 - المسيلة</option>
+                                <option value="29 - معسكر">29 - معسكر</option>
+                                <option value="30 - ورقلة">30 - ورقلة</option>
+                                <option value="31 - وهران" selected>31 - وهران</option>
+                                <option value="32 - البيض">32 - البيض</option>
+                                <option value="33 - إيليزي">33 - إيليزي</option>
+                                <option value="34 - برج بوعريريج">34 - برج بوعريريج</option>
+                                <option value="35 - بومرداس">35 - بومرداس</option>
+                                <option value="36 - الطارف">36 - الطارف</option>
+                                <option value="37 - تندوف">37 - تندوف</option>
+                                <option value="38 - تسمسيلت">38 - تسمسيلت</option>
+                                <option value="39 - الوادي">39 - الوادي</option>
+                                <option value="40 - خنشلة">40 - خنشلة</option>
+                                <option value="41 - سوق أهراس">41 - سوق أهراس</option>
+                                <option value="42 - تيبازة">42 - تيبازة</option>
+                                <option value="43 - ميلة">43 - ميلة</option>
+                                <option value="44 - عين الدفلى">44 - عين الدفلى</option>
+                                <option value="45 - النعامة">45 - النعامة</option>
+                                <option value="46 - عين تموشنت">46 - عين تموشنت</option>
+                                <option value="47 - غرداية">47 - غرداية</option>
+                                <option value="48 - غليزان">48 - غليزان</option>
+                                <option value="49 - تيميمون">49 - تيميمون</option>
+                                <option value="50 - برج باجي مختار">50 - برج باجي مختار</option>
+                                <option value="51 - أولاد جلال">51 - أولاد جلال</option>
+                                <option value="52 - بني عباس">52 - بني عباس</option>
+                                <option value="53 - عين صالح">53 - عين صالح</option>
+                                <option value="54 - عين قزام">54 - عين قزام</option>
+                                <option value="55 - تقرت">55 - تقرت</option>
+                                <option value="56 - المغير">56 - المغير</option>
+                                <option value="57 - المنيعة">57 - المنيعة</option>
+                                <option value="58 - الأفلو">58 - الأفلو</option>
+                                <option value="59 - بوسعادة">59 - بوسعادة</option>
+                                <option value="60 - عين وسارة">60 - عين وسارة</option>
+                                <option value="61 - مسعد">61 - مسعد</option>
+                                <option value="62 - قصر البخاري">62 - قصر البخاري</option>
+                                <option value="63 - العلمة">63 - العلمة</option>
+                                <option value="64 - بريكة">64 - بريكة</option>
+                                <option value="65 - شلغوم العيد">65 - شلغوم العيد</option>
+                                <option value="66 - خميس مليانة">66 - خميس مليانة</option>
+                                <option value="67 - الأخضرية">67 - الأخضرية</option>
+                                <option value="68 - الأربعاء">68 - الأربعاء</option>
+                                <option value="69 - فرندة">69 - فرندة</option>
                             </select>
                         </div>
                         <div>
@@ -675,7 +726,6 @@
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // FIREBASE PROJECT CONFIGURATION
         const firebaseConfig = {
             apiKey: "AIzaSyCsoqh7L_lhjKU5U94ra5T5GmoiPGpGWc4",
             authDomain: "indrive-95741.firebaseapp.com",
@@ -688,7 +738,6 @@
 
         const appId = 'STOP-FEU-DZ';
         
-        // WhatsApp Ultramsg API Credentials
         const ULTRAMSG_TOKEN = "0slilsu9t71ld540";
         const ULTRAMSG_INSTANCE = "instance181309";
         const ULTRAMSG_API_URL = `https://api.ultramsg.com/${ULTRAMSG_INSTANCE}/messages/chat`;
@@ -699,36 +748,146 @@
         let chartSeverityInstance = null;
         let chartWilayasInstance = null;
 
-        // Global State
         window.appState = {
             role: 'citizen',
             officerInfo: { name: '', phone: '' },
-            userCoords: { lat: 36.7538, lng: 3.0588 }, // Default: Algiers
+            userCoords: { lat: 36.7538, lng: 3.0588 },
             gpsAccuracy: null,
             gpsWatchId: null,
             gpsActive: false,
             reports: [],
             resources: [],
+            offlineQueue: [],
             maps: { client: null, admin: null },
             markers: { client: [], admin: [] },
             mapSatelliteMode: false,
             photoBase64: null
         };
 
-        // Load saved local data if offline or startup
         try {
             const savedLocalReports = localStorage.getItem('stop_feu_local_reports');
             if (savedLocalReports) {
                 window.appState.reports = JSON.parse(savedLocalReports);
+            }
+            const savedOfflineQueue = localStorage.getItem('stop_feu_offline_queue');
+            if (savedOfflineQueue) {
+                window.appState.offlineQueue = JSON.parse(savedOfflineQueue);
+            }
+            const savedVerifiedPhone = localStorage.getItem('stop_feu_verified_phone');
+            if (savedVerifiedPhone) {
+                isWhatsAppVerified = true;
             }
         } catch(e) { console.warn("Local storage parse exception:", e); }
 
         window.addEventListener('load', () => {
             initFirebase();
             initMaps();
-            requestGPSLocation(false);
+            window.requestGPSLocation(false);
             initAnalyticsCharts();
+            checkVerifiedPhoneState();
+            setupNetworkListeners();
         });
+
+        window.requestGPSLocation = function(notifyUser = true) {
+            const coordsDisplay = document.getElementById('gps-coords-display');
+            const accuracyDisplay = document.getElementById('gps-accuracy-display');
+            const gpsIcon = document.getElementById('gps-status-icon');
+
+            if (!navigator.geolocation) {
+                if (coordsDisplay) coordsDisplay.textContent = "خدمة GPS غير مدعومة في متصفحك";
+                return;
+            }
+
+            if (coordsDisplay) coordsDisplay.textContent = "جاري تحديد إحداثيات GPS الدقيقة...";
+
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    window.appState.userCoords = {
+                        lat: pos.coords.latitude,
+                        lng: pos.coords.longitude
+                    };
+                    window.appState.gpsAccuracy = Math.round(pos.coords.accuracy);
+                    window.appState.gpsActive = true;
+
+                    if (coordsDisplay) coordsDisplay.textContent = `${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)}`;
+                    if (accuracyDisplay) accuracyDisplay.textContent = `دقة التحديد: ±${window.appState.gpsAccuracy} متر`;
+
+                    if (gpsIcon) gpsIcon.className = "w-10 h-10 bg-dzGreen text-white rounded-xl flex items-center justify-center text-lg shadow-sm";
+
+                    if (notifyUser) {
+                        window.showModal("تم تحديث الموقع", `تم تحديد موقعك بالجي بي اس بدقة ±${window.appState.gpsAccuracy} متر بنجاح.`, "📍");
+                    }
+
+                    if (window.recenterMap) window.recenterMap();
+                },
+                (err) => {
+                    console.warn("GPS Location Warning:", err.message);
+                    if (coordsDisplay) coordsDisplay.textContent = "تعذر الحصول على GPS (استخدام المركز الافتراضي)";
+                    if (accuracyDisplay) accuracyDisplay.textContent = "يرجى التثبت من تفعيل خيار الموقع بالهاتف";
+                    if (gpsIcon) gpsIcon.className = "w-10 h-10 bg-dzAmber text-white rounded-xl flex items-center justify-center text-lg shadow-sm";
+                },
+                { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+            );
+        };
+
+        window.toggleLiveGPSTracking = function(enable) {
+            if (enable) {
+                window.appState.gpsWatchId = navigator.geolocation.watchPosition((pos) => {
+                    window.appState.userCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                    const coordsDisplay = document.getElementById('gps-coords-display');
+                    if (coordsDisplay) coordsDisplay.textContent = `${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)} (تتبع مباشر)`;
+                });
+            } else if (window.appState.gpsWatchId !== null) {
+                navigator.geolocation.clearWatch(window.appState.gpsWatchId);
+                window.appState.gpsWatchId = null;
+            }
+        };
+
+        function setupNetworkListeners() {
+            function updateNetworkBadge() {
+                const badge = document.getElementById('network-status-badge');
+                const text = document.getElementById('network-text');
+                if (navigator.onLine) {
+                    badge.className = "bg-emerald-100 text-emerald-800 border border-emerald-300 px-2.5 py-1 rounded-xl text-[11px] font-black flex items-center gap-1.5 shadow-sm";
+                    text.textContent = "متصل بالسحابة";
+                    syncOfflineQueue();
+                } else {
+                    badge.className = "bg-amber-100 text-amber-900 border border-amber-300 px-2.5 py-1 rounded-xl text-[11px] font-black flex items-center gap-1.5 shadow-sm";
+                    text.textContent = "حفظ محلي (أوفلاين)";
+                }
+            }
+
+            window.addEventListener('online', updateNetworkBadge);
+            window.addEventListener('offline', updateNetworkBadge);
+            updateNetworkBadge();
+        }
+
+        function checkVerifiedPhoneState() {
+            const phoneInput = document.getElementById('citizen-phone');
+            const statusLabel = document.getElementById('whatsapp-status');
+            if (!phoneInput || !statusLabel) return;
+
+            const savedPhone = localStorage.getItem('stop_feu_verified_phone');
+
+            if (savedPhone) {
+                phoneInput.value = savedPhone;
+                isWhatsAppVerified = true;
+                statusLabel.innerHTML = `<i class="fas fa-circle-check text-dzGreen"></i> موثق سابقاً عبر الواتساب (${savedPhone})`;
+                statusLabel.className = "text-[11px] font-extrabold text-dzGreen mt-1 flex items-center gap-1";
+            }
+
+            phoneInput.addEventListener('input', () => {
+                if (phoneInput.value.trim() !== savedPhone) {
+                    isWhatsAppVerified = false;
+                    statusLabel.innerHTML = `<i class="fas fa-circle-xmark text-red-500"></i> تم تغيير الرقم - يلزم إعادة التوثيق`;
+                    statusLabel.className = "text-[11px] font-bold text-slate-500 mt-1 flex items-center gap-1";
+                } else if (savedPhone) {
+                    isWhatsAppVerified = true;
+                    statusLabel.innerHTML = `<i class="fas fa-circle-check text-dzGreen"></i> موثق سابقاً عبر الواتساب (${savedPhone})`;
+                    statusLabel.className = "text-[11px] font-extrabold text-dzGreen mt-1 flex items-center gap-1";
+                }
+            });
+        }
 
         async function initFirebase() {
             try {
@@ -736,12 +895,11 @@
                 auth = getAuth(app);
                 db = getFirestore(app);
 
-                // Authenticate anonymously
                 await signInAnonymously(auth);
                 currentUser = auth.currentUser;
                 
-                // Realtime Sync
                 syncFirebaseData();
+                syncOfflineQueue();
             } catch (err) {
                 console.error("Firebase connection fallback mode engaged:", err);
                 seedMockDataIfEmpty();
@@ -751,7 +909,6 @@
         function syncFirebaseData() {
             if (!db) return;
 
-            // 1. Reports Collection
             const reportsRef = collection(db, 'artifacts', appId, 'public', 'data', 'reports');
             onSnapshot(reportsRef, (snapshot) => {
                 const cloudItems = snapshot.docs.map(d => ({ fb_id: d.id, ...d.data() }));
@@ -768,7 +925,6 @@
                 seedMockDataIfEmpty();
             });
 
-            // 2. Resources Collection
             const resourcesRef = collection(db, 'artifacts', appId, 'public', 'data', 'resources');
             onSnapshot(resourcesRef, (snapshot) => {
                 const cloudResources = snapshot.docs.map(d => ({ fb_id: d.id, ...d.data() }));
@@ -781,57 +937,22 @@
             });
         }
 
-        function seedMockDataIfEmpty() {
-            if (window.appState.reports.length === 0) {
-                window.appState.reports = [
-                    {
-                        fb_id: "demo-1",
-                        id: "FEU-101",
-                        nom: "كريم براهيمي",
-                        phone: "0661122334",
-                        verifiedWhatsApp: true,
-                        wilaya: "15 - تيزي وزو",
-                        severity: "حرج",
-                        description: "بداية حريق بقرية يعقوران، رياح قوية متجهة نحو الغابة الشرقية.",
-                        lat: 36.7333,
-                        lng: 4.4333,
-                        status: "في_الانتظار",
-                        time: "14:20",
-                        timestamp: Date.now() - 3600000
-                    },
-                    {
-                        fb_id: "demo-2",
-                        id: "FEU-102",
-                        nom: "يوسف العمراني",
-                        phone: "0550998877",
-                        verifiedWhatsApp: true,
-                        wilaya: "06 - بجاية",
-                        severity: "متوسط",
-                        description: "تصاعد دخان كثيف في غابة أكفادو.",
-                        lat: 36.6500,
-                        lng: 4.8167,
-                        status: "في_الانتظار",
-                        time: "15:05",
-                        timestamp: Date.now() - 1800000
-                    }
-                ];
-            }
+        async function syncOfflineQueue() {
+            if (!db || !navigator.onLine || window.appState.offlineQueue.length === 0) return;
 
-            if (window.appState.resources.length === 0) {
-                window.appState.resources = [
-                    {
-                        fb_id: "res-1",
-                        officerName: "النقيب بن عيسى",
-                        phone: "0661998877",
-                        trucks: 3,
-                        planes: 1,
-                        brigade: "وحدة التدخل التابعة لتيزي وزو",
-                        lat: 36.7118,
-                        lng: 4.0459
-                    }
-                ];
+            const queue = [...window.appState.offlineQueue];
+            window.appState.offlineQueue = [];
+            localStorage.setItem('stop_feu_offline_queue', JSON.stringify([]));
+
+            for (const item of queue) {
+                try {
+                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'reports'), item);
+                } catch (e) {
+                    console.warn("Offline queue sync item failed, re-queueing:", e);
+                    window.appState.offlineQueue.push(item);
+                }
             }
-            updateUI();
+            localStorage.setItem('stop_feu_offline_queue', JSON.stringify(window.appState.offlineQueue));
         }
 
         window.sendWhatsAppOTP = async function() {
@@ -868,7 +989,6 @@
                     body: message
                 });
 
-                // Set a timeout controller for WhatsApp API fetch so it never hangs
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 4000);
 
@@ -898,69 +1018,19 @@
 
         window.verifyOTP = function() {
             const enteredOTP = document.getElementById('otp-input').value.trim();
+            const phoneInput = document.getElementById('citizen-phone').value.trim();
             const statusLabel = document.getElementById('whatsapp-status');
 
             if (enteredOTP === generatedOTP && generatedOTP !== null) {
                 isWhatsAppVerified = true;
-                statusLabel.innerHTML = `<i class="fas fa-circle-check text-dzGreen"></i> تم التحقق بنجاح من رقم الهاتف والواتساب`;
+                localStorage.setItem('stop_feu_verified_phone', phoneInput);
+
+                statusLabel.innerHTML = `<i class="fas fa-circle-check text-dzGreen"></i> تم التحقق بنجاح وحفظ التوثيق دائماً برقم (${phoneInput})`;
                 statusLabel.className = "text-[11px] font-extrabold text-dzGreen mt-1 flex items-center gap-1";
                 document.getElementById('otp-container').classList.add('hidden');
-                showModal("تم التوثيق بنجاح", "تم توثيق الرقم بنجاح! سيتم ربطه بجميع إحداثيات الـ GPS في السحابة.", "✅");
+                showModal("تم التوثيق بنجاح", "تم توثيق الرقم وحفظه بشكل دائم على التطبيق حتى في حالة إغلاقه أو انقطاع الإنترنت.", "✅");
             } else {
                 showModal("رمز غير صحيح", "الرمز الذي أدخلته غير مطابق. يرجى التأكد وإعادة المحاولة.", "❌");
-            }
-        };
-
-        window.requestGPSLocation = function(notifyUser = true) {
-            const coordsDisplay = document.getElementById('gps-coords-display');
-            const accuracyDisplay = document.getElementById('gps-accuracy-display');
-            const gpsIcon = document.getElementById('gps-status-icon');
-
-            if (!navigator.geolocation) {
-                coordsDisplay.textContent = "خدمة GPS غير مدعومة في متصفحك";
-                return;
-            }
-
-            coordsDisplay.textContent = "جاري تحديد إحداثيات GPS الدقيقة...";
-
-            navigator.geolocation.getCurrentPosition(
-                (pos) => {
-                    window.appState.userCoords = {
-                        lat: pos.coords.latitude,
-                        lng: pos.coords.longitude
-                    };
-                    window.appState.gpsAccuracy = Math.round(pos.coords.accuracy);
-                    window.appState.gpsActive = true;
-
-                    coordsDisplay.textContent = `${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)}`;
-                    accuracyDisplay.textContent = `دقة التحديد: ±${window.appState.gpsAccuracy} متر`;
-
-                    gpsIcon.className = "w-10 h-10 bg-dzGreen text-white rounded-xl flex items-center justify-center text-lg shadow-sm";
-
-                    if (notifyUser) {
-                        showModal("تم تحديث الموقع", `تم تحديد موقعك بالجي بي اس بدقة ±${window.appState.gpsAccuracy} متر بنجاح.`, "📍");
-                    }
-
-                    recenterMap();
-                },
-                (err) => {
-                    coordsDisplay.textContent = "تعذر الحصول على GPS (تم تحديد مركز الجزائر افتراضياً)";
-                    accuracyDisplay.textContent = "يرجى التثبت من إعطاء إذن الموقع بالمتصفح والهاتف";
-                    gpsIcon.className = "w-10 h-10 bg-dzAmber text-white rounded-xl flex items-center justify-center text-lg shadow-sm";
-                },
-                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-            );
-        };
-
-        window.toggleLiveGPSTracking = function(enable) {
-            if (enable) {
-                window.appState.gpsWatchId = navigator.geolocation.watchPosition((pos) => {
-                    window.appState.userCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-                    document.getElementById('gps-coords-display').textContent = `${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)} (تتبع مباشر)`;
-                });
-            } else if (window.appState.gpsWatchId !== null) {
-                navigator.geolocation.clearWatch(window.appState.gpsWatchId);
-                window.appState.gpsWatchId = null;
             }
         };
 
@@ -980,7 +1050,7 @@
             }
 
             submitBtn.disabled = true;
-            submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> جاري معالجة ورفع التبليغ والموقع...`;
+            submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> جاري حفظ التبليغ محلياً ورَفعه للسحابة...`;
 
             const now = new Date();
             const reportData = {
@@ -1000,35 +1070,38 @@
                 timestamp: Date.now()
             };
 
-            // Attempt Firestore Save with a 4-second race timeout to guarantee NEVER hanging
-            let savedToCloud = false;
-            if (db) {
-                try {
-                    const savePromise = addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'reports'), reportData);
-                    const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 4000));
-                    await Promise.race([savePromise, timeoutPromise]);
-                    savedToCloud = true;
-                } catch (e) {
-                    console.warn("Firestore network timeout fallback:", e);
-                }
-            }
-
-            // Always update local memory and storage
+            // Always immediately add to local state and persistent storage
             window.appState.reports.unshift(reportData);
             try {
                 localStorage.setItem('stop_feu_local_reports', JSON.stringify(window.appState.reports));
             } catch(e){}
+
+            let savedToCloud = false;
+            if (db && navigator.onLine) {
+                try {
+                    const savePromise = addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'reports'), reportData);
+                    const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 3000));
+                    await Promise.race([savePromise, timeoutPromise]);
+                    savedToCloud = true;
+                } catch (e) {
+                    console.warn("Firestore save fallback queued to offline:", e);
+                    window.appState.offlineQueue.push(reportData);
+                    localStorage.setItem('stop_feu_offline_queue', JSON.stringify(window.appState.offlineQueue));
+                }
+            } else {
+                window.appState.offlineQueue.push(reportData);
+                localStorage.setItem('stop_feu_offline_queue', JSON.stringify(window.appState.offlineQueue));
+            }
+
             updateUI();
 
             showModal("تم تسليم التبليغ بنجاح", savedToCloud 
                 ? "تم رفع التبليغ مع إحداثيات GPS والصورة المرفقة مباشرة إلى السحابة والغرفة المركزية." 
-                : "تم تسجيل التبليغ وحفظه بنجاح على الجلسة الحالية وإظهاره فوراً في الخريطة للضباط.", "🚨");
+                : "تم تسجيل وحفظ التبليغ بنجاح داخل ذاكرة الهاتف (أوفلاين)، وسوف يُرفع تلقائياً للسحابة فور توفر الإنترنت.", "🚨");
 
             document.getElementById('reportForm').reset();
             clearPhoto();
-            isWhatsAppVerified = false;
-            document.getElementById('whatsapp-status').innerHTML = `<i class="fas fa-circle-xmark text-red-500"></i> لم يتم التحقق بعد`;
-            document.getElementById('whatsapp-status').className = "text-[11px] font-bold text-slate-500 mt-1 flex items-center gap-1";
+            checkVerifiedPhoneState();
 
             submitBtn.disabled = false;
             submitBtn.innerHTML = `<i class="fas fa-paper-plane text-lg"></i> إرسال التبليغ العاجل والموقع للسحابة وللجهات المختصة`;
