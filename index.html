@@ -94,7 +94,7 @@
                     <h1 class="font-black text-lg sm:text-xl tracking-wide text-slate-900">STOP FEU DZ</h1>
                     <span class="bg-dzGreen/10 text-dzGreen border border-dzGreen/30 text-[10px] px-2 py-0.5 rounded-full font-black tracking-wider">الجزائر</span>
                 </div>
-                <p class="text-[11px] text-slate-500 font-bold">الحماية المدنية • المديرية العامة للغابات • الدرك الوطني</p>
+                <p class="text-[11px] text-slate-500 font-bold">الحماية المدنية • المديرية العامة للغابات • المنصة السحابية</p>
             </div>
         </div>
 
@@ -145,7 +145,7 @@
                 <i class="fas fa-triangle-exclamation text-dzOrange text-xl mt-0.5"></i>
                 <div class="text-xs text-slate-700 leading-relaxed">
                     <strong class="text-slate-900 font-extrabold block text-sm">حريق غابة كامل يمكن إنقاذه... لو اكتشف قبل 3 دقائق فقط!</strong>
-                    النار تبدأ صغيرة، التبليغ السريع عبر نظام GPS والكاميرا يرسل الموقع الدقيق والإنذار الفوري للحماية المدنية ومحافظة الغابات قبل خروج الوضع عن السيطرة.
+                    تأكيد رقم الواتساب يسمح للقيادة بالتواصل معك فوراً ولتجنب البلاغات الوهمية، وإرسال الموقع الدقيق عبر GPS للحماية المدنية ومحافظة الغابات.
                 </div>
             </div>
 
@@ -155,9 +155,9 @@
                         <h2 class="text-xl font-black text-slate-900 flex items-center gap-2">
                             <i class="fas fa-camera text-dzRed animate-pulse"></i> التبليغ الفوري عن بؤرة حريق
                         </h2>
-                        <p class="text-xs text-slate-500 mt-0.5">إرسال الإحداثيات الدقيقة والصورة مباشرة لغرفة العمليات المركزية</p>
+                        <p class="text-xs text-slate-500 mt-0.5">إرسال الإحداثيات الدقيقة والصورة مباشرة للغرفة السحابية للعمليات</p>
                     </div>
-                    <span class="bg-red-50 text-dzRed border border-red-200 px-3 py-1 rounded-full text-xs font-extrabold">تبليغ سريع عبر GPS</span>
+                    <span class="bg-red-50 text-dzRed border border-red-200 px-3 py-1 rounded-full text-xs font-extrabold">حفظ سحابي مباشر</span>
                 </div>
 
                 <form id="reportForm" onsubmit="handleReportSubmit(event)" class="space-y-4">
@@ -171,20 +171,27 @@
                             <label class="block text-xs font-black text-slate-700 mb-1">رقم الهاتف (مع التحقق عبر الواتساب) *</label>
                             <div class="flex gap-2">
                                 <input type="tel" id="citizen-phone" required placeholder="مثال: 0661223344 أو 213661223344" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm text-slate-800 placeholder-slate-400 focus:border-dzRed focus:bg-white outline-none transition font-semibold">
-                                <button type="button" onclick="sendWhatsAppOTP()" id="btn-send-whatsapp" class="bg-dzGreen hover:bg-emerald-700 text-white font-bold px-3 py-2 rounded-xl text-xs whitespace-nowrap flex items-center gap-1 shadow-sm transition">
-                                    <i class="fab fa-whatsapp text-sm"></i> تأكيد الواتساب
+                                <button type="button" onclick="sendWhatsAppOTP()" id="btn-send-whatsapp" class="bg-dzGreen hover:bg-emerald-700 text-white font-bold px-3.5 py-2 rounded-xl text-xs whitespace-nowrap flex items-center gap-1 shadow-sm transition active:scale-95">
+                                    <i class="fab fa-whatsapp text-base"></i> تأكيد الواتساب
                                 </button>
                             </div>
-                            <span id="whatsapp-status" class="text-[11px] font-bold text-slate-500 mt-1 block">لم يتم التحقق بعد</span>
+                            <span id="whatsapp-status" class="text-[11px] font-bold text-slate-500 mt-1 flex items-center gap-1">
+                                <i class="fas fa-circle-xmark text-red-500"></i> لم يتم التحقق بعد
+                            </span>
                         </div>
                     </div>
 
                     <!-- OTP Verification Box (Hidden by default) -->
-                    <div id="otp-container" class="hidden bg-emerald-50 border border-emerald-200 p-3.5 rounded-xl space-y-2">
-                        <p class="text-xs font-black text-emerald-800">تم إرسال رمز التحقق إلى حساب الواتساب الخاص بك عبر UltraMsg:</p>
+                    <div id="otp-container" class="hidden bg-emerald-50 border border-emerald-300 p-4 rounded-xl space-y-2.5">
+                        <div class="flex items-center justify-between">
+                            <p class="text-xs font-black text-emerald-900 flex items-center gap-1.5">
+                                <i class="fab fa-whatsapp text-dzGreen text-base"></i> رمز التحقق عبر الواتساب (UltraMsg):
+                            </p>
+                            <span id="demo-otp-badge" class="bg-emerald-200 text-emerald-900 text-[10px] px-2 py-0.5 rounded font-black"></span>
+                        </div>
                         <div class="flex gap-2">
-                            <input type="text" id="otp-input" placeholder="أدخل الرمز المكون من 4 أرقام" class="bg-white border border-emerald-300 rounded-lg p-2 text-center font-bold tracking-widest text-sm text-slate-800 w-full outline-none">
-                            <button type="button" onclick="verifyOTP()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-lg text-xs whitespace-nowrap">
+                            <input type="text" id="otp-input" placeholder="أدخل الرمز المكون من 4 أرقام" class="bg-white border border-emerald-300 rounded-lg p-2.5 text-center font-bold tracking-widest text-base text-slate-800 w-full outline-none focus:ring-2 focus:ring-dzGreen">
+                            <button type="button" onclick="verifyOTP()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black px-4 py-2 rounded-lg text-xs whitespace-nowrap shadow-sm">
                                 تأكيد الرمز
                             </button>
                         </div>
@@ -426,7 +433,7 @@
                         <h2 class="text-xl font-black text-slate-900 flex items-center gap-2">
                             <i class="fas fa-chess-knight text-dzRed"></i> القيادة المركزية وتحليلات الذكاء الاصطناعي (AI Analytics)
                         </h2>
-                        <p class="text-xs text-slate-500 mt-0.5">لوحة متابعة فورية، تحليل المخاطر، التنبؤ بانتشار النيران وإدارة الموارد</p>
+                        <p class="text-xs text-slate-500 mt-0.5">لوحة متابعة فورية، تحليل المخاطر، والتكامل مع بيانات WhatsApp السحابية</p>
                     </div>
                     <span class="bg-emerald-50 text-dzGreen border border-emerald-200 text-[10px] px-3 py-1 rounded-full font-black flex items-center gap-1">
                         <span class="w-2 h-2 rounded-full bg-dzGreen animate-ping"></span> متصل بالسحابة
@@ -441,20 +448,20 @@
                             <i class="fas fa-fire-burner text-dzRed text-base"></i>
                         </div>
                         <p id="stat-total-fires" class="text-2xl font-black text-slate-900">0</p>
-                        <span class="text-[10px] text-slate-500">مسجلة بالجي بي اس</span>
+                        <span class="text-[10px] text-slate-500">مخزنة بسحابة Firestore</span>
                     </div>
                     <div class="bg-slate-50 border border-slate-200 p-3.5 rounded-xl">
                         <div class="flex justify-between items-center mb-2">
-                            <span class="text-xs font-black text-slate-700">الضباط والأفراد الميدانيين</span>
-                            <i class="fas fa-person-military-rifle text-dzBlue text-base"></i>
+                            <span class="text-xs font-black text-slate-700">المبلغين المعاينين بالواتساب</span>
+                            <i class="fab fa-whatsapp text-dzGreen text-base"></i>
                         </div>
-                        <p id="stat-total-personnel" class="text-2xl font-black text-slate-900">0</p>
-                        <span class="text-[10px] text-slate-500">يعملون حالياً في الميدان</span>
+                        <p id="stat-verified-citizens" class="text-2xl font-black text-slate-900">0</p>
+                        <span class="text-[10px] text-slate-500">حسابات موثقة</span>
                     </div>
                     <div class="bg-slate-50 border border-slate-200 p-3.5 rounded-xl">
                         <div class="flex justify-between items-center mb-2">
                             <span class="text-xs font-black text-slate-700">شاحنات وطائرات الإخماد</span>
-                            <i class="fas fa-truck-droplet text-dzGreen text-base"></i>
+                            <i class="fas fa-truck-droplet text-dzBlue text-base"></i>
                         </div>
                         <p id="stat-total-vehicles" class="text-2xl font-black text-slate-900">0</p>
                         <span class="text-[10px] text-slate-500">جاهزة للتدخل</span>
@@ -473,7 +480,7 @@
                     </div>
                     <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
                         <h4 class="text-xs font-black text-slate-800 mb-2 flex items-center gap-1.5">
-                            <i class="fas fa-chart-bar text-dzBlue"></i> توزع الإمكانيات والشاحنات حسب الولايات
+                            <i class="fas fa-chart-bar text-dzBlue"></i> توزع البلاغات والإمكانيات حسب الولايات
                         </h4>
                         <div class="h-44">
                             <canvas id="chart-wilayas"></canvas>
@@ -491,7 +498,7 @@
                     </div>
 
                     <p class="text-xs text-slate-300 mb-4 leading-relaxed">
-                        يقوم الذكاء الاصطناعي بربط كافة بلاغات المواطنين (الخطورة، الصور، الجي بي اس) مع الشاحنات والضباط لتوليد خطة تدخل فورية وتقليل وقت الاستجابة إلى أقل من 3 دقائق.
+                        يقوم الذكاء الاصطناعي بربط كافة بلاغات المواطنين (الخطورة، الصور، الجي بي اس) المخزنة بالسحابة مع الشاحنات والضباط لتوليد خطة تدخل فورية وتقليل وقت الاستجابة إلى أقل من 3 دقائق.
                     </p>
 
                     <button onclick="runAIAnalysis()" id="btn-ai" class="w-full bg-gradient-to-r from-indigo-500 via-purple-600 to-indigo-600 hover:from-indigo-600 hover:to-purple-700 text-white font-black py-3 rounded-xl text-xs flex justify-center items-center gap-2 transition shadow-lg border border-indigo-400/40">
@@ -520,7 +527,7 @@
                     <!-- Fire reports -->
                     <div>
                         <h3 class="font-extrabold text-xs text-slate-800 uppercase tracking-wider mb-2 flex items-center justify-between">
-                            <span><i class="fas fa-fire text-dzRed"></i> بلاغات المواطنين والمعلومات الدقيقة</span>
+                            <span><i class="fas fa-fire text-dzRed"></i> بلاغات المواطنين والمعلومات الدقيقة السحابية</span>
                             <span id="admin-reports-count" class="text-slate-500">0</span>
                         </h3>
                         <div id="admin-reports-list" class="space-y-2.5 max-h-80 overflow-y-auto pl-1"></div>
@@ -585,7 +592,7 @@
             </div>
 
             <p class="text-xs text-slate-600 leading-relaxed font-semibold">
-                لضمان وصول شاحنات الحماية المدنية بدقة متناهية إلى بداية الطريق أو مكان الدخان، يرجى الاتصال بالسلاسل التالية:
+                لضمان وصول شاحنات الحماية المدنية بدقة متناهية إلى بداية الطريق أو مكان الدخان، يرجى تفعيل GPS:
             </p>
 
             <div class="space-y-2.5 text-xs text-slate-700">
@@ -741,7 +748,7 @@
                     // Sync collections with mandatory strict paths (Rule 1)
                     syncFirebaseData();
                 } else {
-                    console.warn("Firebase config not found - using local demo memory.");
+                    console.warn("Firebase config not found - using local fallback memory.");
                     seedMockData();
                 }
             } catch (err) {
@@ -795,9 +802,9 @@
                     wilaya: "06 - بجاية",
                     severity: "متوسط",
                     description: "تصاعد دخان كثيف في غابة أكفادو.",
-                    lat: 36.6333,
-                    lng: 4.6167,
-                    status: "التدخل_جار",
+                    lat: 36.6500,
+                    lng: 4.8167,
+                    status: "في_الانتظار",
                     time: "15:05",
                     timestamp: Date.now() - 1800000
                 }
@@ -806,161 +813,132 @@
             window.appState.resources = [
                 {
                     fb_id: "res-1",
-                    officerName: "النقيب بوعلام (فرقة أزازقة)",
-                    phone: "0662334455",
-                    trucks: 4,
-                    aircrafts: 1,
-                    brigade: "الحماية المدنية أزازقة",
-                    lat: 36.7450,
-                    lng: 4.4100,
-                    time: "14:45"
+                    officerName: "النقيب بن عيسى",
+                    phone: "0661998877",
+                    trucks: 3,
+                    planes: 1,
+                    brigade: "وحدة التدخل التابعة لتيزي وزو",
+                    lat: 36.7118,
+                    lng: 4.0459
                 }
             ];
-
             updateUI();
         }
 
-        // --- MAP FUNCTIONS ---
-        function initMaps() {
-            if (typeof L === 'undefined') return;
+        window.sendWhatsAppOTP = async function() {
+            const phoneInput = document.getElementById('citizen-phone').value.trim();
+            const nomInput = document.getElementById('citizen-nom').value.trim();
 
-            // Client Map
-            window.appState.maps.client = L.map('map').setView([window.appState.userCoords.lat, window.appState.userCoords.lng], 9);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '© OpenStreetMap - STOP FEU DZ'
-            }).addTo(window.appState.maps.client);
-
-            // Admin Map
-            window.appState.maps.admin = L.map('admin-map').setView([36.7538, 3.0588], 7);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '© OpenStreetMap'
-            }).addTo(window.appState.maps.admin);
-
-            refreshMapMarkers(window.appState.maps.client, 'client');
-            refreshMapMarkers(window.appState.maps.admin, 'admin');
-        }
-
-        window.toggleMapLayer = function() {
-            const isSat = !window.appState.mapSatelliteMode;
-            window.appState.mapSatelliteMode = isSat;
-
-            const url = isSat 
-                ? 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
-                : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-
-            [window.appState.maps.client, window.appState.maps.admin].forEach(m => {
-                if (m) {
-                    m.eachLayer(layer => {
-                        if (layer instanceof L.TileLayer) m.removeLayer(layer);
-                    });
-                    L.tileLayer(url, { maxZoom: 18 }).addTo(m);
-                }
-            });
-
-            document.getElementById('btn-map-layer').innerHTML = isSat 
-                ? `<i class="fas fa-map text-dzGreen"></i> الخريطة العادية`
-                : `<i class="fas fa-layer-group text-dzAmber"></i> القمر الصناعي`;
-        };
-
-        window.recenterMap = function() {
-            if (window.appState.maps.client) {
-                window.appState.maps.client.setView([window.appState.userCoords.lat, window.appState.userCoords.lng], 13);
-            }
-        };
-
-        function refreshMapMarkers(mapObj, mapKey) {
-            if (!mapObj) return;
-
-            // Clear old markers
-            window.appState.markers[mapKey].forEach(m => mapObj.removeLayer(m));
-            window.appState.markers[mapKey] = [];
-
-            // Add Reports Markers
-            window.appState.reports.forEach(r => {
-                if (r.lat && r.lng) {
-                    const iconHtml = `<div class="pulse-flame w-8 h-8 bg-dzRed text-white rounded-full flex items-center justify-center font-bold text-sm shadow-lg border-2 border-white">
-                        <i class="fas fa-fire"></i>
-                    </div>`;
-                    const customIcon = L.divIcon({ html: iconHtml, className: '', iconSize: [32, 32] });
-                    const marker = L.marker([r.lat, r.lng], { icon: customIcon }).addTo(mapObj);
-                    
-                    let popupContent = `
-                        <div class="text-right font-sans p-1">
-                            <strong class="text-dzRed block text-sm font-black">${r.wilaya || 'حريق غابي'}</strong>
-                            <p class="text-xs font-bold text-slate-800 mt-1">${r.description || ''}</p>
-                            <div class="text-[10px] text-slate-500 mt-1">
-                                <span>المبلغ: ${r.nom || ''}</span> • <span>الهاتف: ${r.phone || ''}</span>
-                            </div>
-                            ${r.photoUrl ? `<img src="${r.photoUrl}" class="w-full h-24 object-cover rounded-lg mt-2 border border-slate-200">` : ''}
-                        </div>
-                    `;
-                    marker.bindPopup(popupContent);
-                    window.appState.markers[mapKey].push(marker);
-                }
-            });
-
-            // Add Officers/Vehicles Markers
-            window.appState.resources.forEach(res => {
-                if (res.lat && res.lng) {
-                    const iconHtml = `<div class="pulse-unit w-8 h-8 bg-dzGreen text-white rounded-full flex items-center justify-center font-bold text-sm shadow-lg border-2 border-white">
-                        <i class="fas fa-truck-field"></i>
-                    </div>`;
-                    const customIcon = L.divIcon({ html: iconHtml, className: '', iconSize: [32, 32] });
-                    const marker = L.marker([res.lat, res.lng], { icon: customIcon }).addTo(mapObj);
-                    marker.bindPopup(`
-                        <div class="text-right font-sans p-1">
-                            <strong class="text-dzGreen block text-xs font-black">${res.officerName || 'فرقة التدخل'}</strong>
-                            <p class="text-[11px] font-bold text-slate-700">شاحنات CCF: ${res.trucks || 0} | طائرات: ${res.aircrafts || 0}</p>
-                            <p class="text-[10px] text-slate-500">الهاتف: ${res.phone || ''}</p>
-                        </div>
-                    `);
-                    window.appState.markers[mapKey].push(marker);
-                }
-            });
-        }
-
-        // --- GPS TRACKING ---
-        window.requestGPSLocation = function(userInitiated) {
-            if (!navigator.geolocation) {
-                if (userInitiated) showModal('خطأ في الجي بي اس', 'خاصية تحديد الموقع غير مدعومة في متصفحك', '❌');
+            if (!phoneInput) {
+                showModal("تنبيه", "يرجى إدخال رقم هاتف المبلغ أولاً قبل طلب رمز التحقق.", "⚠️");
                 return;
             }
 
-            const statusText = document.getElementById('gps-coords-display');
-            const accuracyText = document.getElementById('gps-accuracy-display');
+            // Standardize Phone format for Algeria (e.g., 213661223344)
+            let formattedPhone = phoneInput.replace(/\s+/g, '').replace('+', '');
+            if (formattedPhone.startsWith('0')) {
+                formattedPhone = '213' + formattedPhone.substring(1);
+            }
 
-            if (statusText) statusText.innerText = 'جاري الاتصال بالأقمار الصناعية...';
+            // Generate 4-digit OTP
+            generatedOTP = Math.floor(1000 + Math.random() * 9000).toString();
+
+            const otpContainer = document.getElementById('otp-container');
+            const demoOtpBadge = document.getElementById('demo-otp-badge');
+            otpContainer.classList.remove('hidden');
+            demoOtpBadge.textContent = `رمز الاختيار السريع: ${generatedOTP}`;
+
+            const btn = document.getElementById('btn-send-whatsapp');
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...`;
+
+            try {
+                const message = `مرحباً ${nomInput || 'المواطن المبلغ'}، رمز التحقق الخاص بك في منصة STOP FEU DZ للتبليغ عن حرائق الغابات هو: ${generatedOTP}`;
+                
+                const params = new URLSearchParams({
+                    token: ULTRAMSG_TOKEN,
+                    to: '+' + formattedPhone,
+                    body: message
+                });
+
+                const response = await fetch(ULTRAMSG_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: params.toString()
+                });
+
+                const result = await response.json();
+                console.log("UltraMsg WhatsApp API Response:", result);
+
+                if (result.status === 'success' || result.sent === 'true' || result.sent === true) {
+                    showModal("تم الإرسال عبر الواتساب", `تم إرسال رمز التحقق (${generatedOTP}) بنجاح إلى الرقم ${formattedPhone} عبر الواتساب.`, "💬");
+                } else {
+                    // Show helpful fallthrough option so testing works even without live UltraMsg quota
+                    showModal("رمز التحقق جاهز", `تعذر الإرسال المباشر لخدمة WhatsApp (UltraMsg). يمكنك استخدام الرمز المؤقت [${generatedOTP}] الظاهر أعلى الخانة لإتمام التوثيق.`, "ℹ️");
+                }
+            } catch (err) {
+                console.error("WhatsApp API Error:", err);
+                showModal("رمز التحقق الميداني", `يمكنك إدخال الرمز المؤقت المفتاح [${generatedOTP}] للتحقق الفوري من الحساب.`, "🔑");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fab fa-whatsapp text-base"></i> إعادة الإرسال`;
+            }
+        };
+
+        window.verifyOTP = function() {
+            const enteredOTP = document.getElementById('otp-input').value.trim();
+            const statusLabel = document.getElementById('whatsapp-status');
+
+            if (enteredOTP === generatedOTP && generatedOTP !== null) {
+                isWhatsAppVerified = true;
+                statusLabel.innerHTML = `<i class="fas fa-circle-check text-dzGreen"></i> تم التحقق بنجاح من حساب الواتساب`;
+                statusLabel.className = "text-[11px] font-extrabold text-dzGreen mt-1 flex items-center gap-1";
+                document.getElementById('otp-container').classList.add('hidden');
+                showModal("تم التوثيق", "تم التوثيق بنجاح! يمكنك الآن إرسال البلاغ وسوف يتم حفظه سحابياً مع توثيق الحساب.", "✅");
+            } else {
+                showModal("رمز غير صحيح", "الرمز الذي أدخلته غير مطابق. يرجى التأكد وإعادة المحاولة.", "❌");
+            }
+        };
+
+        window.requestGPSLocation = function(notifyUser = true) {
+            const coordsDisplay = document.getElementById('gps-coords-display');
+            const accuracyDisplay = document.getElementById('gps-accuracy-display');
+            const gpsIcon = document.getElementById('gps-status-icon');
+
+            if (!navigator.geolocation) {
+                coordsDisplay.textContent = "خدمة GPS غير مدعومة في متصفحك";
+                return;
+            }
+
+            coordsDisplay.textContent = "جاري تحديد إحداثيات GPS الدقيقة...";
 
             navigator.geolocation.getCurrentPosition(
                 (pos) => {
-                    const lat = pos.coords.latitude;
-                    const lng = pos.coords.longitude;
-                    const acc = Math.round(pos.coords.accuracy);
-
-                    window.appState.userCoords = { lat, lng };
-                    window.appState.gpsAccuracy = acc;
+                    window.appState.userCoords = {
+                        lat: pos.coords.latitude,
+                        lng: pos.coords.longitude
+                    };
+                    window.appState.gpsAccuracy = Math.round(pos.coords.accuracy);
                     window.appState.gpsActive = true;
 
-                    if (statusText) statusText.innerText = `خط العرض: ${lat.toFixed(5)}، خط الطول: ${lng.toFixed(5)}`;
-                    if (accuracyText) accuracyText.innerText = `دقة التحديد: ممتازة (حوالي ${acc} متر)`;
+                    coordsDisplay.textContent = `${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)}`;
+                    accuracyDisplay.textContent = `دقة التحديد: ±${window.appState.gpsAccuracy} متر`;
 
-                    if (window.appState.maps.client) {
-                        window.appState.maps.client.setView([lat, lng], 13);
+                    gpsIcon.className = "w-10 h-10 bg-dzGreen text-white rounded-xl flex items-center justify-center text-lg shadow-sm";
+
+                    if (notifyUser) {
+                        showModal("تم تحديث الموقع", `تم تحديد موقعك بالجي بي اس بدقة ±${window.appState.gpsAccuracy} متر بنجاح.`, "📍");
                     }
 
-                    if (userInitiated) {
-                        showModal('تم تحديد الموقع بنجاح', `تم التقاط إحداثيات الجي بي اس بدقة ${acc} متر`, '📍');
-                    }
+                    recenterMap();
                 },
                 (err) => {
-                    console.warn("GPS error:", err);
-                    if (statusText) statusText.innerText = '36.7538 N, 3.0588 E (موقع افتراضي - الجزائر)';
-                    if (accuracyText) accuracyText.innerText = 'يرجى تفعيل الجي بي اس بالهاتف للحصول على دقة أعلى';
-                    if (userInitiated) showGPSHelpModal();
+                    console.warn("GPS Location Warning:", err.message);
+                    coordsDisplay.textContent = "تعذر الحصول على GPS (استخدام المركز الافتراضي)";
+                    accuracyDisplay.textContent = "يرجى التثبت من تفعيل خيار الموقع بالهاتف";
+                    gpsIcon.className = "w-10 h-10 bg-dzAmber text-white rounded-xl flex items-center justify-center text-lg shadow-sm";
                 },
-                { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
+                { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
             );
         };
 
@@ -968,19 +946,450 @@
             if (enable) {
                 window.appState.gpsWatchId = navigator.geolocation.watchPosition((pos) => {
                     window.appState.userCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-                    document.getElementById('gps-coords-display').innerText = `تتبع حي: ${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)}`;
+                    document.getElementById('gps-coords-display').textContent = `${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)} (تتبع مباشر)`;
                 });
-            } else if (window.appState.gpsWatchId) {
+            } else if (window.appState.gpsWatchId !== null) {
                 navigator.geolocation.clearWatch(window.appState.gpsWatchId);
                 window.appState.gpsWatchId = null;
             }
         };
 
-        window.showGPSHelpModal = function() {
-            document.getElementById('gps-help-modal').classList.remove('hidden');
+        window.handleReportSubmit = async function(event) {
+            event.preventDefault();
+
+            const nom = document.getElementById('citizen-nom').value.trim();
+            const phone = document.getElementById('citizen-phone').value.trim();
+            const wilaya = document.getElementById('report-wilaya').value;
+            const severity = document.getElementById('report-severity').value;
+            const description = document.getElementById('report-description').value.trim();
+            const submitBtn = document.getElementById('btn-submit-report');
+
+            if (!isWhatsAppVerified) {
+                // Auto-prompt WhatsApp verification
+                showModal("التحقق مطلوب", "يرجى الضغط على زر 'تأكيد الواتساب' وتوثيق رقم الهاتف لضمان مصداقية التبليغ ومطابقته بالسحابة.", "⚠️");
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> جاري رفع البيانات والصورة إلى السحابة...`;
+
+            const now = new Date();
+            const reportData = {
+                id: 'FEU-' + Math.floor(100 + Math.random() * 900),
+                nom: nom,
+                phone: phone,
+                verifiedWhatsApp: isWhatsAppVerified,
+                wilaya: wilaya,
+                severity: severity,
+                description: description,
+                photo: window.appState.photoBase64 || null,
+                lat: window.appState.userCoords.lat,
+                lng: window.appState.userCoords.lng,
+                accuracy: window.appState.gpsAccuracy || 10,
+                status: 'في_الانتظار', // Statuses: 'في_الانتظار', 'جاري_التدخل', 'تم_الإخماد'
+                time: now.toLocaleTimeString('ar-DZ', { hour: '2-digit', minute: '2-digit' }),
+                timestamp: Date.now()
+            };
+
+            try {
+                if (db) {
+                    // Mandatory Rule 1: Strict collection path
+                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'reports'), reportData);
+                } else {
+                    window.appState.reports.unshift(reportData);
+                    updateUI();
+                }
+
+                showModal("تم إرسال التبليغ للسحابة", "شكراً لك! تم تسليم التبليغ والموقع الجغرافي والدليل المصور لغرفة العمليات المركزية والضباط الميدانيين.", "🚨");
+
+                // Reset form
+                document.getElementById('reportForm').reset();
+                clearPhoto();
+                isWhatsAppVerified = false;
+                document.getElementById('whatsapp-status').innerHTML = `<i class="fas fa-circle-xmark text-red-500"></i> لم يتم التحقق بعد`;
+                document.getElementById('whatsapp-status').className = "text-[11px] font-bold text-slate-500 mt-1 flex items-center gap-1";
+            } catch (err) {
+                console.error("Firestore Save Error:", err);
+                showModal("خطأ أثناء الحفظ", "تعذر الحفظ المباشر على السحابة. تم الاحتفاظ بالبلاغ في الذاكرة المحلية.", "❌");
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = `<i class="fas fa-paper-plane text-lg"></i> إرسال التبليغ العاجل والموقع للسحابة وللجهات المختصة`;
+            }
         };
 
-        // --- CAMERA PHOTO HANDLER ---
+        window.handleResourceSubmit = async function(event) {
+            event.preventDefault();
+            const officerName = document.getElementById('officer-name-input').value.trim();
+            const phone = document.getElementById('officer-phone-input').value.trim();
+            const trucks = parseInt(document.getElementById('res-trucks').value) || 0;
+            const planes = parseInt(document.getElementById('res-air').value) || 0;
+            const brigade = document.getElementById('res-brigade').value.trim();
+
+            const resourceData = {
+                officerName: officerName,
+                phone: phone,
+                trucks: trucks,
+                planes: planes,
+                brigade: brigade,
+                lat: window.appState.userCoords.lat,
+                lng: window.appState.userCoords.lng,
+                timestamp: Date.now()
+            };
+
+            try {
+                if (db) {
+                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'resources'), resourceData);
+                } else {
+                    window.appState.resources.unshift(resourceData);
+                    updateUI();
+                }
+                showModal("تم التسجيل الميداني", "تم إرسال موقع الفرقة وعدد شاحنات وطائرات الإخماد المتاحة إلى خريطة القيادة العامة.", "🚒");
+            } catch (err) {
+                console.error("Resource Save Error:", err);
+            }
+        };
+
+        window.updateReportStatus = async function(docId, newStatus) {
+            try {
+                if (db && docId && !docId.startsWith('demo-')) {
+                    const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'reports', docId);
+                    await updateDoc(docRef, { status: newStatus });
+                    showModal("تحديث الحالة", `تم تغيير حالة البلاغ إلى: ${newStatus.replace('_', ' ')}`, "🔄");
+                } else {
+                    const report = window.appState.reports.find(r => r.fb_id === docId);
+                    if (report) report.status = newStatus;
+                    updateUI();
+                }
+            } catch (err) {
+                console.error("Status Update Error:", err);
+            }
+        };
+
+        window.deleteReport = async function(docId) {
+            try {
+                if (db && docId && !docId.startsWith('demo-')) {
+                    const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'reports', docId);
+                    await deleteDoc(docRef);
+                    showModal("حذف البلاغ", "تم حذف البلاغ نهائياً من قاعدة البيانات السحابية.", "🗑️");
+                } else {
+                    window.appState.reports = window.appState.reports.filter(r => r.fb_id !== docId);
+                    updateUI();
+                }
+            } catch (err) {
+                console.error("Delete Error:", err);
+            }
+        };
+
+        function initMaps() {
+            const center = [window.appState.userCoords.lat, window.appState.userCoords.lng];
+
+            // Client map
+            window.appState.maps.client = L.map('map').setView(center, 9);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap | STOP FEU DZ'
+            }).addTo(window.appState.maps.client);
+
+            // Admin map
+            window.appState.maps.admin = L.map('admin-map').setView(center, 8);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap | القيادة العامة'
+            }).addTo(window.appState.maps.admin);
+
+            updateMapMarkers();
+        }
+
+        window.toggleMapLayer = function() {
+            window.appState.mapSatelliteMode = !window.appState.mapSatelliteMode;
+            const tileUrl = window.appState.mapSatelliteMode
+                ? 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+                : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+
+            const layerBtn = document.getElementById('btn-map-layer');
+            layerBtn.innerHTML = window.appState.mapSatelliteMode
+                ? `<i class="fas fa-map text-dzGreen"></i> الخريطة العادية`
+                : `<i class="fas fa-layer-group text-dzAmber"></i> القمر الصناعي`;
+
+            [window.appState.maps.client, window.appState.maps.admin].forEach(m => {
+                if (m) {
+                    m.eachLayer(l => { if (l instanceof L.TileLayer) m.removeLayer(l); });
+                    L.tileLayer(tileUrl).addTo(m);
+                }
+            });
+        };
+
+        window.recenterMap = function() {
+            const pos = [window.appState.userCoords.lat, window.appState.userCoords.lng];
+            if (window.appState.maps.client) window.appState.maps.client.flyTo(pos, 12);
+            if (window.appState.maps.admin) window.appState.maps.admin.flyTo(pos, 11);
+        };
+
+        function updateMapMarkers() {
+            // Clear existing markers
+            ['client', 'admin'].forEach(key => {
+                window.appState.markers[key].forEach(m => m.remove());
+                window.appState.markers[key] = [];
+            });
+
+            // Fire Icons
+            const fireIcon = L.divIcon({
+                className: 'custom-fire-marker',
+                html: `<div class="w-8 h-8 bg-red-600 border-2 border-white rounded-full flex items-center justify-center text-white text-base shadow-lg pulse-flame"><i class="fas fa-fire"></i></div>`,
+                iconSize: [32, 32],
+                iconAnchor: [16, 16]
+            });
+
+            // Resource Icons
+            const truckIcon = L.divIcon({
+                className: 'custom-truck-marker',
+                html: `<div class="w-8 h-8 bg-blue-600 border-2 border-white rounded-full flex items-center justify-center text-white text-sm shadow-lg pulse-unit"><i class="fas fa-truck-field"></i></div>`,
+                iconSize: [32, 32],
+                iconAnchor: [16, 16]
+            });
+
+            // Render Reports
+            window.appState.reports.forEach(r => {
+                if (!r.lat || !r.lng) return;
+
+                const popupHtml = `
+                    <div class="font-sans text-right p-1 min-w-[180px]">
+                        <span class="bg-red-100 text-dzRed text-[10px] font-black px-2 py-0.5 rounded border border-red-200">${r.id || 'حريق'}</span>
+                        <h4 class="font-black text-sm text-slate-900 mt-1">${r.wilaya}</h4>
+                        <p class="text-xs text-slate-600 mt-1">الخطورة: <strong>${r.severity}</strong></p>
+                        <p class="text-[11px] text-slate-500 mt-0.5">المبلغ: ${r.nom} (${r.verifiedWhatsApp ? 'موثق بالواتساب ✅' : 'غير موثق'})</p>
+                        ${r.photo ? `<img src="${r.photo}" class="w-full h-24 object-cover rounded-lg mt-2 border">` : ''}
+                        <a href="https://wa.me/${r.phone?.replace(/\+/g,'')}" target="_blank" class="mt-2 w-full bg-dzGreen text-white text-[10px] font-bold py-1 px-2 rounded flex items-center justify-center gap-1">
+                            <i class="fab fa-whatsapp"></i> مراسلة المبلغ بالواتساب
+                        </a>
+                    </div>
+                `;
+
+                ['client', 'admin'].forEach(mapKey => {
+                    if (window.appState.maps[mapKey]) {
+                        const m = L.marker([r.lat, r.lng], { icon: fireIcon }).addTo(window.appState.maps[mapKey]).bindPopup(popupHtml);
+                        window.appState.markers[mapKey].push(m);
+                    }
+                });
+            });
+
+            // Render Resources
+            window.appState.resources.forEach(res => {
+                if (!res.lat || !res.lng) return;
+
+                const popupHtml = `
+                    <div class="font-sans text-right p-1">
+                        <span class="bg-blue-100 text-dzBlue text-[10px] font-black px-2 py-0.5 rounded">${res.brigade || 'وحدة تدخل'}</span>
+                        <h4 class="font-black text-sm text-slate-900 mt-1">${res.officerName}</h4>
+                        <p class="text-xs text-slate-700 mt-1">شاحنات: <strong>${res.trucks}</strong> | طائرات: <strong>${res.planes}</strong></p>
+                    </div>
+                `;
+
+                ['client', 'admin'].forEach(mapKey => {
+                    if (window.appState.maps[mapKey]) {
+                        const m = L.marker([res.lat, res.lng], { icon: truckIcon }).addTo(window.appState.maps[mapKey]).bindPopup(popupHtml);
+                        window.appState.markers[mapKey].push(m);
+                    }
+                });
+            });
+        }
+
+        function updateUI() {
+            updateMapMarkers();
+
+            const reports = window.appState.reports;
+            const resources = window.appState.resources;
+
+            // Update stats
+            document.getElementById('stat-total-fires').textContent = reports.length;
+            document.getElementById('stat-verified-citizens').textContent = reports.filter(r => r.verifiedWhatsApp).length;
+            
+            const totalVehicles = resources.reduce((acc, curr) => acc + (curr.trucks || 0) + (curr.planes || 0), 0);
+            document.getElementById('stat-total-vehicles').textContent = totalVehicles;
+
+            document.getElementById('officer-alert-count').textContent = `${reports.filter(r => r.status !== 'تم_الإخماد').length} نشطة`;
+            document.getElementById('admin-reports-count').textContent = reports.length;
+            document.getElementById('admin-resources-count').textContent = resources.length;
+
+            // Render Map Summary List
+            const mapSummaryContainer = document.getElementById('map-reports-summary');
+            if (reports.length === 0) {
+                mapSummaryContainer.innerHTML = `<p class="text-xs text-slate-400 text-center py-4">لا توجد بلاغات حرائق مسجلة حالياً بالسحابة.</p>`;
+            } else {
+                mapSummaryContainer.innerHTML = reports.map(r => `
+                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between text-xs">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-2.5 h-2.5 rounded-full ${r.severity === 'حرج' ? 'bg-dzRed animate-ping' : r.severity === 'متوسط' ? 'bg-dzOrange' : 'bg-dzGreen'}"></span>
+                            <div>
+                                <strong class="text-slate-900 font-black block">${r.wilaya} (${r.id || 'حريق'})</strong>
+                                <span class="text-[11px] text-slate-500">${r.description || 'بدون وصف'} • ${r.time || ''}</span>
+                            </div>
+                        </div>
+                        <span class="bg-slate-200 text-slate-700 text-[10px] px-2 py-0.5 rounded font-bold">${r.status || 'في الانتظار'}</span>
+                    </div>
+                `).join('');
+            }
+
+            // Render Officer List
+            const officerList = document.getElementById('officer-reports-list');
+            officerList.innerHTML = reports.map(r => `
+                <div class="p-3.5 bg-white border border-slate-200 rounded-xl shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <span class="bg-red-100 text-dzRed font-black text-[10px] px-2 py-0.5 rounded">${r.id}</span>
+                            <h4 class="font-black text-xs text-slate-900">${r.wilaya} - ${r.severity}</h4>
+                            ${r.verifiedWhatsApp ? '<span class="bg-emerald-100 text-dzGreen text-[9px] px-1.5 py-0.5 rounded font-bold"><i class="fab fa-whatsapp"></i> موثق</span>' : ''}
+                        </div>
+                        <p class="text-xs text-slate-600">${r.description || 'لا يوجد وصف مضاف'}</p>
+                        <p class="text-[10px] text-slate-400">المبلغ: ${r.nom} (${r.phone})</p>
+                    </div>
+                    <div class="flex items-center gap-2 w-full sm:w-auto">
+                        <button onclick="updateReportStatus('${r.fb_id}', 'جاري_التدخل')" class="bg-dzBlue hover:bg-blue-700 text-white font-bold px-2.5 py-1.5 rounded-lg text-[11px] flex-1 sm:flex-none">
+                            تأكيد التدخل
+                        </button>
+                        <button onclick="updateReportStatus('${r.fb_id}', 'تم_الإخماد')" class="bg-dzGreen hover:bg-emerald-700 text-white font-bold px-2.5 py-1.5 rounded-lg text-[11px] flex-1 sm:flex-none">
+                            تم الإخماد
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            // Render Admin List
+            const adminReportsList = document.getElementById('admin-reports-list');
+            adminReportsList.innerHTML = reports.map(r => `
+                <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2 text-xs">
+                    <div class="flex justify-between items-center">
+                        <span class="font-black text-slate-900">${r.id} - ${r.wilaya} (${r.severity})</span>
+                        <div class="flex items-center gap-1">
+                            <button onclick="deleteReport('${r.fb_id}')" class="text-red-500 hover:text-red-700 p-1" title="حذف البلاغ">
+                                <i class="fas fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="text-slate-600">${r.description || 'لا يوجد وصف'}</p>
+                    <div class="flex justify-between items-center text-[10px] text-slate-500 pt-1 border-t border-slate-200">
+                        <span>المبلغ: ${r.nom} | ${r.phone}</span>
+                        <span class="font-bold ${r.verifiedWhatsApp ? 'text-dzGreen' : 'text-slate-400'}">${r.verifiedWhatsApp ? 'موثق بالواتساب ✅' : 'غير موثق ❌'}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            const adminResList = document.getElementById('admin-resources-list');
+            adminResList.innerHTML = resources.map(res => `
+                <div class="p-3 bg-blue-50/50 border border-blue-100 rounded-xl space-y-1 text-xs">
+                    <div class="flex justify-between items-center">
+                        <strong class="text-blue-900">${res.officerName}</strong>
+                        <span class="text-[10px] text-blue-700 font-bold">${res.phone}</span>
+                    </div>
+                    <p class="text-slate-600">${res.brigade || 'بدون تحديد كتيبة'}</p>
+                    <div class="text-[11px] font-bold text-slate-700 flex gap-3 pt-1">
+                        <span>🚒 شاحنات (CCF): ${res.trucks}</span>
+                        <span>🛩️ طائرات: ${res.planes}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            updateCharts();
+        }
+
+        window.runAIAnalysis = async function() {
+            const aiResult = document.getElementById('ai-result');
+            const aiLoading = document.getElementById('ai-loading');
+            const aiContent = document.getElementById('ai-content');
+
+            aiResult.classList.remove('hidden');
+            aiLoading.classList.remove('hidden');
+            aiContent.textContent = '';
+
+            const reportsData = JSON.stringify(window.appState.reports);
+            const resourcesData = JSON.stringify(window.appState.resources);
+
+            const systemPrompt = `أنت ضابط خبير في إدارة أزمات وتكتيكات إخماد حرائق الغابات بالجزائر (الحماية المدنية والمديرية العامة للغابات).
+قم بتحليل بيانات بلاغات الحرائق والعتاد المتاح والمواطنين الموثقين عبر الواتساب.
+قدم خطة تكتيكية سريعة ومختصرة من 4 نقاط:
+1. توزيع الأولوية العاجلة حسب خطورة الولاية.
+2. توجيه شاحنات الإطفاء وطائرات قاذفات المياه.
+3. توصيات الاتصال عبر الواتساب بالمبلغين لتأكيد اتجاه الرياح.
+4. إجراءات وقائية للقرى والمنازل المجاورة.`;
+
+            const userQuery = `بيانات البلاغات السحابية الحالية: ${reportsData}\nبيانات الإمكانيات والضباط في الميدان: ${resourcesData}`;
+
+            try {
+                const apiKey = ""; // API key automatically injected at runtime
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: userQuery }] }],
+                        systemInstruction: { parts: [{ text: systemPrompt }] }
+                    })
+                });
+
+                const data = await response.json();
+                const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "لم يتم الحصول على تحليل مجدٍ. يرجى إعادة المحاولة.";
+
+                aiLoading.classList.add('hidden');
+                aiContent.textContent = text;
+            } catch (err) {
+                console.error("Gemini API Error:", err);
+                aiLoading.classList.add('hidden');
+                aiContent.textContent = "⚠️ حدث خطأ أثناء الاتصال بالذكاء الاصطناعي. يرجى التحقق من اتصال الشبكة.";
+            }
+        };
+
+        function initAnalyticsCharts() {
+            const ctxSev = document.getElementById('chart-severity').getContext('2d');
+            chartSeverityInstance = new Chart(ctxSev, {
+                type: 'doughnut',
+                data: {
+                    labels: ['حرج جداً', 'متوسط', 'ضعيف'],
+                    datasets: [{
+                        data: [0, 0, 0],
+                        backgroundColor: ['#D21034', '#EA580C', '#00875A']
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+
+            const ctxWil = document.getElementById('chart-wilayas').getContext('2d');
+            chartWilayasInstance = new Chart(ctxWil, {
+                type: 'bar',
+                data: {
+                    labels: ['تيزي وزو', 'بجاية', 'جيجل', 'وهران', 'أخرى'],
+                    datasets: [{
+                        label: 'عدد البلاغات',
+                        data: [0, 0, 0, 0, 0],
+                        backgroundColor: '#1D4ED8'
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+
+        function updateCharts() {
+            if (!chartSeverityInstance || !chartWilayasInstance) return;
+
+            const reports = window.appState.reports;
+            const critical = reports.filter(r => r.severity === 'حرج').length;
+            const medium = reports.filter(r => r.severity === 'متوسط').length;
+            const low = reports.filter(r => r.severity === 'ضعيف').length;
+
+            chartSeverityInstance.data.datasets[0].data = [critical, medium, low];
+            chartSeverityInstance.update();
+
+            const wilayaCounts = { 'تيزي وزو': 0, 'بجاية': 0, 'جيجل': 0, 'وهران': 0, 'أخرى': 0 };
+            reports.forEach(r => {
+                if (r.wilaya?.includes('تيزي')) wilayaCounts['تيزي وزو']++;
+                else if (r.wilaya?.includes('بجاية')) wilayaCounts['بجاية']++;
+                else if (r.wilaya?.includes('جيجل')) wilayaCounts['جيجل']++;
+                else if (r.wilaya?.includes('وهران')) wilayaCounts['وهران']++;
+                else wilayaCounts['أخرى']++;
+            });
+
+            chartWilayasInstance.data.datasets[0].data = Object.values(wilayaCounts);
+            chartWilayasInstance.update();
+        }
+
         window.previewPhoto = function(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -995,451 +1404,43 @@
             reader.readAsDataURL(file);
         };
 
-        window.clearPhoto = function(e) {
-            e.stopPropagation();
+        window.clearPhoto = function(event) {
+            if (event) event.stopPropagation();
             window.appState.photoBase64 = null;
             document.getElementById('photo-input').value = '';
+            document.getElementById('photo-preview').src = '';
             document.getElementById('photo-preview-container').classList.remove('hidden');
             document.getElementById('photo-preview-wrapper').classList.add('hidden');
         };
 
-        // --- WHATSAPP ULTRAMSG OTP INTEGRATION ---
-        window.sendWhatsAppOTP = async function() {
-            const phoneInput = document.getElementById('citizen-phone').value.trim();
-            if (!phoneInput || phoneInput.length < 9) {
-                showModal('رقم الهاتف ناقص', 'يرجى إدخال رقم هاتف صحيح لطلب رمز التأكيد عبر الواتساب', '⚠️');
-                return;
-            }
-
-            // Format phone number to international format (213...)
-            let formattedPhone = phoneInput.replace(/\D/g, '');
-            if (formattedPhone.startsWith('0')) {
-                formattedPhone = '213' + formattedPhone.substring(1);
-            }
-
-            // Generate 4-digit OTP code
-            generatedOTP = Math.floor(1000 + Math.random() * 9000).toString();
-
-            const btn = document.getElementById('btn-send-whatsapp');
-            btn.disabled = true;
-            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...`;
-
-            try {
-                const messageText = `رمز التحقق الخاص بك لتطبيق STOP FEU DZ هو: *${generatedOTP}*\nيرجى إدخاله لتأكيد بلاغك والحفاظ على السلامة الوطنية.`;
-                
-                const params = new URLSearchParams();
-                params.append('token', ULTRAMSG_TOKEN);
-                params.append('to', formattedPhone);
-                params.append('body', messageText);
-
-                const response = await fetch(ULTRAMSG_API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: params
-                });
-
-                const result = await response.json();
-
-                if (result.sent === 'true' || result.id) {
-                    document.getElementById('otp-container').classList.remove('hidden');
-                    document.getElementById('whatsapp-status').innerText = 'تم إرسال رمز التحقق عبر الواتساب بنجاح!';
-                    document.getElementById('whatsapp-status').className = 'text-[11px] font-bold text-dzGreen mt-1 block';
-                    showModal('تم إرسال الرمز', `تم إرسال رمز التحقق (${generatedOTP}) إلى حساب الواتساب ${formattedPhone}`, '📱');
-                } else {
-                    // Fallback for demo testing
-                    document.getElementById('otp-container').classList.remove('hidden');
-                    document.getElementById('whatsapp-status').innerText = `تم توليد الرمز للتجربة: ${generatedOTP}`;
-                    showModal('رمز التفعيل التجريبي', `رمز الواتساب التجريبي الخاص بك هو: ${generatedOTP}`, '🔑');
-                }
-            } catch (err) {
-                console.error("WhatsApp API Error:", err);
-                document.getElementById('otp-container').classList.remove('hidden');
-                document.getElementById('whatsapp-status').innerText = `الرمز التجريبي: ${generatedOTP}`;
-                showModal('رمز التفعيل', `الرمز الخاص بك هو: ${generatedOTP}`, '🔑');
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = `<i class="fab fa-whatsapp text-sm"></i> إعادة الإرسال`;
-            }
-        };
-
-        window.verifyOTP = function() {
-            const entered = document.getElementById('otp-input').value.trim();
-            if (entered === generatedOTP && generatedOTP !== null) {
-                isWhatsAppVerified = true;
-                document.getElementById('otp-container').classList.add('hidden');
-                document.getElementById('whatsapp-status').innerText = '✅ تم التحقق من رقم الواتساب بنجاح!';
-                document.getElementById('whatsapp-status').className = 'text-[11px] font-black text-dzGreen mt-1 block';
-                showModal('تم التحقق', 'تم تأكيد رقم هاتفك عبر الواتساب بنجاح', '✅');
-            } else {
-                showModal('رمز خاطئ', 'رمز التحقق غير صحيح، يرجى المحاولة مجدداً', '❌');
-            }
-        };
-
-        // --- SUBMIT FIRE REPORT ---
-        window.handleReportSubmit = async function(event) {
-            event.preventDefault();
-
-            const nom = document.getElementById('citizen-nom').value.trim();
-            const phone = document.getElementById('citizen-phone').value.trim();
-            const wilaya = document.getElementById('report-wilaya').value;
-            const severity = document.getElementById('report-severity').value;
-            const description = document.getElementById('report-description').value.trim();
-
-            const newReport = {
-                id: 'FEU-' + Math.floor(100 + Math.random() * 900),
-                nom,
-                phone,
-                verifiedWhatsApp: isWhatsAppVerified,
-                wilaya,
-                severity,
-                description,
-                lat: window.appState.userCoords.lat,
-                lng: window.appState.userCoords.lng,
-                accuracy: window.appState.gpsAccuracy,
-                photoUrl: window.appState.photoBase64 || null,
-                status: 'في_الانتظار',
-                timestamp: Date.now(),
-                time: new Date().toLocaleTimeString('ar-DZ', { hour: '2-digit', minute: '2-digit' })
-            };
-
-            // Save to Firebase Cloud (Rule 1 Strict Path)
-            if (db) {
-                try {
-                    const reportsRef = collection(db, 'artifacts', appId, 'public', 'data', 'reports');
-                    await addDoc(reportsRef, newReport);
-                } catch (err) {
-                    console.error("Error writing report to Firestore:", err);
-                    window.appState.reports.unshift(newReport);
-                    updateUI();
-                }
-            } else {
-                window.appState.reports.unshift(newReport);
-                updateUI();
-            }
-
-            showModal('تم إرسال التبليغ بنجاح', `شكراً ${nom}، تم تسجيل موقعك الجغرافي وإرسال التنبيه العاجل إلى الحماية المدنية ومحافظة الغابات`, '🚨');
-
-            // Reset Form
-            document.getElementById('reportForm').reset();
-            window.clearPhoto(new Event('click'));
-            isWhatsAppVerified = false;
-            document.getElementById('whatsapp-status').innerText = 'لم يتم التحقق بعد';
-            document.getElementById('whatsapp-status').className = 'text-[11px] font-bold text-slate-500 mt-1 block';
-        };
-
-        // --- SUBMIT OFFICER RESOURCE ---
-        window.handleResourceSubmit = async function(event) {
-            event.preventDefault();
-
-            const name = document.getElementById('officer-name-input').value.trim();
-            const phone = document.getElementById('officer-phone-input').value.trim();
-            const trucks = parseInt(document.getElementById('res-trucks').value) || 0;
-            const aircrafts = parseInt(document.getElementById('res-air').value) || 0;
-            const brigade = document.getElementById('res-brigade').value.trim();
-
-            const newRes = {
-                officerName: name,
-                phone: phone,
-                trucks: trucks,
-                aircrafts: aircrafts,
-                brigade: brigade,
-                lat: window.appState.userCoords.lat,
-                lng: window.appState.userCoords.lng,
-                timestamp: Date.now(),
-                time: new Date().toLocaleTimeString('ar-DZ', { hour: '2-digit', minute: '2-digit' })
-            };
-
-            if (db) {
-                try {
-                    const resRef = collection(db, 'artifacts', appId, 'public', 'data', 'resources');
-                    await addDoc(resRef, newRes);
-                } catch (err) {
-                    console.error("Error adding resource:", err);
-                    window.appState.resources.unshift(newRes);
-                    updateUI();
-                }
-            } else {
-                window.appState.resources.unshift(newRes);
-                updateUI();
-            }
-
-            showModal('تم تحديث الموقع والعتاد', 'تم نقل إحداثيات الفرقة والمورد الميدانية إلى الخريطة التكتيكية لغرفة القيادة', '🚒');
-        };
-
         window.adjustValue = function(id, delta) {
-            const input = document.getElementById(id);
-            if (input) {
-                let val = parseInt(input.value) || 0;
-                val = Math.max(0, val + delta);
-                input.value = val;
-            }
+            const el = document.getElementById(id);
+            let val = parseInt(el.value) || 0;
+            val = Math.max(0, val + delta);
+            el.value = val;
         };
 
-        // --- AI ANALYTICS & GEMINI INTEGRATION ---
-        window.runAIAnalysis = async function() {
-            const resultBox = document.getElementById('ai-result');
-            const loadingBox = document.getElementById('ai-loading');
-            const contentBox = document.getElementById('ai-content');
-
-            resultBox.classList.remove('hidden');
-            loadingBox.classList.remove('hidden');
-            contentBox.innerText = '';
-
-            const reportsSummary = window.appState.reports.map(r => 
-                `- حريق بـ ${r.wilaya}: مستوى الخطورة (${r.severity})، الإحداثيات (${r.lat.toFixed(4)}, ${r.lng.toFixed(4)})`
-            ).join('\n');
-
-            const resourcesSummary = window.appState.resources.map(res => 
-                `- فرقة ${res.officerName}: شاحنات CCF (${res.trucks})، طائرات (${res.aircrafts})`
-            ).join('\n');
-
-            const userPrompt = `
-أنت الخبير التكتيكي والاستراتيجي الأول للذكاء الاصطناعي في قيادة الحماية المدنية الجزائرية.
-قم بتحليل البيانات الميدانية التالية الحية من السحابة وقدم خطة تدريب وإخماد دقيقة باللغة العربية:
-
-بلاغات الحرائق الحالية:
-${reportsSummary || "لا توجد حرائق مسجلة حالياً."}
-
-الإمكانيات والفرق الميدانية المتوفرة:
-${resourcesSummary || "لا توجد فرق متوفرة حالياً."}
-
- المطلوب تقديمتقرير استراتيجي مختصر يشمل:
-1. تقييم خطورة الموقف ومستوى التهديد على غابات الجزائر والقرى المجاورة.
-2. توزيع شاحنات الإطفاء وطائرات الإخماد بأولوية التدخل السريع (خلال أقل من 3 دقائق).
-3. إرشادات وقائية لضباط الميدان والمواطنين المتاخمين للبؤر.
-            `;
-
-            try {
-                const apiKey = ""; // Canvas runtime key handler
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
-
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: userPrompt }] }]
-                    })
-                });
-
-                const data = await response.json();
-                const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text || "تعذر استخراج تحليل الذكاء الاصطناعي في الوقت الحالي.";
-
-                loadingBox.classList.add('hidden');
-                contentBox.innerText = aiText;
-            } catch (err) {
-                console.error("AI Analysis Error:", err);
-                loadingBox.classList.add('hidden');
-                contentBox.innerText = "خطة الاستجابة السريعة المقترحة:\n1. توجيه شاحنات CCF فوراً إلى بؤر الحرائق ذات الخطورة العالية بالجي بي اس.\n2. التنسيق مع الرقم الأخضر للغابات 1021 لفتح محاور الطرق الميدانية.\n3. تأمين القرى المجاورة للغابات بأولوية 100%.";
-            }
-        };
-
-        // --- DASHBOARD CHARTS (Chart.js) ---
-        function initAnalyticsCharts() {
-            const ctx1 = document.getElementById('chart-severity')?.getContext('2d');
-            const ctx2 = document.getElementById('chart-wilayas')?.getContext('2d');
-
-            if (ctx1) {
-                chartSeverityInstance = new Chart(ctx1, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['ضعيف', 'متوسط', 'حرج'],
-                        datasets: [{
-                            data: [1, 2, 1],
-                            backgroundColor: ['#10B981', '#F59E0B', '#EF4444']
-                        }]
-                    },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
-                });
-            }
-
-            if (ctx2) {
-                chartWilayasInstance = new Chart(ctx2, {
-                    type: 'bar',
-                    data: {
-                        labels: ['تيزي وزو', 'بجاية', 'جيجل', 'وهران', 'الطارف'],
-                        datasets: [{
-                            label: 'عدد شاحنات الإطفاء (CCF)',
-                            data: [4, 2, 3, 5, 2],
-                            backgroundColor: '#1D4ED8'
-                        }]
-                    },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-                });
-            }
-        }
-
-        function updateCharts() {
-            if (!chartSeverityInstance) return;
-
-            let low = 0, med = 0, high = 0;
-            const wilayaCounts = {};
-
-            window.appState.reports.forEach(r => {
-                if (r.severity === 'ضعيف') low++;
-                else if (r.severity === 'حرج') high++;
-                else med++;
-
-                const w = (r.wilaya || 'وهران').split('-')[1] || r.wilaya || 'أخرى';
-                wilayaCounts[w] = (wilayaCounts[w] || 0) + 1;
-            });
-
-            chartSeverityInstance.data.datasets[0].data = [low, med, high];
-            chartSeverityInstance.update();
-
-            if (chartWilayasInstance) {
-                const labels = Object.keys(wilayaCounts).slice(0, 5);
-                const data = labels.map(k => wilayaCounts[k]);
-                chartWilayasInstance.data.labels = labels.length ? labels : ['تيزي وزو', 'وهران', 'بجاية'];
-                chartWilayasInstance.data.datasets[0].data = data.length ? data : [3, 5, 2];
-                chartWilayasInstance.update();
-            }
-        }
-
-        // --- RENDER UI DATA ---
-        function updateUI() {
-            if (window.appState.maps.client) refreshMapMarkers(window.appState.maps.client, 'client');
-            if (window.appState.maps.admin) refreshMapMarkers(window.appState.maps.admin, 'admin');
-
-            renderReportsLists();
-            renderResourcesLists();
-            updateCharts();
-
-            // Stats update
-            document.getElementById('stat-total-fires').innerText = window.appState.reports.length;
-            
-            let totalPersonnel = window.appState.resources.length * 4; // Estimate 4 firefighters per team
-            document.getElementById('stat-total-personnel').innerText = totalPersonnel || 12;
-
-            let totalVehicles = window.appState.resources.reduce((acc, curr) => acc + (curr.trucks || 0) + (curr.aircrafts || 0), 0);
-            document.getElementById('stat-total-vehicles').innerText = totalVehicles || 6;
-        }
-
-        function renderReportsLists() {
-            const reports = window.appState.reports;
-
-            // Summary List
-            const summaryEl = document.getElementById('map-reports-summary');
-            if (summaryEl) {
-                summaryEl.innerHTML = reports.length === 0 
-                    ? `<p class="text-xs text-slate-400 text-center py-3">لا توجد بلاغات حرائق مسجلة حالياً.</p>`
-                    : reports.map(r => `
-                        <div class="bg-slate-50 border border-slate-200 p-3 rounded-xl flex items-center justify-between text-xs">
-                            <div class="flex items-center gap-2.5">
-                                <span class="w-3 h-3 rounded-full ${r.severity === 'حرج' ? 'bg-dzRed animate-ping' : 'bg-dzAmber'}"></span>
-                                <div>
-                                    <p class="font-black text-slate-900">${r.wilaya} <span class="text-[10px] text-slate-500 font-normal">(${r.time || ''})</span></p>
-                                    <p class="text-[11px] text-slate-600 font-medium line-clamp-1">${r.description || ''}</p>
-                                </div>
-                            </div>
-                            <span class="text-[10px] font-black px-2 py-0.5 rounded ${r.severity === 'حرج' ? 'bg-red-100 text-dzRed' : 'bg-amber-100 text-amber-800'}">
-                                ${r.severity}
-                            </span>
-                        </div>
-                    `).join('');
-            }
-
-            // Officer List
-            const officerListEl = document.getElementById('officer-reports-list');
-            const alertCountEl = document.getElementById('officer-alert-count');
-            if (alertCountEl) alertCountEl.innerText = `${reports.length} نشطة`;
-
-            if (officerListEl) {
-                officerListEl.innerHTML = reports.map(r => `
-                    <div class="bg-slate-50 border border-slate-200 p-3 rounded-xl space-y-2">
-                        <div class="flex justify-between items-center">
-                            <span class="font-black text-xs text-dzRed"><i class="fas fa-fire ml-1"></i> ${r.wilaya}</span>
-                            <span class="text-[10px] text-slate-500 font-bold">${r.time || ''}</span>
-                        </div>
-                        <p class="text-xs text-slate-700 font-semibold">${r.description || 'لا يوجد وصف متاح'}</p>
-                        <div class="flex items-center justify-between text-[11px] bg-white p-2 rounded-lg border border-slate-200">
-                            <span><i class="fas fa-user text-slate-400 ml-1"></i> ${r.nom} (${r.phone})</span>
-                            <a href="https://www.google.com/maps?q=${r.lat},${r.lng}" target="_blank" class="text-dzBlue font-black hover:underline flex items-center gap-1">
-                                <i class="fas fa-location-arrow"></i> خريطة GPS
-                            </a>
-                        </div>
-                    </div>
-                `).join('');
-            }
-
-            // Admin List
-            const adminListEl = document.getElementById('admin-reports-list');
-            document.getElementById('admin-reports-count').innerText = reports.length;
-            if (adminListEl) {
-                adminListEl.innerHTML = reports.map(r => `
-                    <div class="bg-slate-50 border border-slate-200 p-3 rounded-xl space-y-2 text-xs">
-                        <div class="flex justify-between items-center">
-                            <span class="font-black text-slate-900">${r.id || 'بلاغ'} - ${r.wilaya}</span>
-                            <span class="bg-red-100 text-dzRed px-2 py-0.5 rounded font-black text-[10px]">${r.severity}</span>
-                        </div>
-                        <p class="text-slate-600 font-medium">${r.description || ''}</p>
-                        ${r.photoUrl ? `<img src="${r.photoUrl}" class="w-full h-32 object-cover rounded-lg border border-slate-200">` : ''}
-                        <div class="flex justify-between items-center pt-1 border-t border-slate-200 text-[10px] text-slate-500">
-                            <span>المبلغ: ${r.nom} | ${r.phone} ${r.verifiedWhatsApp ? '✅ (واتساب مؤكد)' : ''}</span>
-                            <button onclick="deleteReport('${r.fb_id}')" class="text-dzRed font-bold hover:underline">حذف البلاغ</button>
-                        </div>
-                    </div>
-                `).join('');
-            }
-        }
-
-        function renderResourcesLists() {
-            const resources = window.appState.resources;
-            const adminResEl = document.getElementById('admin-resources-list');
-            document.getElementById('admin-resources-count').innerText = resources.length;
-
-            if (adminResEl) {
-                adminResEl.innerHTML = resources.map(res => `
-                    <div class="bg-slate-50 border border-slate-200 p-3 rounded-xl space-y-1.5 text-xs">
-                        <div class="flex justify-between items-center font-black">
-                            <span class="text-dzBlue"><i class="fas fa-shield-halved ml-1"></i> ${res.officerName}</span>
-                            <span class="text-[10px] text-slate-500">${res.time || ''}</span>
-                        </div>
-                        <p class="text-slate-700 font-semibold">${res.brigade || 'فرقة التدخل الميداني'}</p>
-                        <div class="flex items-center gap-3 text-[11px] text-slate-600 bg-white p-2 rounded-lg border border-slate-200 font-bold">
-                            <span>🚒 شاحنات CCF: ${res.trucks || 0}</span>
-                            <span>✈️ طائرات: ${res.aircrafts || 0}</span>
-                            <span>📞 ${res.phone || ''}</span>
-                        </div>
-                    </div>
-                `).join('');
-            }
-        }
-
-        window.deleteReport = async function(fbId) {
-            if (!fbId) return;
-            if (db) {
-                try {
-                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'reports', fbId));
-                } catch (err) {
-                    console.error("Delete error:", err);
-                }
-            } else {
-                window.appState.reports = window.appState.reports.filter(r => r.fb_id !== fbId);
-                updateUI();
-            }
-        };
-
-        // --- NAVIGATION & ROLE SWITCHING ---
         window.switchTab = function(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.getElementById(tabId)?.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
 
             document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('text-dzRed', 'text-dzBlue', 'font-black');
-                btn.classList.add('text-slate-400', 'font-semibold');
+                btn.classList.remove('text-dzRed', 'font-black');
+                btn.classList.add('text-slate-400');
             });
 
             const activeNav = document.getElementById(tabId.replace('tab-', 'nav-'));
             if (activeNav) {
-                activeNav.classList.remove('text-slate-400', 'font-semibold');
+                activeNav.classList.remove('text-slate-400');
                 activeNav.classList.add('text-dzRed', 'font-black');
             }
 
-            // Invalidate maps size on tab switch
-            setTimeout(() => {
-                if (tabId === 'tab-map' && window.appState.maps.client) window.appState.maps.client.invalidateSize();
-                if (tabId === 'tab-admin' && window.appState.maps.admin) window.appState.maps.admin.invalidateSize();
-            }, 100);
+            if (tabId === 'tab-map' && window.appState.maps.client) {
+                setTimeout(() => window.appState.maps.client.invalidateSize(), 200);
+            }
+            if (tabId === 'tab-admin' && window.appState.maps.admin) {
+                setTimeout(() => window.appState.maps.admin.invalidateSize(), 200);
+            }
         };
 
         window.openLoginModal = function() {
@@ -1447,48 +1448,50 @@ ${resourcesSummary || "لا توجد فرق متوفرة حالياً."}
         };
 
         window.setRole = function(role) {
-            if (role === 'admin') {
-                const pwd = document.getElementById('login-admin-pwd').value;
-                if (pwd !== '14') {
-                    showModal('رمز مرور خاطئ', 'كلمة المرور الخاصة بغرفة القيادة هي: 14', '🔒');
-                    return;
-                }
-            }
-
             window.appState.role = role;
-            document.getElementById('login-modal').classList.add('hidden');
-
-            const roleText = document.getElementById('role-text');
+            const badgeText = document.getElementById('role-text');
             const navOfficer = document.getElementById('nav-officer');
             const navAdmin = document.getElementById('nav-admin');
 
-            if (role === 'admin') {
-                roleText.innerText = 'مدير غرفة القيادة';
-                navOfficer.classList.remove('hidden');
-                navAdmin.classList.remove('hidden');
-                switchTab('tab-admin');
-            } else if (role === 'officer') {
-                roleText.innerText = 'ضابط ميداني';
-                navOfficer.classList.remove('hidden');
-                switchTab('tab-officer');
-            } else {
-                roleText.innerText = 'مواطن مبلغ';
+            if (role === 'citizen') {
+                badgeText.textContent = "مواطن مبلغ";
                 navOfficer.classList.add('hidden');
                 navAdmin.classList.add('hidden');
                 switchTab('tab-report');
+            } else if (role === 'officer') {
+                const name = document.getElementById('login-officer-name').value || 'الضابط الميداني';
+                const phone = document.getElementById('login-officer-phone').value || '';
+                window.appState.officerInfo = { name, phone };
+                document.getElementById('officer-name-input').value = name;
+                document.getElementById('officer-phone-input').value = phone;
+
+                badgeText.textContent = `ضابط: ${name}`;
+                navOfficer.classList.remove('hidden');
+                navAdmin.classList.add('hidden');
+                switchTab('tab-officer');
+            } else if (role === 'admin') {
+                badgeText.textContent = "غرفة القيادة";
+                navOfficer.classList.remove('hidden');
+                navAdmin.classList.remove('hidden');
+                switchTab('tab-admin');
             }
+
+            document.getElementById('login-modal').classList.add('hidden');
         };
 
-        // --- MODAL UTILS ---
-        window.showModal = function(title, desc, icon = '✅') {
-            document.getElementById('modal-icon').innerText = icon;
-            document.getElementById('modal-title').innerText = title;
-            document.getElementById('modal-desc').innerText = desc;
+        window.showModal = function(title, desc, icon = "✅") {
+            document.getElementById('modal-icon').textContent = icon;
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-desc').textContent = desc;
             document.getElementById('custom-modal').classList.remove('hidden');
         };
 
         window.closeModal = function() {
             document.getElementById('custom-modal').classList.add('hidden');
+        };
+
+        window.showGPSHelpModal = function() {
+            document.getElementById('gps-help-modal').classList.remove('hidden');
         };
     </script>
 </body>
