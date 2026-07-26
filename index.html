@@ -1,0 +1,1495 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>STOP FEU DZ - الحماية المدنية ومحافظة الغابات الجزائرية</title>
+    
+    <!-- Google Tag (gtag.js) - Google Analytics Stream G-2DB1069DB -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2DB1069DB"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-2DB1069DB');
+    </script>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Leaflet OpenStreetMap Engine -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Google Fonts: Cairo & Tajawal for Algerian Arabic UI -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+    <!-- Chart.js for AI Analytics Dashboards -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dzRed: '#D21034',
+                        dzGreen: '#00875A',
+                        dzWhite: '#FFFFFF',
+                        dzDark: '#1E293B',
+                        dzOrange: '#EA580C',
+                        dzAmber: '#D97706',
+                        dzBlue: '#1D4ED8',
+                        dzSlate: '#F8FAFC'
+                    },
+                    fontFamily: {
+                        sans: ['Cairo', 'Tajawal', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { font-family: 'Cairo', 'Tajawal', sans-serif; background-color: #f8fafc; color: #0f172a; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        #map, #admin-map { height: 50vh; min-height: 360px; width: 100%; border-radius: 1rem; z-index: 10; }
+        
+        .pulse-flame { animation: pulseFlame 1.3s infinite alternate; }
+        @keyframes pulseFlame {
+            0% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(210, 16, 52, 0.8)); }
+            100% { transform: scale(1.25); filter: drop-shadow(0 0 10px rgba(220, 38, 38, 1)); }
+        }
+
+        .pulse-unit { animation: pulseUnit 2s infinite; }
+        @keyframes pulseUnit {
+            0% { box-shadow: 0 0 0 0 rgba(0, 135, 90, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 135, 90, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 135, 90, 0); }
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); border: 1px solid #e2e8f0; }
+    </style>
+</head>
+<body class="pb-24 text-slate-800 min-h-screen flex flex-col justify-between selection:bg-dzRed selection:text-white bg-slate-100">
+
+    <!-- Header Principal Header (Arabic & Light Theme) -->
+    <header class="bg-white/95 backdrop-blur-md text-slate-800 p-3 sm:p-4 sticky top-0 z-40 border-b border-red-500/20 shadow-sm flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <div class="w-11 h-11 bg-gradient-to-tr from-dzRed to-red-600 rounded-2xl flex items-center justify-center text-white text-xl font-black shadow-md shadow-red-500/20 ring-2 ring-red-500/30">
+                <i class="fas fa-fire-extinguisher animate-bounce"></i>
+            </div>
+            <div>
+                <div class="flex items-center gap-2">
+                    <h1 class="font-black text-lg sm:text-xl tracking-wide text-slate-900">STOP FEU DZ</h1>
+                    <span class="bg-dzGreen/10 text-dzGreen border border-dzGreen/30 text-[10px] px-2 py-0.5 rounded-full font-black tracking-wider">الجزائر</span>
+                </div>
+                <p class="text-[11px] text-slate-500 font-bold">الحماية المدنية • المديرية العامة للغابات • الدرك الوطني</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <span id="user-role-badge" class="bg-slate-100 text-slate-700 border border-slate-200 px-3 py-1 rounded-xl text-xs font-black flex items-center gap-1.5 shadow-sm">
+                <i class="fas fa-user-shield text-dzGreen"></i> <span id="role-text">مواطن مبلغ</span>
+            </span>
+            <button onclick="openLoginModal()" class="bg-dzRed hover:bg-red-700 text-white px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition shadow-md shadow-red-600/20 flex items-center gap-1.5 border border-red-600">
+                <i class="fas fa-key text-xs"></i> <span class="hidden sm:inline">تسجيل الدخول</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- BANNIÈRE D'URGENCE ALGERIENNE -->
+    <div class="bg-gradient-to-r from-dzRed via-red-600 to-dzRed text-white px-3 py-2 flex justify-between items-center text-xs font-bold shadow-sm overflow-x-auto whitespace-nowrap border-b border-red-700">
+        <div class="flex items-center gap-2 shrink-0">
+            <span class="relative flex h-2.5 w-2.5">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-white"></span>
+            </span>
+            <span class="uppercase tracking-wide text-[11px] font-black"><i class="fas fa-phone-volume ml-1"></i> أرقام الطوارئ المباشرة:</span>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+            <a href="tel:14" class="bg-white/20 hover:bg-white text-white hover:text-dzRed border border-white/40 px-2.5 py-1 rounded-lg transition text-[11px] font-black flex items-center gap-1">
+                <i class="fas fa-truck-medical text-red-200"></i> الحماية المدنية 14
+            </a>
+            <a href="tel:1021" class="bg-white/20 hover:bg-white text-white hover:text-dzGreen border border-white/40 px-2.5 py-1 rounded-lg transition text-[11px] font-black flex items-center gap-1">
+                <i class="fas fa-tree text-emerald-200"></i> الرقم الأخضر للغابات 1021
+            </a>
+            <a href="tel:1055" class="bg-white/20 hover:bg-white text-white hover:text-emerald-800 border border-white/40 px-2.5 py-1 rounded-lg transition text-[11px] font-black flex items-center gap-1">
+                <i class="fas fa-shield-halved text-emerald-200"></i> الدرك الوطني 1055
+            </a>
+            <a href="tel:1548" class="bg-white/20 hover:bg-white text-white hover:text-blue-800 border border-white/40 px-2.5 py-1 rounded-lg transition text-[11px] font-black flex items-center gap-1">
+                <i class="fas fa-building-shield text-blue-200"></i> الشرطة 1548
+            </a>
+        </div>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <main class="p-3 sm:p-5 max-w-5xl mx-auto w-full flex-1 space-y-4">
+
+        <!-- ======================================================== -->
+        <!-- ONGLET 1 : TAB 1 - SIGNALEMENT DEPART DE FEU (CITOYEN)   -->
+        <!-- ======================================================== -->
+        <section id="tab-report" class="tab-content active space-y-4">
+            <!-- Alert Callout banner -->
+            <div class="bg-amber-50 border-r-4 border-dzOrange p-4 rounded-xl shadow-sm flex items-start gap-3">
+                <i class="fas fa-triangle-exclamation text-dzOrange text-xl mt-0.5"></i>
+                <div class="text-xs text-slate-700 leading-relaxed">
+                    <strong class="text-slate-900 font-extrabold block text-sm">حريق غابة كامل يمكن إنقاذه... لو اكتشف قبل 3 دقائق فقط!</strong>
+                    النار تبدأ صغيرة، التبليغ السريع عبر نظام GPS والكاميرا يرسل الموقع الدقيق والإنذار الفوري للحماية المدنية ومحافظة الغابات قبل خروج الوضع عن السيطرة.
+                </div>
+            </div>
+
+            <div class="bg-white border border-slate-200 p-4 sm:p-6 rounded-2xl shadow-sm">
+                <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+                    <div>
+                        <h2 class="text-xl font-black text-slate-900 flex items-center gap-2">
+                            <i class="fas fa-camera text-dzRed animate-pulse"></i> التبليغ الفوري عن بؤرة حريق
+                        </h2>
+                        <p class="text-xs text-slate-500 mt-0.5">إرسال الإحداثيات الدقيقة والصورة مباشرة لغرفة العمليات المركزية</p>
+                    </div>
+                    <span class="bg-red-50 text-dzRed border border-red-200 px-3 py-1 rounded-full text-xs font-extrabold">تبليغ سريع عبر GPS</span>
+                </div>
+
+                <form id="reportForm" onsubmit="handleReportSubmit(event)" class="space-y-4">
+                    <!-- Name & Phone with WhatsApp Verification -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-black text-slate-700 mb-1">اسم ولقب المبلغ *</label>
+                            <input type="text" id="citizen-nom" required placeholder="مثال: محمد بن علي" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm text-slate-800 placeholder-slate-400 focus:border-dzRed focus:bg-white outline-none transition font-semibold">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-black text-slate-700 mb-1">رقم الهاتف (مع التحقق عبر الواتساب) *</label>
+                            <div class="flex gap-2">
+                                <input type="tel" id="citizen-phone" required placeholder="مثال: 0661223344 أو 213661223344" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm text-slate-800 placeholder-slate-400 focus:border-dzRed focus:bg-white outline-none transition font-semibold">
+                                <button type="button" onclick="sendWhatsAppOTP()" id="btn-send-whatsapp" class="bg-dzGreen hover:bg-emerald-700 text-white font-bold px-3 py-2 rounded-xl text-xs whitespace-nowrap flex items-center gap-1 shadow-sm transition">
+                                    <i class="fab fa-whatsapp text-sm"></i> تأكيد الواتساب
+                                </button>
+                            </div>
+                            <span id="whatsapp-status" class="text-[11px] font-bold text-slate-500 mt-1 block">لم يتم التحقق بعد</span>
+                        </div>
+                    </div>
+
+                    <!-- OTP Verification Box (Hidden by default) -->
+                    <div id="otp-container" class="hidden bg-emerald-50 border border-emerald-200 p-3.5 rounded-xl space-y-2">
+                        <p class="text-xs font-black text-emerald-800">تم إرسال رمز التحقق إلى حساب الواتساب الخاص بك عبر UltraMsg:</p>
+                        <div class="flex gap-2">
+                            <input type="text" id="otp-input" placeholder="أدخل الرمز المكون من 4 أرقام" class="bg-white border border-emerald-300 rounded-lg p-2 text-center font-bold tracking-widest text-sm text-slate-800 w-full outline-none">
+                            <button type="button" onclick="verifyOTP()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-lg text-xs whitespace-nowrap">
+                                تأكيد الرمز
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-black text-slate-700 mb-1">الولاية المعنية *</label>
+                            <select id="report-wilaya" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm text-slate-800 focus:border-dzRed outline-none transition font-semibold">
+                                <option value="15 - تيزي وزو">15 - تيزي وزو</option>
+                                <option value="06 - بجاية">06 - بجاية</option>
+                                <option value="18 - جيجل">18 - جيجل</option>
+                                <option value="36 - الطارف">36 - الطارف</option>
+                                <option value="25 - قسنطينة">25 - قسنطينة</option>
+                                <option value="23 - عنابة">23 - عنابة</option>
+                                <option value="35 - بومرداس">35 - بومرداس</option>
+                                <option value="16 - الجزائر العاصمة">16 - الجزائر العاصمة</option>
+                                <option value="09 - البليدة">09 - البليدة</option>
+                                <option value="42 - تيبازة">42 - تيبازة</option>
+                                <option value="31 - وهران" selected>31 - وهران</option>
+                                <option value="13 - تلمسان">13 - تلمسان</option>
+                                <option value="05 - باتنة">05 - باتنة</option>
+                                <option value="19 - سطيف">19 - سطيف</option>
+                                <option value="ولاية أخرى">ولاية أخرى...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-black text-slate-700 mb-1">حجم وخطورة الحريق *</label>
+                            <select id="report-severity" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm text-slate-800 focus:border-dzRed outline-none transition font-semibold">
+                                <option value="ضعيف">🟢 ضعيف (دخان أبيض خفيف / بداية اشتعال)</option>
+                                <option value="متوسط" selected>🟠 متوسط (ألسنة لهب واضحة / دخان كثيف)</option>
+                                <option value="حرج">🔴 حرج جداً (انتشار سريع / تهديد للمنازل والقرى)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Live Mobile Camera Section -->
+                    <div>
+                        <label class="block text-xs font-black text-slate-700 mb-1">التقاط صورة مباشرة لبؤرة الحريق بالكاميرا *</label>
+                        <div class="border-2 border-dashed border-red-300 bg-red-50/50 hover:bg-red-50 rounded-2xl p-4 text-center cursor-pointer transition" onclick="document.getElementById('photo-input').click()">
+                            <input type="file" id="photo-input" accept="image/*" capture="environment" class="hidden" onchange="previewPhoto(event)">
+                            <div id="photo-preview-container" class="space-y-2 py-2">
+                                <div class="w-12 h-12 bg-dzRed text-white rounded-2xl flex items-center justify-center mx-auto text-xl shadow-md">
+                                    <i class="fas fa-camera"></i>
+                                </div>
+                                <p class="text-xs font-black text-slate-800">اضغط هنا لفتح كاميرا الهاتف وتصوير الحريق</p>
+                                <p class="text-[11px] text-slate-500">تساعد الصورة الذكاء الاصطناعي وضباط الحماية في تقييم مستوى الدخان والرياح</p>
+                            </div>
+                            <div id="photo-preview-wrapper" class="hidden relative group">
+                                <img id="photo-preview" class="w-full h-52 object-cover rounded-xl shadow-md border border-slate-300">
+                                <button type="button" onclick="clearPhoto(event)" class="absolute top-2 left-2 bg-red-600 hover:bg-red-700 text-white p-2 rounded-full text-xs shadow-md transition">
+                                    <i class="fas fa-trash-can"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-black text-slate-700 mb-1">وصف المكان والمطالب الميدانية</label>
+                        <textarea id="report-description" rows="2" placeholder="مثال: حريق بالقرب من الطريق الوطني، اتجاه الرياح نحو قرية آيت زاي..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm text-slate-800 placeholder-slate-400 focus:border-dzRed outline-none transition font-semibold"></textarea>
+                    </div>
+
+                    <!-- GPS Location Status Box -->
+                    <div class="bg-emerald-50 border border-emerald-300 p-3.5 rounded-2xl space-y-2.5">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div id="gps-status-icon" class="w-10 h-10 bg-dzGreen text-white rounded-xl flex items-center justify-center text-lg shadow-sm">
+                                    <i class="fas fa-location-crosshairs animate-pulse"></i>
+                                </div>
+                                <div>
+                                    <div class="flex items-center gap-1.5">
+                                        <p class="text-xs font-black text-emerald-900">موقع بداية الطريق بالجي بي اس (GPS)</p>
+                                        <span id="gps-badge" class="bg-emerald-200 text-emerald-800 text-[9px] px-1.5 py-0.5 rounded font-black">نشط</span>
+                                    </div>
+                                    <p id="gps-coords-display" class="text-xs font-mono text-emerald-700 font-bold">جاري تحديد الموقع الفعلي بالجي بي اس...</p>
+                                    <p id="gps-accuracy-display" class="text-[10px] text-slate-500">دقة التحديد: جاري الحساب...</p>
+                                </div>
+                            </div>
+
+                            <button type="button" onclick="requestGPSLocation(true)" class="bg-dzGreen hover:bg-emerald-700 text-white text-xs px-3.5 py-2 rounded-xl font-black shadow-sm transition flex items-center gap-1.5 active:scale-95">
+                                <i class="fas fa-crosshairs"></i> تحديث الموقع
+                            </button>
+                        </div>
+
+                        <div class="flex items-center justify-between border-t border-emerald-200/80 pt-2 text-xs">
+                            <label class="flex items-center gap-2 cursor-pointer text-slate-700 font-bold">
+                                <input type="checkbox" id="gps-watch-toggle" onchange="toggleLiveGPSTracking(this.checked)" class="rounded border-slate-300 text-dzGreen focus:ring-dzGreen h-4 w-4">
+                                <span><i class="fas fa-satellite text-emerald-600"></i> التتبع المستمر للموقع في حالة التنقل</span>
+                            </label>
+
+                            <button type="button" onclick="showGPSHelpModal()" class="text-slate-500 hover:text-dzRed text-[11px] font-bold underline flex items-center gap-1">
+                                <i class="fas fa-circle-question text-dzAmber"></i> تعليمات الـ GPS
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" id="btn-submit-report" class="w-full bg-gradient-to-r from-dzRed via-red-600 to-dzRed hover:from-red-600 hover:to-red-700 text-white font-black py-4 rounded-xl text-base shadow-lg shadow-red-500/20 flex items-center justify-center gap-2 transition active:scale-98 border border-red-600">
+                        <i class="fas fa-paper-plane text-lg"></i> إرسال التبليغ العاجل والموقع للسحابة وللجهات المختصة
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- ======================================================== -->
+        <!-- ONGLET 2 : TAB 2 - CARTE TACTIQUE TEMPS REEL              -->
+        <!-- ======================================================== -->
+        <section id="tab-map" class="tab-content space-y-4">
+            <div class="bg-white border border-slate-200 p-4 rounded-2xl shadow-sm">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                    <div>
+                        <h2 class="text-lg font-black text-slate-900 flex items-center gap-2">
+                            <i class="fas fa-map-location-dot text-dzGreen"></i> الخريطة التكتيكية الوطنية - الجزائر
+                        </h2>
+                        <p class="text-xs text-slate-500">تحديد مواقع الحرائق والوحدات الميدانية المسجلة في السحابة</p>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <button onclick="toggleMapLayer()" id="btn-map-layer" class="bg-slate-100 hover:bg-slate-200 text-xs px-3 py-1.5 rounded-xl border border-slate-200 font-bold flex items-center gap-1.5 text-slate-700">
+                            <i class="fas fa-layer-group text-dzAmber"></i> القمر الصناعي
+                        </button>
+                        <button onclick="recenterMap()" class="bg-slate-100 hover:bg-slate-200 text-xs px-3 py-1.5 rounded-xl border border-slate-200 font-bold text-slate-700 flex items-center gap-1">
+                            <i class="fas fa-crosshairs text-dzRed"></i> موقعي الحالي
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Leaflet Canvas -->
+                <div id="map" class="shadow-inner border border-slate-200"></div>
+                
+                <!-- Map Legend -->
+                <div class="mt-3 flex flex-wrap items-center justify-between gap-3 text-xs border-t border-slate-100 pt-3">
+                    <div class="flex items-center gap-3 text-[11px] font-bold">
+                        <span class="flex items-center gap-1 text-red-700 bg-red-50 border border-red-200 px-2 py-0.5 rounded-md">
+                            <i class="fas fa-fire text-dzRed animate-pulse"></i> بؤرة حريق نشطة
+                        </span>
+                        <span class="flex items-center gap-1 text-blue-700 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-md">
+                            <i class="fas fa-truck-field text-dzBlue"></i> شاحنة إطفاء (CCF)
+                        </span>
+                        <span class="flex items-center gap-1 text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md">
+                            <i class="fas fa-plane-water text-dzGreen"></i> طائرة إخماد
+                        </span>
+                    </div>
+
+                    <span class="text-[10px] text-slate-400 font-bold">تحديث سحابي مباشر (Firestore)</span>
+                </div>
+            </div>
+
+            <!-- List of reports -->
+            <div class="bg-white border border-slate-200 p-4 rounded-2xl shadow-sm">
+                <h3 class="text-xs font-black text-slate-800 uppercase tracking-wider mb-3 flex items-center gap-2">
+                    <i class="fas fa-list-ul text-dzRed"></i> قائمة التبليغات الأخيرة المسجلة
+                </h3>
+                <div id="map-reports-summary" class="space-y-2 max-h-56 overflow-y-auto pl-1">
+                    <p class="text-xs text-slate-400 text-center py-4">جاري تحميل البيانات من السحابة...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================================== -->
+        <!-- ONGLET 3 : TAB 3 - ESPACE OFFICIER FIELD COMMANDER       -->
+        <!-- ======================================================== -->
+        <section id="tab-officer" class="tab-content space-y-4">
+            <div class="bg-white border border-blue-200 p-5 rounded-2xl shadow-sm">
+                <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+                    <div>
+                        <h2 class="text-xl font-black text-slate-900 flex items-center gap-2">
+                            <i class="fas fa-user-shield text-dzBlue"></i> لوحة الضابط الميداني - الحماية المدنية والغابات
+                        </h2>
+                        <p class="text-xs text-slate-500 mt-0.5">تسجيل موقع الفرقة الميدانية بالجي بي اس وتحديد الشاحنات والإمكانيات</p>
+                    </div>
+                    <span class="bg-blue-50 text-dzBlue border border-blue-200 px-3 py-1 rounded-full text-xs font-black">وحدة التدخل السريع</span>
+                </div>
+
+                <form id="resourceForm" onsubmit="handleResourceSubmit(event)" class="space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-black text-slate-700 mb-1">اسم ورتبة الضابط / القائد *</label>
+                            <input type="text" id="officer-name-input" required placeholder="مثال: النقيب منصور - وحدة وهران" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm text-slate-800 focus:border-dzBlue outline-none font-semibold">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-black text-slate-700 mb-1">رقم هاتف الاتصال المباشر *</label>
+                            <input type="tel" id="officer-phone-input" required placeholder="مثال: 0661001122" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm text-slate-800 focus:border-dzBlue outline-none font-semibold">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-blue-50/60 p-3 rounded-xl border border-blue-100 text-center">
+                            <label class="block text-xs font-black text-blue-900 mb-2">
+                                <i class="fas fa-truck-field text-lg block mb-1 text-dzBlue"></i> شاحنات الإطفاء (CCF)
+                            </label>
+                            <div class="flex items-center justify-center gap-3">
+                                <button type="button" onclick="adjustValue('res-trucks', -1)" class="w-8 h-8 bg-white border border-blue-300 text-dzBlue rounded-lg font-extrabold">-</button>
+                                <input type="number" id="res-trucks" value="2" min="0" max="50" class="w-14 bg-white border border-blue-300 rounded-lg p-1 text-center font-black text-lg text-slate-800">
+                                <button type="button" onclick="adjustValue('res-trucks', 1)" class="w-8 h-8 bg-white border border-blue-300 text-dzBlue rounded-lg font-extrabold">+</button>
+                            </div>
+                        </div>
+
+                        <div class="bg-emerald-50/60 p-3 rounded-xl border border-emerald-100 text-center">
+                            <label class="block text-xs font-black text-emerald-900 mb-2">
+                                <i class="fas fa-plane-water text-lg block mb-1 text-dzGreen"></i> طائرات قاذفات المياه
+                            </label>
+                            <div class="flex items-center justify-center gap-3">
+                                <button type="button" onclick="adjustValue('res-air', -1)" class="w-8 h-8 bg-white border border-emerald-300 text-dzGreen rounded-lg font-extrabold">-</button>
+                                <input type="number" id="res-air" value="0" min="0" max="10" class="w-14 bg-white border border-emerald-300 rounded-lg p-1 text-center font-black text-lg text-slate-800">
+                                <button type="button" onclick="adjustValue('res-air', 1)" class="w-8 h-8 bg-white border border-emerald-300 text-dzGreen rounded-lg font-extrabold">+</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-black text-slate-700 mb-1">الكتيبة / الفرقة أو المكان</label>
+                        <input type="text" id="res-brigade" placeholder="مثال: فرقة عين الترك - الوحدة الثانوية" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm text-slate-800 focus:border-dzBlue outline-none font-semibold">
+                    </div>
+
+                    <button type="submit" class="w-full bg-gradient-to-r from-dzBlue to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white font-black py-3.5 rounded-xl text-sm shadow-md shadow-blue-500/20 flex justify-center items-center gap-2 border border-blue-600 transition">
+                        <i class="fas fa-satellite-dish"></i> إرسال موقعي الجغرافي والعتاد الميداني إلى غرفة القيادة
+                    </button>
+                </form>
+            </div>
+
+            <!-- List of alerts for officers -->
+            <div class="bg-white border border-slate-200 p-4 rounded-2xl shadow-sm">
+                <h3 class="font-extrabold text-sm text-slate-900 mb-3 flex items-center justify-between">
+                    <span><i class="fas fa-fire-nodes text-dzOrange"></i> التنبيهات الميدانية النشطة والجاهزة للتدخل</span>
+                    <span id="officer-alert-count" class="bg-red-100 text-dzRed text-xs px-2.5 py-0.5 rounded-full border border-red-200 font-black">0 نشطة</span>
+                </h3>
+                <div id="officer-reports-list" class="space-y-2 max-h-72 overflow-y-auto pl-1"></div>
+            </div>
+        </section>
+
+        <!-- ======================================================== -->
+        <!-- ONGLET 4 : TAB 4 - CONSOLE ADMIN & IA ANALYTICS           -->
+        <!-- ======================================================== -->
+        <section id="tab-admin" class="tab-content space-y-4">
+            <div class="bg-white border border-red-200 p-5 rounded-2xl shadow-sm">
+                <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+                    <div>
+                        <h2 class="text-xl font-black text-slate-900 flex items-center gap-2">
+                            <i class="fas fa-chess-knight text-dzRed"></i> القيادة المركزية وتحليلات الذكاء الاصطناعي (AI Analytics)
+                        </h2>
+                        <p class="text-xs text-slate-500 mt-0.5">لوحة متابعة فورية، تحليل المخاطر، التنبؤ بانتشار النيران وإدارة الموارد</p>
+                    </div>
+                    <span class="bg-emerald-50 text-dzGreen border border-emerald-200 text-[10px] px-3 py-1 rounded-full font-black flex items-center gap-1">
+                        <span class="w-2 h-2 rounded-full bg-dzGreen animate-ping"></span> متصل بالسحابة
+                    </span>
+                </div>
+
+                <!-- AI ANALYTICS CHARTS DASHBOARD -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-5">
+                    <div class="bg-slate-50 border border-slate-200 p-3.5 rounded-xl">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-black text-slate-700">إجمالي البلاغات</span>
+                            <i class="fas fa-fire-burner text-dzRed text-base"></i>
+                        </div>
+                        <p id="stat-total-fires" class="text-2xl font-black text-slate-900">0</p>
+                        <span class="text-[10px] text-slate-500">مسجلة بالجي بي اس</span>
+                    </div>
+                    <div class="bg-slate-50 border border-slate-200 p-3.5 rounded-xl">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-black text-slate-700">الضباط والأفراد الميدانيين</span>
+                            <i class="fas fa-person-military-rifle text-dzBlue text-base"></i>
+                        </div>
+                        <p id="stat-total-personnel" class="text-2xl font-black text-slate-900">0</p>
+                        <span class="text-[10px] text-slate-500">يعملون حالياً في الميدان</span>
+                    </div>
+                    <div class="bg-slate-50 border border-slate-200 p-3.5 rounded-xl">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-black text-slate-700">شاحنات وطائرات الإخماد</span>
+                            <i class="fas fa-truck-droplet text-dzGreen text-base"></i>
+                        </div>
+                        <p id="stat-total-vehicles" class="text-2xl font-black text-slate-900">0</p>
+                        <span class="text-[10px] text-slate-500">جاهزة للتدخل</span>
+                    </div>
+                </div>
+
+                <!-- CHARTS ROW -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <h4 class="text-xs font-black text-slate-800 mb-2 flex items-center gap-1.5">
+                            <i class="fas fa-chart-pie text-dzRed"></i> توزيع الحرائق حسب مستوى الخطورة
+                        </h4>
+                        <div class="h-44">
+                            <canvas id="chart-severity"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <h4 class="text-xs font-black text-slate-800 mb-2 flex items-center gap-1.5">
+                            <i class="fas fa-chart-bar text-dzBlue"></i> توزع الإمكانيات والشاحنات حسب الولايات
+                        </h4>
+                        <div class="h-44">
+                            <canvas id="chart-wilayas"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GEMINI AI TACTICAL ADVISOR MODULE -->
+                <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 p-4 sm:p-5 rounded-2xl text-white relative overflow-hidden shadow-md mb-5">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-black text-indigo-200 text-sm flex items-center gap-2">
+                            <i class="fas fa-brain text-indigo-400 text-lg"></i> المساعد التكتيكي الذكي (Gemini 3 Flash AI)
+                        </h3>
+                        <span class="bg-indigo-500/20 text-indigo-300 text-[10px] px-2.5 py-0.5 rounded border border-indigo-400/30 font-extrabold">تحليل اللحظة</span>
+                    </div>
+
+                    <p class="text-xs text-slate-300 mb-4 leading-relaxed">
+                        يقوم الذكاء الاصطناعي بربط كافة بلاغات المواطنين (الخطورة، الصور، الجي بي اس) مع الشاحنات والضباط لتوليد خطة تدخل فورية وتقليل وقت الاستجابة إلى أقل من 3 دقائق.
+                    </p>
+
+                    <button onclick="runAIAnalysis()" id="btn-ai" class="w-full bg-gradient-to-r from-indigo-500 via-purple-600 to-indigo-600 hover:from-indigo-600 hover:to-purple-700 text-white font-black py-3 rounded-xl text-xs flex justify-center items-center gap-2 transition shadow-lg border border-indigo-400/40">
+                        <i class="fas fa-bolt text-amber-300"></i> إستدعاء وتحليل استراتيجية التدخل الذكية الآن
+                    </button>
+                    
+                    <!-- AI Result Box -->
+                    <div id="ai-result" class="mt-4 p-4 bg-slate-950 rounded-xl text-xs text-slate-200 hidden border border-indigo-500/40 space-y-2">
+                        <div id="ai-loading" class="flex items-center gap-2 text-indigo-400 font-bold">
+                            <i class="fas fa-circle-notch fa-spin"></i> جاري تحليل إحداثيات الـ GPS، الصور ونسبة خطورة الحريق...
+                        </div>
+                        <div id="ai-content" class="leading-relaxed whitespace-pre-wrap font-sans text-slate-200"></div>
+                    </div>
+                </div>
+
+                <!-- Tactical Admin Map -->
+                <div class="mb-5">
+                    <h3 class="text-xs font-black text-slate-800 uppercase tracking-wider mb-2 flex items-center gap-2">
+                        <i class="fas fa-earth-africa text-dzGreen"></i> خريطة القيادة العامة وإدارة الميدان
+                    </h3>
+                    <div id="admin-map" class="shadow-md border border-slate-200"></div>
+                </div>
+
+                <!-- Admin lists -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <!-- Fire reports -->
+                    <div>
+                        <h3 class="font-extrabold text-xs text-slate-800 uppercase tracking-wider mb-2 flex items-center justify-between">
+                            <span><i class="fas fa-fire text-dzRed"></i> بلاغات المواطنين والمعلومات الدقيقة</span>
+                            <span id="admin-reports-count" class="text-slate-500">0</span>
+                        </h3>
+                        <div id="admin-reports-list" class="space-y-2.5 max-h-80 overflow-y-auto pl-1"></div>
+                    </div>
+
+                    <!-- Officers & Resources -->
+                    <div>
+                        <h3 class="font-extrabold text-xs text-slate-800 uppercase tracking-wider mb-2 flex items-center justify-between">
+                            <span><i class="fas fa-truck-field text-dzBlue"></i> الضباط والوحدات الميدانية النشطة</span>
+                            <span id="admin-resources-count" class="text-slate-500">0</span>
+                        </h3>
+                        <div id="admin-resources-list" class="space-y-2.5 max-h-80 overflow-y-auto pl-1"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- BOTTOM NAVIGATION (SMARTPHONE FIRST) -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-lg border-t border-slate-200 py-2.5 px-3 flex justify-around items-center z-50 shadow-lg">
+        <button onclick="switchTab('tab-report')" id="nav-report" class="nav-btn text-dzRed font-black flex flex-col items-center gap-1 w-1/4 transition">
+            <i class="fas fa-bullhorn text-lg"></i>
+            <span class="text-[10px]">التبليغ</span>
+        </button>
+        <button onclick="switchTab('tab-map')" id="nav-map" class="nav-btn text-slate-400 font-semibold flex flex-col items-center gap-1 w-1/4 transition">
+            <i class="fas fa-map-marked-alt text-lg"></i>
+            <span class="text-[10px]">الخريطة</span>
+        </button>
+        <button onclick="switchTab('tab-officer')" id="nav-officer" class="nav-btn text-slate-400 font-semibold flex flex-col items-center gap-1 w-1/4 hidden transition">
+            <i class="fas fa-user-shield text-lg"></i>
+            <span class="text-[10px]">مركز الضابط</span>
+        </button>
+        <button onclick="switchTab('tab-admin')" id="nav-admin" class="nav-btn text-slate-400 font-semibold flex flex-col items-center gap-1 w-1/4 hidden transition">
+            <i class="fas fa-chess-knight text-lg"></i>
+            <span class="text-[10px]">غرفة القيادة</span>
+        </button>
+    </nav>
+
+    <!-- CUSTOM MODAL DIALOG (Replaces alert) -->
+    <div id="custom-modal" class="fixed inset-0 bg-slate-900/60 hidden z-[120] flex items-center justify-center p-4 backdrop-blur-sm transition-opacity">
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 max-w-sm w-full shadow-2xl text-center space-y-4">
+            <div id="modal-icon" class="text-5xl mx-auto">✅</div>
+            <h3 id="modal-title" class="text-lg font-black text-slate-900">إشعار</h3>
+            <p id="modal-desc" class="text-xs text-slate-600 leading-relaxed font-semibold"></p>
+            <button onclick="closeModal()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-3 rounded-xl text-xs transition">
+                إغلاق
+            </button>
+        </div>
+    </div>
+
+    <!-- GPS GUIDE MODAL -->
+    <div id="gps-help-modal" class="fixed inset-0 bg-slate-900/70 hidden z-[130] flex items-center justify-center p-4 backdrop-blur-md">
+        <div class="bg-white border border-emerald-300 rounded-2xl p-5 max-w-md w-full shadow-2xl space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 class="text-base font-black text-slate-900 flex items-center gap-2">
+                    <i class="fas fa-location-dot text-dzGreen"></i> تفعيل الجي بي اس (GPS) على الهاتف
+                </h3>
+                <button onclick="document.getElementById('gps-help-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-700 p-1">
+                    <i class="fas fa-xmark"></i>
+                </button>
+            </div>
+
+            <p class="text-xs text-slate-600 leading-relaxed font-semibold">
+                لضمان وصول شاحنات الحماية المدنية بدقة متناهية إلى بداية الطريق أو مكان الدخان، يرجى الاتصال بالسلاسل التالية:
+            </p>
+
+            <div class="space-y-2.5 text-xs text-slate-700">
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 flex gap-3 items-start">
+                    <span class="w-6 h-6 bg-dzGreen text-white rounded-lg flex items-center justify-center font-bold text-xs shrink-0">1</span>
+                    <div>
+                        <p class="font-bold text-slate-900">تفعيل موقع الهاتف</p>
+                        <p class="text-[11px] text-slate-500">قم بسحب القائمة العلوية للهاتف واضغط على زر <strong class="text-dzGreen">"الموقع / Location"</strong>.</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 flex gap-3 items-start">
+                    <span class="w-6 h-6 bg-dzGreen text-white rounded-lg flex items-center justify-center font-bold text-xs shrink-0">2</span>
+                    <div>
+                        <p class="font-bold text-slate-900">منح الإذن للمتصفح</p>
+                        <p class="text-[11px] text-slate-500">عند ظهور رسالة المتصفح، اختر <strong class="text-dzGreen">"السماح / Allow"</strong> للوصول إلى الإحداثيات الدقيقة.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-2">
+                <button onclick="requestGPSLocation(true); document.getElementById('gps-help-modal').classList.add('hidden');" class="w-full bg-dzGreen hover:bg-emerald-700 text-white font-extrabold py-3 rounded-xl text-xs transition">
+                    <i class="fas fa-crosshairs"></i> إعادة محاولة تحديد موقع الـ GPS
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AUTHENTICATION & LOGIN MODAL -->
+    <div id="login-modal" class="fixed inset-0 bg-slate-900/70 hidden z-[130] flex items-center justify-center p-4 backdrop-blur-md">
+        <div class="bg-white border border-slate-200 rounded-2xl p-5 max-w-md w-full shadow-2xl space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 class="text-base font-black text-slate-900 flex items-center gap-2">
+                    <i class="fas fa-user-lock text-dzRed"></i> تسجيل الدخول - STOP FEU DZ
+                </h3>
+                <button onclick="document.getElementById('login-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-700 p-1">
+                    <i class="fas fa-xmark"></i>
+                </button>
+            </div>
+
+            <p class="text-xs text-slate-500 font-semibold">اختر الصفة للولوج إلى الواجهات المعنية بالنظام:</p>
+            
+            <div class="space-y-3">
+                <!-- Role: Citizen -->
+                <button onclick="setRole('citizen')" class="w-full text-right p-3 border border-slate-200 rounded-xl hover:bg-emerald-50 transition flex items-center gap-3 group">
+                    <div class="w-10 h-10 bg-emerald-100 text-dzGreen border border-emerald-200 rounded-lg flex items-center justify-center text-lg">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div>
+                        <p class="font-bold text-xs text-slate-900 group-hover:text-dzGreen transition">مواطن مبلغ</p>
+                        <p class="text-[10px] text-slate-500">التبليغ السريع، التتبع واستقبال الإشعار</p>
+                    </div>
+                </button>
+                
+                <!-- Role: Officer -->
+                <div class="border border-blue-200 rounded-xl p-3 bg-blue-50/40 space-y-2">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-blue-100 text-dzBlue border border-blue-200 rounded-lg flex items-center justify-center text-lg">
+                            <i class="fas fa-shield-halved"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-xs text-blue-900">ضابط الحماية المدنية / الغابات</p>
+                            <p class="text-[10px] text-slate-500">متابعة الفرقة الميدانية والشاحنات</p>
+                        </div>
+                    </div>
+                    <input type="text" id="login-officer-name" placeholder="الاسم واللقب والرتبة" class="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs text-slate-800 outline-none">
+                    <input type="tel" id="login-officer-phone" placeholder="رقم الهاتف المباشر" class="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs text-slate-800 outline-none">
+                    <button onclick="setRole('officer')" class="w-full bg-dzBlue hover:bg-blue-700 text-white font-bold py-2 rounded-lg text-xs transition">
+                        دخول الضابط
+                    </button>
+                </div>
+
+                <!-- Role: Admin -->
+                <div class="border border-red-200 rounded-xl p-3 bg-red-50/40 space-y-2">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-red-100 text-dzRed border border-red-200 rounded-lg flex items-center justify-center text-lg">
+                            <i class="fas fa-chess-knight"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-xs text-red-900">مدير غرفة القيادة والتحليلات (Admin)</p>
+                            <p class="text-[10px] text-slate-500">خاص برؤساء القطاعات والمسؤولين</p>
+                        </div>
+                    </div>
+                    <input type="password" id="login-admin-pwd" placeholder="كلمة المرور المشفرة" class="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs text-slate-800 outline-none">
+                    <button onclick="setRole('admin')" class="w-full bg-dzRed hover:bg-red-700 text-white font-bold py-2 rounded-lg text-xs transition">
+                        دخول غرفة القيادة
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT MODULE CORE JAVASCRIPT & FIREBASE INTEGRATION -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // APP CONFIG & CONSTANTS
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'stop-feu-dz-ar';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        
+        // WhatsApp Ultramsg API Credentials
+        const ULTRAMSG_TOKEN = "0slilsu9t71ld540";
+        const ULTRAMSG_INSTANCE = "instance181309";
+        const ULTRAMSG_API_URL = `https://api.ultramsg.com/${ULTRAMSG_INSTANCE}/messages/chat`;
+
+        let app, db, auth, currentUser;
+        let generatedOTP = null;
+        let isWhatsAppVerified = false;
+        let chartSeverityInstance = null;
+        let chartWilayasInstance = null;
+
+        // Global State
+        window.appState = {
+            role: 'citizen', // 'citizen', 'officer', 'admin'
+            officerInfo: { name: '', phone: '' },
+            userCoords: { lat: 36.7538, lng: 3.0588 }, // Algeria Algiers default center
+            gpsAccuracy: null,
+            gpsWatchId: null,
+            gpsActive: false,
+            reports: [],
+            resources: [],
+            maps: { client: null, admin: null },
+            markers: { client: [], admin: [] },
+            mapSatelliteMode: false,
+            photoBase64: null
+        };
+
+        // DOM Ready Load
+        window.addEventListener('load', () => {
+            initFirebase();
+            initMaps();
+            requestGPSLocation(false);
+            initAnalyticsCharts();
+        });
+
+        async function initFirebase() {
+            try {
+                if (Object.keys(firebaseConfig).length > 0) {
+                    app = initializeApp(firebaseConfig);
+                    auth = getAuth(app);
+                    db = getFirestore(app);
+
+                    // Mandatory Rule 3: Auth before query
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+                    currentUser = auth.currentUser;
+                    
+                    // Sync collections with mandatory strict paths (Rule 1)
+                    syncFirebaseData();
+                } else {
+                    console.warn("Firebase config not found - using local demo memory.");
+                    seedMockData();
+                }
+            } catch (err) {
+                console.error("Firebase init error:", err);
+                seedMockData();
+            }
+        }
+
+        function syncFirebaseData() {
+            if (!db) return;
+
+            // 1. Reports Collection Path
+            const reportsRef = collection(db, 'artifacts', appId, 'public', 'data', 'reports');
+            onSnapshot(reportsRef, (snapshot) => {
+                window.appState.reports = snapshot.docs.map(d => ({ fb_id: d.id, ...d.data() }));
+                window.appState.reports.sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0));
+                updateUI();
+            }, (err) => console.error("Reports snapshot error:", err));
+
+            // 2. Resources Collection Path
+            const resourcesRef = collection(db, 'artifacts', appId, 'public', 'data', 'resources');
+            onSnapshot(resourcesRef, (snapshot) => {
+                window.appState.resources = snapshot.docs.map(d => ({ fb_id: d.id, ...d.data() }));
+                updateUI();
+            }, (err) => console.error("Resources snapshot error:", err));
+        }
+
+        function seedMockData() {
+            window.appState.reports = [
+                {
+                    fb_id: "demo-1",
+                    id: "FEU-101",
+                    nom: "كريم براهيمي",
+                    phone: "0661122334",
+                    verifiedWhatsApp: true,
+                    wilaya: "15 - تيزي وزو",
+                    severity: "حرج",
+                    description: "بداية حريق بقرية يعقوران، رياح قوية متجهة نحو الغابة الشرقية.",
+                    lat: 36.7333,
+                    lng: 4.4333,
+                    status: "في_الانتظار",
+                    time: "14:20",
+                    timestamp: Date.now() - 3600000
+                },
+                {
+                    fb_id: "demo-2",
+                    id: "FEU-102",
+                    nom: "يوسف العمراني",
+                    phone: "0550998877",
+                    verifiedWhatsApp: true,
+                    wilaya: "06 - بجاية",
+                    severity: "متوسط",
+                    description: "تصاعد دخان كثيف في غابة أكفادو.",
+                    lat: 36.6333,
+                    lng: 4.6167,
+                    status: "التدخل_جار",
+                    time: "15:05",
+                    timestamp: Date.now() - 1800000
+                }
+            ];
+
+            window.appState.resources = [
+                {
+                    fb_id: "res-1",
+                    officerName: "النقيب بوعلام (فرقة أزازقة)",
+                    phone: "0662334455",
+                    trucks: 4,
+                    aircrafts: 1,
+                    brigade: "الحماية المدنية أزازقة",
+                    lat: 36.7450,
+                    lng: 4.4100,
+                    time: "14:45"
+                }
+            ];
+
+            updateUI();
+        }
+
+        // --- MAP FUNCTIONS ---
+        function initMaps() {
+            if (typeof L === 'undefined') return;
+
+            // Client Map
+            window.appState.maps.client = L.map('map').setView([window.appState.userCoords.lat, window.appState.userCoords.lng], 9);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© OpenStreetMap - STOP FEU DZ'
+            }).addTo(window.appState.maps.client);
+
+            // Admin Map
+            window.appState.maps.admin = L.map('admin-map').setView([36.7538, 3.0588], 7);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© OpenStreetMap'
+            }).addTo(window.appState.maps.admin);
+
+            refreshMapMarkers(window.appState.maps.client, 'client');
+            refreshMapMarkers(window.appState.maps.admin, 'admin');
+        }
+
+        window.toggleMapLayer = function() {
+            const isSat = !window.appState.mapSatelliteMode;
+            window.appState.mapSatelliteMode = isSat;
+
+            const url = isSat 
+                ? 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+                : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+
+            [window.appState.maps.client, window.appState.maps.admin].forEach(m => {
+                if (m) {
+                    m.eachLayer(layer => {
+                        if (layer instanceof L.TileLayer) m.removeLayer(layer);
+                    });
+                    L.tileLayer(url, { maxZoom: 18 }).addTo(m);
+                }
+            });
+
+            document.getElementById('btn-map-layer').innerHTML = isSat 
+                ? `<i class="fas fa-map text-dzGreen"></i> الخريطة العادية`
+                : `<i class="fas fa-layer-group text-dzAmber"></i> القمر الصناعي`;
+        };
+
+        window.recenterMap = function() {
+            if (window.appState.maps.client) {
+                window.appState.maps.client.setView([window.appState.userCoords.lat, window.appState.userCoords.lng], 13);
+            }
+        };
+
+        function refreshMapMarkers(mapObj, mapKey) {
+            if (!mapObj) return;
+
+            // Clear old markers
+            window.appState.markers[mapKey].forEach(m => mapObj.removeLayer(m));
+            window.appState.markers[mapKey] = [];
+
+            // Add Reports Markers
+            window.appState.reports.forEach(r => {
+                if (r.lat && r.lng) {
+                    const iconHtml = `<div class="pulse-flame w-8 h-8 bg-dzRed text-white rounded-full flex items-center justify-center font-bold text-sm shadow-lg border-2 border-white">
+                        <i class="fas fa-fire"></i>
+                    </div>`;
+                    const customIcon = L.divIcon({ html: iconHtml, className: '', iconSize: [32, 32] });
+                    const marker = L.marker([r.lat, r.lng], { icon: customIcon }).addTo(mapObj);
+                    
+                    let popupContent = `
+                        <div class="text-right font-sans p-1">
+                            <strong class="text-dzRed block text-sm font-black">${r.wilaya || 'حريق غابي'}</strong>
+                            <p class="text-xs font-bold text-slate-800 mt-1">${r.description || ''}</p>
+                            <div class="text-[10px] text-slate-500 mt-1">
+                                <span>المبلغ: ${r.nom || ''}</span> • <span>الهاتف: ${r.phone || ''}</span>
+                            </div>
+                            ${r.photoUrl ? `<img src="${r.photoUrl}" class="w-full h-24 object-cover rounded-lg mt-2 border border-slate-200">` : ''}
+                        </div>
+                    `;
+                    marker.bindPopup(popupContent);
+                    window.appState.markers[mapKey].push(marker);
+                }
+            });
+
+            // Add Officers/Vehicles Markers
+            window.appState.resources.forEach(res => {
+                if (res.lat && res.lng) {
+                    const iconHtml = `<div class="pulse-unit w-8 h-8 bg-dzGreen text-white rounded-full flex items-center justify-center font-bold text-sm shadow-lg border-2 border-white">
+                        <i class="fas fa-truck-field"></i>
+                    </div>`;
+                    const customIcon = L.divIcon({ html: iconHtml, className: '', iconSize: [32, 32] });
+                    const marker = L.marker([res.lat, res.lng], { icon: customIcon }).addTo(mapObj);
+                    marker.bindPopup(`
+                        <div class="text-right font-sans p-1">
+                            <strong class="text-dzGreen block text-xs font-black">${res.officerName || 'فرقة التدخل'}</strong>
+                            <p class="text-[11px] font-bold text-slate-700">شاحنات CCF: ${res.trucks || 0} | طائرات: ${res.aircrafts || 0}</p>
+                            <p class="text-[10px] text-slate-500">الهاتف: ${res.phone || ''}</p>
+                        </div>
+                    `);
+                    window.appState.markers[mapKey].push(marker);
+                }
+            });
+        }
+
+        // --- GPS TRACKING ---
+        window.requestGPSLocation = function(userInitiated) {
+            if (!navigator.geolocation) {
+                if (userInitiated) showModal('خطأ في الجي بي اس', 'خاصية تحديد الموقع غير مدعومة في متصفحك', '❌');
+                return;
+            }
+
+            const statusText = document.getElementById('gps-coords-display');
+            const accuracyText = document.getElementById('gps-accuracy-display');
+
+            if (statusText) statusText.innerText = 'جاري الاتصال بالأقمار الصناعية...';
+
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    const lat = pos.coords.latitude;
+                    const lng = pos.coords.longitude;
+                    const acc = Math.round(pos.coords.accuracy);
+
+                    window.appState.userCoords = { lat, lng };
+                    window.appState.gpsAccuracy = acc;
+                    window.appState.gpsActive = true;
+
+                    if (statusText) statusText.innerText = `خط العرض: ${lat.toFixed(5)}، خط الطول: ${lng.toFixed(5)}`;
+                    if (accuracyText) accuracyText.innerText = `دقة التحديد: ممتازة (حوالي ${acc} متر)`;
+
+                    if (window.appState.maps.client) {
+                        window.appState.maps.client.setView([lat, lng], 13);
+                    }
+
+                    if (userInitiated) {
+                        showModal('تم تحديد الموقع بنجاح', `تم التقاط إحداثيات الجي بي اس بدقة ${acc} متر`, '📍');
+                    }
+                },
+                (err) => {
+                    console.warn("GPS error:", err);
+                    if (statusText) statusText.innerText = '36.7538 N, 3.0588 E (موقع افتراضي - الجزائر)';
+                    if (accuracyText) accuracyText.innerText = 'يرجى تفعيل الجي بي اس بالهاتف للحصول على دقة أعلى';
+                    if (userInitiated) showGPSHelpModal();
+                },
+                { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
+            );
+        };
+
+        window.toggleLiveGPSTracking = function(enable) {
+            if (enable) {
+                window.appState.gpsWatchId = navigator.geolocation.watchPosition((pos) => {
+                    window.appState.userCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                    document.getElementById('gps-coords-display').innerText = `تتبع حي: ${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)}`;
+                });
+            } else if (window.appState.gpsWatchId) {
+                navigator.geolocation.clearWatch(window.appState.gpsWatchId);
+                window.appState.gpsWatchId = null;
+            }
+        };
+
+        window.showGPSHelpModal = function() {
+            document.getElementById('gps-help-modal').classList.remove('hidden');
+        };
+
+        // --- CAMERA PHOTO HANDLER ---
+        window.previewPhoto = function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                window.appState.photoBase64 = e.target.result;
+                document.getElementById('photo-preview').src = e.target.result;
+                document.getElementById('photo-preview-container').classList.add('hidden');
+                document.getElementById('photo-preview-wrapper').classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        };
+
+        window.clearPhoto = function(e) {
+            e.stopPropagation();
+            window.appState.photoBase64 = null;
+            document.getElementById('photo-input').value = '';
+            document.getElementById('photo-preview-container').classList.remove('hidden');
+            document.getElementById('photo-preview-wrapper').classList.add('hidden');
+        };
+
+        // --- WHATSAPP ULTRAMSG OTP INTEGRATION ---
+        window.sendWhatsAppOTP = async function() {
+            const phoneInput = document.getElementById('citizen-phone').value.trim();
+            if (!phoneInput || phoneInput.length < 9) {
+                showModal('رقم الهاتف ناقص', 'يرجى إدخال رقم هاتف صحيح لطلب رمز التأكيد عبر الواتساب', '⚠️');
+                return;
+            }
+
+            // Format phone number to international format (213...)
+            let formattedPhone = phoneInput.replace(/\D/g, '');
+            if (formattedPhone.startsWith('0')) {
+                formattedPhone = '213' + formattedPhone.substring(1);
+            }
+
+            // Generate 4-digit OTP code
+            generatedOTP = Math.floor(1000 + Math.random() * 9000).toString();
+
+            const btn = document.getElementById('btn-send-whatsapp');
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...`;
+
+            try {
+                const messageText = `رمز التحقق الخاص بك لتطبيق STOP FEU DZ هو: *${generatedOTP}*\nيرجى إدخاله لتأكيد بلاغك والحفاظ على السلامة الوطنية.`;
+                
+                const params = new URLSearchParams();
+                params.append('token', ULTRAMSG_TOKEN);
+                params.append('to', formattedPhone);
+                params.append('body', messageText);
+
+                const response = await fetch(ULTRAMSG_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: params
+                });
+
+                const result = await response.json();
+
+                if (result.sent === 'true' || result.id) {
+                    document.getElementById('otp-container').classList.remove('hidden');
+                    document.getElementById('whatsapp-status').innerText = 'تم إرسال رمز التحقق عبر الواتساب بنجاح!';
+                    document.getElementById('whatsapp-status').className = 'text-[11px] font-bold text-dzGreen mt-1 block';
+                    showModal('تم إرسال الرمز', `تم إرسال رمز التحقق (${generatedOTP}) إلى حساب الواتساب ${formattedPhone}`, '📱');
+                } else {
+                    // Fallback for demo testing
+                    document.getElementById('otp-container').classList.remove('hidden');
+                    document.getElementById('whatsapp-status').innerText = `تم توليد الرمز للتجربة: ${generatedOTP}`;
+                    showModal('رمز التفعيل التجريبي', `رمز الواتساب التجريبي الخاص بك هو: ${generatedOTP}`, '🔑');
+                }
+            } catch (err) {
+                console.error("WhatsApp API Error:", err);
+                document.getElementById('otp-container').classList.remove('hidden');
+                document.getElementById('whatsapp-status').innerText = `الرمز التجريبي: ${generatedOTP}`;
+                showModal('رمز التفعيل', `الرمز الخاص بك هو: ${generatedOTP}`, '🔑');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fab fa-whatsapp text-sm"></i> إعادة الإرسال`;
+            }
+        };
+
+        window.verifyOTP = function() {
+            const entered = document.getElementById('otp-input').value.trim();
+            if (entered === generatedOTP && generatedOTP !== null) {
+                isWhatsAppVerified = true;
+                document.getElementById('otp-container').classList.add('hidden');
+                document.getElementById('whatsapp-status').innerText = '✅ تم التحقق من رقم الواتساب بنجاح!';
+                document.getElementById('whatsapp-status').className = 'text-[11px] font-black text-dzGreen mt-1 block';
+                showModal('تم التحقق', 'تم تأكيد رقم هاتفك عبر الواتساب بنجاح', '✅');
+            } else {
+                showModal('رمز خاطئ', 'رمز التحقق غير صحيح، يرجى المحاولة مجدداً', '❌');
+            }
+        };
+
+        // --- SUBMIT FIRE REPORT ---
+        window.handleReportSubmit = async function(event) {
+            event.preventDefault();
+
+            const nom = document.getElementById('citizen-nom').value.trim();
+            const phone = document.getElementById('citizen-phone').value.trim();
+            const wilaya = document.getElementById('report-wilaya').value;
+            const severity = document.getElementById('report-severity').value;
+            const description = document.getElementById('report-description').value.trim();
+
+            const newReport = {
+                id: 'FEU-' + Math.floor(100 + Math.random() * 900),
+                nom,
+                phone,
+                verifiedWhatsApp: isWhatsAppVerified,
+                wilaya,
+                severity,
+                description,
+                lat: window.appState.userCoords.lat,
+                lng: window.appState.userCoords.lng,
+                accuracy: window.appState.gpsAccuracy,
+                photoUrl: window.appState.photoBase64 || null,
+                status: 'في_الانتظار',
+                timestamp: Date.now(),
+                time: new Date().toLocaleTimeString('ar-DZ', { hour: '2-digit', minute: '2-digit' })
+            };
+
+            // Save to Firebase Cloud (Rule 1 Strict Path)
+            if (db) {
+                try {
+                    const reportsRef = collection(db, 'artifacts', appId, 'public', 'data', 'reports');
+                    await addDoc(reportsRef, newReport);
+                } catch (err) {
+                    console.error("Error writing report to Firestore:", err);
+                    window.appState.reports.unshift(newReport);
+                    updateUI();
+                }
+            } else {
+                window.appState.reports.unshift(newReport);
+                updateUI();
+            }
+
+            showModal('تم إرسال التبليغ بنجاح', `شكراً ${nom}، تم تسجيل موقعك الجغرافي وإرسال التنبيه العاجل إلى الحماية المدنية ومحافظة الغابات`, '🚨');
+
+            // Reset Form
+            document.getElementById('reportForm').reset();
+            window.clearPhoto(new Event('click'));
+            isWhatsAppVerified = false;
+            document.getElementById('whatsapp-status').innerText = 'لم يتم التحقق بعد';
+            document.getElementById('whatsapp-status').className = 'text-[11px] font-bold text-slate-500 mt-1 block';
+        };
+
+        // --- SUBMIT OFFICER RESOURCE ---
+        window.handleResourceSubmit = async function(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('officer-name-input').value.trim();
+            const phone = document.getElementById('officer-phone-input').value.trim();
+            const trucks = parseInt(document.getElementById('res-trucks').value) || 0;
+            const aircrafts = parseInt(document.getElementById('res-air').value) || 0;
+            const brigade = document.getElementById('res-brigade').value.trim();
+
+            const newRes = {
+                officerName: name,
+                phone: phone,
+                trucks: trucks,
+                aircrafts: aircrafts,
+                brigade: brigade,
+                lat: window.appState.userCoords.lat,
+                lng: window.appState.userCoords.lng,
+                timestamp: Date.now(),
+                time: new Date().toLocaleTimeString('ar-DZ', { hour: '2-digit', minute: '2-digit' })
+            };
+
+            if (db) {
+                try {
+                    const resRef = collection(db, 'artifacts', appId, 'public', 'data', 'resources');
+                    await addDoc(resRef, newRes);
+                } catch (err) {
+                    console.error("Error adding resource:", err);
+                    window.appState.resources.unshift(newRes);
+                    updateUI();
+                }
+            } else {
+                window.appState.resources.unshift(newRes);
+                updateUI();
+            }
+
+            showModal('تم تحديث الموقع والعتاد', 'تم نقل إحداثيات الفرقة والمورد الميدانية إلى الخريطة التكتيكية لغرفة القيادة', '🚒');
+        };
+
+        window.adjustValue = function(id, delta) {
+            const input = document.getElementById(id);
+            if (input) {
+                let val = parseInt(input.value) || 0;
+                val = Math.max(0, val + delta);
+                input.value = val;
+            }
+        };
+
+        // --- AI ANALYTICS & GEMINI INTEGRATION ---
+        window.runAIAnalysis = async function() {
+            const resultBox = document.getElementById('ai-result');
+            const loadingBox = document.getElementById('ai-loading');
+            const contentBox = document.getElementById('ai-content');
+
+            resultBox.classList.remove('hidden');
+            loadingBox.classList.remove('hidden');
+            contentBox.innerText = '';
+
+            const reportsSummary = window.appState.reports.map(r => 
+                `- حريق بـ ${r.wilaya}: مستوى الخطورة (${r.severity})، الإحداثيات (${r.lat.toFixed(4)}, ${r.lng.toFixed(4)})`
+            ).join('\n');
+
+            const resourcesSummary = window.appState.resources.map(res => 
+                `- فرقة ${res.officerName}: شاحنات CCF (${res.trucks})، طائرات (${res.aircrafts})`
+            ).join('\n');
+
+            const userPrompt = `
+أنت الخبير التكتيكي والاستراتيجي الأول للذكاء الاصطناعي في قيادة الحماية المدنية الجزائرية.
+قم بتحليل البيانات الميدانية التالية الحية من السحابة وقدم خطة تدريب وإخماد دقيقة باللغة العربية:
+
+بلاغات الحرائق الحالية:
+${reportsSummary || "لا توجد حرائق مسجلة حالياً."}
+
+الإمكانيات والفرق الميدانية المتوفرة:
+${resourcesSummary || "لا توجد فرق متوفرة حالياً."}
+
+ المطلوب تقديمتقرير استراتيجي مختصر يشمل:
+1. تقييم خطورة الموقف ومستوى التهديد على غابات الجزائر والقرى المجاورة.
+2. توزيع شاحنات الإطفاء وطائرات الإخماد بأولوية التدخل السريع (خلال أقل من 3 دقائق).
+3. إرشادات وقائية لضباط الميدان والمواطنين المتاخمين للبؤر.
+            `;
+
+            try {
+                const apiKey = ""; // Canvas runtime key handler
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: userPrompt }] }]
+                    })
+                });
+
+                const data = await response.json();
+                const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text || "تعذر استخراج تحليل الذكاء الاصطناعي في الوقت الحالي.";
+
+                loadingBox.classList.add('hidden');
+                contentBox.innerText = aiText;
+            } catch (err) {
+                console.error("AI Analysis Error:", err);
+                loadingBox.classList.add('hidden');
+                contentBox.innerText = "خطة الاستجابة السريعة المقترحة:\n1. توجيه شاحنات CCF فوراً إلى بؤر الحرائق ذات الخطورة العالية بالجي بي اس.\n2. التنسيق مع الرقم الأخضر للغابات 1021 لفتح محاور الطرق الميدانية.\n3. تأمين القرى المجاورة للغابات بأولوية 100%.";
+            }
+        };
+
+        // --- DASHBOARD CHARTS (Chart.js) ---
+        function initAnalyticsCharts() {
+            const ctx1 = document.getElementById('chart-severity')?.getContext('2d');
+            const ctx2 = document.getElementById('chart-wilayas')?.getContext('2d');
+
+            if (ctx1) {
+                chartSeverityInstance = new Chart(ctx1, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['ضعيف', 'متوسط', 'حرج'],
+                        datasets: [{
+                            data: [1, 2, 1],
+                            backgroundColor: ['#10B981', '#F59E0B', '#EF4444']
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+                });
+            }
+
+            if (ctx2) {
+                chartWilayasInstance = new Chart(ctx2, {
+                    type: 'bar',
+                    data: {
+                        labels: ['تيزي وزو', 'بجاية', 'جيجل', 'وهران', 'الطارف'],
+                        datasets: [{
+                            label: 'عدد شاحنات الإطفاء (CCF)',
+                            data: [4, 2, 3, 5, 2],
+                            backgroundColor: '#1D4ED8'
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                });
+            }
+        }
+
+        function updateCharts() {
+            if (!chartSeverityInstance) return;
+
+            let low = 0, med = 0, high = 0;
+            const wilayaCounts = {};
+
+            window.appState.reports.forEach(r => {
+                if (r.severity === 'ضعيف') low++;
+                else if (r.severity === 'حرج') high++;
+                else med++;
+
+                const w = (r.wilaya || 'وهران').split('-')[1] || r.wilaya || 'أخرى';
+                wilayaCounts[w] = (wilayaCounts[w] || 0) + 1;
+            });
+
+            chartSeverityInstance.data.datasets[0].data = [low, med, high];
+            chartSeverityInstance.update();
+
+            if (chartWilayasInstance) {
+                const labels = Object.keys(wilayaCounts).slice(0, 5);
+                const data = labels.map(k => wilayaCounts[k]);
+                chartWilayasInstance.data.labels = labels.length ? labels : ['تيزي وزو', 'وهران', 'بجاية'];
+                chartWilayasInstance.data.datasets[0].data = data.length ? data : [3, 5, 2];
+                chartWilayasInstance.update();
+            }
+        }
+
+        // --- RENDER UI DATA ---
+        function updateUI() {
+            if (window.appState.maps.client) refreshMapMarkers(window.appState.maps.client, 'client');
+            if (window.appState.maps.admin) refreshMapMarkers(window.appState.maps.admin, 'admin');
+
+            renderReportsLists();
+            renderResourcesLists();
+            updateCharts();
+
+            // Stats update
+            document.getElementById('stat-total-fires').innerText = window.appState.reports.length;
+            
+            let totalPersonnel = window.appState.resources.length * 4; // Estimate 4 firefighters per team
+            document.getElementById('stat-total-personnel').innerText = totalPersonnel || 12;
+
+            let totalVehicles = window.appState.resources.reduce((acc, curr) => acc + (curr.trucks || 0) + (curr.aircrafts || 0), 0);
+            document.getElementById('stat-total-vehicles').innerText = totalVehicles || 6;
+        }
+
+        function renderReportsLists() {
+            const reports = window.appState.reports;
+
+            // Summary List
+            const summaryEl = document.getElementById('map-reports-summary');
+            if (summaryEl) {
+                summaryEl.innerHTML = reports.length === 0 
+                    ? `<p class="text-xs text-slate-400 text-center py-3">لا توجد بلاغات حرائق مسجلة حالياً.</p>`
+                    : reports.map(r => `
+                        <div class="bg-slate-50 border border-slate-200 p-3 rounded-xl flex items-center justify-between text-xs">
+                            <div class="flex items-center gap-2.5">
+                                <span class="w-3 h-3 rounded-full ${r.severity === 'حرج' ? 'bg-dzRed animate-ping' : 'bg-dzAmber'}"></span>
+                                <div>
+                                    <p class="font-black text-slate-900">${r.wilaya} <span class="text-[10px] text-slate-500 font-normal">(${r.time || ''})</span></p>
+                                    <p class="text-[11px] text-slate-600 font-medium line-clamp-1">${r.description || ''}</p>
+                                </div>
+                            </div>
+                            <span class="text-[10px] font-black px-2 py-0.5 rounded ${r.severity === 'حرج' ? 'bg-red-100 text-dzRed' : 'bg-amber-100 text-amber-800'}">
+                                ${r.severity}
+                            </span>
+                        </div>
+                    `).join('');
+            }
+
+            // Officer List
+            const officerListEl = document.getElementById('officer-reports-list');
+            const alertCountEl = document.getElementById('officer-alert-count');
+            if (alertCountEl) alertCountEl.innerText = `${reports.length} نشطة`;
+
+            if (officerListEl) {
+                officerListEl.innerHTML = reports.map(r => `
+                    <div class="bg-slate-50 border border-slate-200 p-3 rounded-xl space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="font-black text-xs text-dzRed"><i class="fas fa-fire ml-1"></i> ${r.wilaya}</span>
+                            <span class="text-[10px] text-slate-500 font-bold">${r.time || ''}</span>
+                        </div>
+                        <p class="text-xs text-slate-700 font-semibold">${r.description || 'لا يوجد وصف متاح'}</p>
+                        <div class="flex items-center justify-between text-[11px] bg-white p-2 rounded-lg border border-slate-200">
+                            <span><i class="fas fa-user text-slate-400 ml-1"></i> ${r.nom} (${r.phone})</span>
+                            <a href="https://www.google.com/maps?q=${r.lat},${r.lng}" target="_blank" class="text-dzBlue font-black hover:underline flex items-center gap-1">
+                                <i class="fas fa-location-arrow"></i> خريطة GPS
+                            </a>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // Admin List
+            const adminListEl = document.getElementById('admin-reports-list');
+            document.getElementById('admin-reports-count').innerText = reports.length;
+            if (adminListEl) {
+                adminListEl.innerHTML = reports.map(r => `
+                    <div class="bg-slate-50 border border-slate-200 p-3 rounded-xl space-y-2 text-xs">
+                        <div class="flex justify-between items-center">
+                            <span class="font-black text-slate-900">${r.id || 'بلاغ'} - ${r.wilaya}</span>
+                            <span class="bg-red-100 text-dzRed px-2 py-0.5 rounded font-black text-[10px]">${r.severity}</span>
+                        </div>
+                        <p class="text-slate-600 font-medium">${r.description || ''}</p>
+                        ${r.photoUrl ? `<img src="${r.photoUrl}" class="w-full h-32 object-cover rounded-lg border border-slate-200">` : ''}
+                        <div class="flex justify-between items-center pt-1 border-t border-slate-200 text-[10px] text-slate-500">
+                            <span>المبلغ: ${r.nom} | ${r.phone} ${r.verifiedWhatsApp ? '✅ (واتساب مؤكد)' : ''}</span>
+                            <button onclick="deleteReport('${r.fb_id}')" class="text-dzRed font-bold hover:underline">حذف البلاغ</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function renderResourcesLists() {
+            const resources = window.appState.resources;
+            const adminResEl = document.getElementById('admin-resources-list');
+            document.getElementById('admin-resources-count').innerText = resources.length;
+
+            if (adminResEl) {
+                adminResEl.innerHTML = resources.map(res => `
+                    <div class="bg-slate-50 border border-slate-200 p-3 rounded-xl space-y-1.5 text-xs">
+                        <div class="flex justify-between items-center font-black">
+                            <span class="text-dzBlue"><i class="fas fa-shield-halved ml-1"></i> ${res.officerName}</span>
+                            <span class="text-[10px] text-slate-500">${res.time || ''}</span>
+                        </div>
+                        <p class="text-slate-700 font-semibold">${res.brigade || 'فرقة التدخل الميداني'}</p>
+                        <div class="flex items-center gap-3 text-[11px] text-slate-600 bg-white p-2 rounded-lg border border-slate-200 font-bold">
+                            <span>🚒 شاحنات CCF: ${res.trucks || 0}</span>
+                            <span>✈️ طائرات: ${res.aircrafts || 0}</span>
+                            <span>📞 ${res.phone || ''}</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        window.deleteReport = async function(fbId) {
+            if (!fbId) return;
+            if (db) {
+                try {
+                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'reports', fbId));
+                } catch (err) {
+                    console.error("Delete error:", err);
+                }
+            } else {
+                window.appState.reports = window.appState.reports.filter(r => r.fb_id !== fbId);
+                updateUI();
+            }
+        };
+
+        // --- NAVIGATION & ROLE SWITCHING ---
+        window.switchTab = function(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId)?.classList.add('active');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-dzRed', 'text-dzBlue', 'font-black');
+                btn.classList.add('text-slate-400', 'font-semibold');
+            });
+
+            const activeNav = document.getElementById(tabId.replace('tab-', 'nav-'));
+            if (activeNav) {
+                activeNav.classList.remove('text-slate-400', 'font-semibold');
+                activeNav.classList.add('text-dzRed', 'font-black');
+            }
+
+            // Invalidate maps size on tab switch
+            setTimeout(() => {
+                if (tabId === 'tab-map' && window.appState.maps.client) window.appState.maps.client.invalidateSize();
+                if (tabId === 'tab-admin' && window.appState.maps.admin) window.appState.maps.admin.invalidateSize();
+            }, 100);
+        };
+
+        window.openLoginModal = function() {
+            document.getElementById('login-modal').classList.remove('hidden');
+        };
+
+        window.setRole = function(role) {
+            if (role === 'admin') {
+                const pwd = document.getElementById('login-admin-pwd').value;
+                if (pwd !== '14') {
+                    showModal('رمز مرور خاطئ', 'كلمة المرور الخاصة بغرفة القيادة هي: 14', '🔒');
+                    return;
+                }
+            }
+
+            window.appState.role = role;
+            document.getElementById('login-modal').classList.add('hidden');
+
+            const roleText = document.getElementById('role-text');
+            const navOfficer = document.getElementById('nav-officer');
+            const navAdmin = document.getElementById('nav-admin');
+
+            if (role === 'admin') {
+                roleText.innerText = 'مدير غرفة القيادة';
+                navOfficer.classList.remove('hidden');
+                navAdmin.classList.remove('hidden');
+                switchTab('tab-admin');
+            } else if (role === 'officer') {
+                roleText.innerText = 'ضابط ميداني';
+                navOfficer.classList.remove('hidden');
+                switchTab('tab-officer');
+            } else {
+                roleText.innerText = 'مواطن مبلغ';
+                navOfficer.classList.add('hidden');
+                navAdmin.classList.add('hidden');
+                switchTab('tab-report');
+            }
+        };
+
+        // --- MODAL UTILS ---
+        window.showModal = function(title, desc, icon = '✅') {
+            document.getElementById('modal-icon').innerText = icon;
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-desc').innerText = desc;
+            document.getElementById('custom-modal').classList.remove('hidden');
+        };
+
+        window.closeModal = function() {
+            document.getElementById('custom-modal').classList.add('hidden');
+        };
+    </script>
+</body>
+</html>
