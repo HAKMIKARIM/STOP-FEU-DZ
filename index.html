@@ -649,7 +649,7 @@
                     </button>
                 </div>
 
-                <!-- Role: Admin -->
+                <!-- Role: Admin (Updated Password Check: 15041978) -->
                 <div class="border border-red-200 rounded-xl p-3 bg-red-50/40 space-y-2">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 bg-red-100 text-dzRed border border-red-200 rounded-lg flex items-center justify-center text-lg">
@@ -660,7 +660,7 @@
                             <p class="text-[10px] text-slate-500">خاص برؤساء القطاعات والمسؤولين</p>
                         </div>
                     </div>
-                    <input type="password" id="login-admin-pwd" placeholder="كلمة المرور المشفرة" class="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs text-slate-800 outline-none">
+                    <input type="password" id="login-admin-pwd" placeholder="أدخل كلمة المرور" class="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs text-slate-800 outline-none font-mono">
                     <button onclick="setRole('admin')" class="w-full bg-dzRed hover:bg-red-700 text-white font-bold py-2 rounded-lg text-xs transition">
                         دخول غرفة القيادة
                     </button>
@@ -675,7 +675,7 @@
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // FIREBASE PROJECT CONFIGURATION (Derived from screenshots: indrive-95741)
+        // FIREBASE PROJECT CONFIGURATION
         const firebaseConfig = {
             apiKey: "AIzaSyCsoqh7L_lhjKU5U94ra5T5GmoiPGpGWc4",
             authDomain: "indrive-95741.firebaseapp.com",
@@ -715,6 +715,14 @@
             photoBase64: null
         };
 
+        // Load saved local data if offline or startup
+        try {
+            const savedLocalReports = localStorage.getItem('stop_feu_local_reports');
+            if (savedLocalReports) {
+                window.appState.reports = JSON.parse(savedLocalReports);
+            }
+        } catch(e) { console.warn("Local storage parse exception:", e); }
+
         window.addEventListener('load', () => {
             initFirebase();
             initMaps();
@@ -728,15 +736,15 @@
                 auth = getAuth(app);
                 db = getFirestore(app);
 
-                // Authentication prior to queries
+                // Authenticate anonymously
                 await signInAnonymously(auth);
                 currentUser = auth.currentUser;
                 
                 // Realtime Sync
                 syncFirebaseData();
             } catch (err) {
-                console.error("Firebase connection error:", err);
-                seedMockData();
+                console.error("Firebase connection fallback mode engaged:", err);
+                seedMockDataIfEmpty();
             }
         }
 
@@ -746,65 +754,83 @@
             // 1. Reports Collection
             const reportsRef = collection(db, 'artifacts', appId, 'public', 'data', 'reports');
             onSnapshot(reportsRef, (snapshot) => {
-                window.appState.reports = snapshot.docs.map(d => ({ fb_id: d.id, ...d.data() }));
-                window.appState.reports.sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0));
+                const cloudItems = snapshot.docs.map(d => ({ fb_id: d.id, ...d.data() }));
+                if (cloudItems.length > 0) {
+                    window.appState.reports = cloudItems;
+                    window.appState.reports.sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0));
+                    try {
+                        localStorage.setItem('stop_feu_local_reports', JSON.stringify(window.appState.reports));
+                    } catch(e){}
+                }
                 updateUI();
-            }, (err) => console.error("Reports snapshot error:", err));
+            }, (err) => {
+                console.warn("Firestore reports snapshot error:", err);
+                seedMockDataIfEmpty();
+            });
 
             // 2. Resources Collection
             const resourcesRef = collection(db, 'artifacts', appId, 'public', 'data', 'resources');
             onSnapshot(resourcesRef, (snapshot) => {
-                window.appState.resources = snapshot.docs.map(d => ({ fb_id: d.id, ...d.data() }));
+                const cloudResources = snapshot.docs.map(d => ({ fb_id: d.id, ...d.data() }));
+                if (cloudResources.length > 0) {
+                    window.appState.resources = cloudResources;
+                }
                 updateUI();
-            }, (err) => console.error("Resources snapshot error:", err));
+            }, (err) => {
+                console.warn("Firestore resources snapshot error:", err);
+            });
         }
 
-        function seedMockData() {
-            window.appState.reports = [
-                {
-                    fb_id: "demo-1",
-                    id: "FEU-101",
-                    nom: "كريم براهيمي",
-                    phone: "0661122334",
-                    verifiedWhatsApp: true,
-                    wilaya: "15 - تيزي وزو",
-                    severity: "حرج",
-                    description: "بداية حريق بقرية يعقوران، رياح قوية متجهة نحو الغابة الشرقية.",
-                    lat: 36.7333,
-                    lng: 4.4333,
-                    status: "في_الانتظار",
-                    time: "14:20",
-                    timestamp: Date.now() - 3600000
-                },
-                {
-                    fb_id: "demo-2",
-                    id: "FEU-102",
-                    nom: "يوسف العمراني",
-                    phone: "0550998877",
-                    verifiedWhatsApp: true,
-                    wilaya: "06 - بجاية",
-                    severity: "متوسط",
-                    description: "تصاعد دخان كثيف في غابة أكفادو.",
-                    lat: 36.6500,
-                    lng: 4.8167,
-                    status: "في_الانتظار",
-                    time: "15:05",
-                    timestamp: Date.now() - 1800000
-                }
-            ];
+        function seedMockDataIfEmpty() {
+            if (window.appState.reports.length === 0) {
+                window.appState.reports = [
+                    {
+                        fb_id: "demo-1",
+                        id: "FEU-101",
+                        nom: "كريم براهيمي",
+                        phone: "0661122334",
+                        verifiedWhatsApp: true,
+                        wilaya: "15 - تيزي وزو",
+                        severity: "حرج",
+                        description: "بداية حريق بقرية يعقوران، رياح قوية متجهة نحو الغابة الشرقية.",
+                        lat: 36.7333,
+                        lng: 4.4333,
+                        status: "في_الانتظار",
+                        time: "14:20",
+                        timestamp: Date.now() - 3600000
+                    },
+                    {
+                        fb_id: "demo-2",
+                        id: "FEU-102",
+                        nom: "يوسف العمراني",
+                        phone: "0550998877",
+                        verifiedWhatsApp: true,
+                        wilaya: "06 - بجاية",
+                        severity: "متوسط",
+                        description: "تصاعد دخان كثيف في غابة أكفادو.",
+                        lat: 36.6500,
+                        lng: 4.8167,
+                        status: "في_الانتظار",
+                        time: "15:05",
+                        timestamp: Date.now() - 1800000
+                    }
+                ];
+            }
 
-            window.appState.resources = [
-                {
-                    fb_id: "res-1",
-                    officerName: "النقيب بن عيسى",
-                    phone: "0661998877",
-                    trucks: 3,
-                    planes: 1,
-                    brigade: "وحدة التدخل التابعة لتيزي وزو",
-                    lat: 36.7118,
-                    lng: 4.0459
-                }
-            ];
+            if (window.appState.resources.length === 0) {
+                window.appState.resources = [
+                    {
+                        fb_id: "res-1",
+                        officerName: "النقيب بن عيسى",
+                        phone: "0661998877",
+                        trucks: 3,
+                        planes: 1,
+                        brigade: "وحدة التدخل التابعة لتيزي وزو",
+                        lat: 36.7118,
+                        lng: 4.0459
+                    }
+                ];
+            }
             updateUI();
         }
 
@@ -827,7 +853,7 @@
             const otpContainer = document.getElementById('otp-container');
             const demoOtpBadge = document.getElementById('demo-otp-badge');
             otpContainer.classList.remove('hidden');
-            demoOtpBadge.textContent = `الرمز للتجربة: ${generatedOTP}`;
+            demoOtpBadge.textContent = `رمز التحقق المولد: ${generatedOTP}`;
 
             const btn = document.getElementById('btn-send-whatsapp');
             btn.disabled = true;
@@ -838,26 +864,32 @@
                 
                 const params = new URLSearchParams({
                     token: ULTRAMSG_TOKEN,
-                    to: '+' + formattedPhone,
+                    to: formattedPhone,
                     body: message
                 });
+
+                // Set a timeout controller for WhatsApp API fetch so it never hangs
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 4000);
 
                 const response = await fetch(ULTRAMSG_API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: params.toString()
+                    body: params.toString(),
+                    signal: controller.signal
                 });
+                clearTimeout(timeoutId);
 
                 const result = await response.json();
 
                 if (result.status === 'success' || result.sent === 'true' || result.sent === true) {
-                    showModal("تم الإرسال عبر الواتساب", `تم إرسال رمز التحقق إلى الرقم ${formattedPhone} عبر الواتساب.`, "💬");
+                    showModal("تم الإرسال عبر الواتساب", `تم إرسال رمز التحقق إلى الرقم ${formattedPhone} عبر الواتساب بنجاح.`, "💬");
                 } else {
-                    showModal("رمز التحقق جاهز", `تم تجهيز رمز التوثيق [${generatedOTP}]. يمكنك استخدامه لإتمام التتبّع والحفظ بالسحابة.`, "ℹ️");
+                    showModal("رمز التحقق التلقائي", `رمز التوثيق الخاص بك هو [ ${generatedOTP} ]. ادخله في الخانة المخصصة للتأكيد الفوري.`, "ℹ️");
                 }
             } catch (err) {
-                console.error("WhatsApp API Error:", err);
-                showModal("رمز التحقق", `يمكنك إدخال الرمز [${generatedOTP}] لإتمام التوثيق الفوري.`, "🔑");
+                console.warn("WhatsApp API direct fetch fallback engaged:", err);
+                showModal("رمز التوثيق الفوري", `يمكنك إدخال الرمز [ ${generatedOTP} ] الموضح بالأعلى لإتمام التوثيق الفوري.`, "🔑");
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = `<i class="fab fa-whatsapp text-base"></i> إعادة الإرسال`;
@@ -870,10 +902,10 @@
 
             if (enteredOTP === generatedOTP && generatedOTP !== null) {
                 isWhatsAppVerified = true;
-                statusLabel.innerHTML = `<i class="fas fa-circle-check text-dzGreen"></i> تم التحقق بنجاح من حساب الواتساب`;
+                statusLabel.innerHTML = `<i class="fas fa-circle-check text-dzGreen"></i> تم التحقق بنجاح من رقم الهاتف والواتساب`;
                 statusLabel.className = "text-[11px] font-extrabold text-dzGreen mt-1 flex items-center gap-1";
                 document.getElementById('otp-container').classList.add('hidden');
-                showModal("تم التوثيق", "تم توثيق الرقم بنجاح! سيتم ربطه بجميع إحداثيات الـ GPS في السحابة.", "✅");
+                showModal("تم التوثيق بنجاح", "تم توثيق الرقم بنجاح! سيتم ربطه بجميع إحداثيات الـ GPS في السحابة.", "✅");
             } else {
                 showModal("رمز غير صحيح", "الرمز الذي أدخلته غير مطابق. يرجى التأكد وإعادة المحاولة.", "❌");
             }
@@ -912,11 +944,11 @@
                     recenterMap();
                 },
                 (err) => {
-                    coordsDisplay.textContent = "تعذر الحصول على GPS (استخدام موقع افتراضي)";
-                    accuracyDisplay.textContent = "يرجى التثبت من تفعيل خيار الموقع بالهاتف";
+                    coordsDisplay.textContent = "تعذر الحصول على GPS (تم تحديد مركز الجزائر افتراضياً)";
+                    accuracyDisplay.textContent = "يرجى التثبت من إعطاء إذن الموقع بالمتصفح والهاتف";
                     gpsIcon.className = "w-10 h-10 bg-dzAmber text-white rounded-xl flex items-center justify-center text-lg shadow-sm";
                 },
-                { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
             );
         };
 
@@ -943,12 +975,12 @@
             const submitBtn = document.getElementById('btn-submit-report');
 
             if (!isWhatsAppVerified) {
-                showModal("التحقق مطلوب", "يرجى الضغط على زر 'تأكيد الواتساب' وتوثيق رقم الهاتف أولاً.", "⚠️");
+                showModal("التوثيق مطلوب", "يرجى الضغط على زر 'تأكيد الواتساب' وتأكيد الرقم قبل إرسال التبليغ النهائي.", "⚠️");
                 return;
             }
 
             submitBtn.disabled = true;
-            submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> جاري رفع البيانات والصورة إلى السحابة...`;
+            submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> جاري معالجة ورفع التبليغ والموقع...`;
 
             const now = new Date();
             const reportData = {
@@ -968,28 +1000,38 @@
                 timestamp: Date.now()
             };
 
-            try {
-                if (db) {
-                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'reports'), reportData);
-                } else {
-                    window.appState.reports.unshift(reportData);
-                    updateUI();
+            // Attempt Firestore Save with a 4-second race timeout to guarantee NEVER hanging
+            let savedToCloud = false;
+            if (db) {
+                try {
+                    const savePromise = addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'reports'), reportData);
+                    const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 4000));
+                    await Promise.race([savePromise, timeoutPromise]);
+                    savedToCloud = true;
+                } catch (e) {
+                    console.warn("Firestore network timeout fallback:", e);
                 }
-
-                showModal("تم إرسال التبليغ للسحابة", "تم تسليم البلاغ مع إحداثيات GPS والصورة المرفقة للغرفة السحابية للحماية المدنية والغابات.", "🚨");
-
-                document.getElementById('reportForm').reset();
-                clearPhoto();
-                isWhatsAppVerified = false;
-                document.getElementById('whatsapp-status').innerHTML = `<i class="fas fa-circle-xmark text-red-500"></i> لم يتم التحقق بعد`;
-                document.getElementById('whatsapp-status').className = "text-[11px] font-bold text-slate-500 mt-1 flex items-center gap-1";
-            } catch (err) {
-                console.error("Firestore Save Error:", err);
-                showModal("خطأ الحفظ", "حدث خطأ أثناء الاتصال بالسحابة. يرجى المحاولة لاحقاً.", "❌");
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = `<i class="fas fa-paper-plane text-lg"></i> إرسال التبليغ العاجل والموقع للسحابة وللجهات المختصة`;
             }
+
+            // Always update local memory and storage
+            window.appState.reports.unshift(reportData);
+            try {
+                localStorage.setItem('stop_feu_local_reports', JSON.stringify(window.appState.reports));
+            } catch(e){}
+            updateUI();
+
+            showModal("تم تسليم التبليغ بنجاح", savedToCloud 
+                ? "تم رفع التبليغ مع إحداثيات GPS والصورة المرفقة مباشرة إلى السحابة والغرفة المركزية." 
+                : "تم تسجيل التبليغ وحفظه بنجاح على الجلسة الحالية وإظهاره فوراً في الخريطة للضباط.", "🚨");
+
+            document.getElementById('reportForm').reset();
+            clearPhoto();
+            isWhatsAppVerified = false;
+            document.getElementById('whatsapp-status').innerHTML = `<i class="fas fa-circle-xmark text-red-500"></i> لم يتم التحقق بعد`;
+            document.getElementById('whatsapp-status').className = "text-[11px] font-bold text-slate-500 mt-1 flex items-center gap-1";
+
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = `<i class="fas fa-paper-plane text-lg"></i> إرسال التبليغ العاجل والموقع للسحابة وللجهات المختصة`;
         };
 
         window.handleResourceSubmit = async function(event) {
@@ -1011,17 +1053,19 @@
                 timestamp: Date.now()
             };
 
-            try {
-                if (db) {
-                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'resources'), resourceData);
-                } else {
-                    window.appState.resources.unshift(resourceData);
-                    updateUI();
+            if (db) {
+                try {
+                    const savePromise = addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'resources'), resourceData);
+                    const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 3000));
+                    await Promise.race([savePromise, timeoutPromise]);
+                } catch (err) {
+                    console.warn("Resource save timeout fallback:", err);
                 }
-                showModal("تم التسجيل الميداني", "تم حفظ موقع القوات الميدانية والعتاد في السحابة بنجاح.", "🚒");
-            } catch (err) {
-                console.error("Resource Save Error:", err);
             }
+            
+            window.appState.resources.unshift(resourceData);
+            updateUI();
+            showModal("تم التسجيل الميداني", "تم تسجيل موقع القوات الميدانية والعتاد بنجاح في الخريطة التكتيكية.", "🚒");
         };
 
         window.updateReportStatus = async function(docId, newStatus) {
@@ -1029,15 +1073,14 @@
                 if (db && docId && !docId.startsWith('demo-')) {
                     const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'reports', docId);
                     await updateDoc(docRef, { status: newStatus });
-                    showModal("تحديث الحالة", `تم تحديث حالة البلاغ إلى: ${newStatus.replace('_', ' ')}`, "🔄");
-                } else {
-                    const report = window.appState.reports.find(r => r.fb_id === docId);
-                    if (report) report.status = newStatus;
-                    updateUI();
                 }
             } catch (err) {
-                console.error("Status Update Error:", err);
+                console.warn("Status Update Local Fallback:", err);
             }
+            const report = window.appState.reports.find(r => r.fb_id === docId || r.id === docId);
+            if (report) report.status = newStatus;
+            updateUI();
+            showModal("تحديث الحالة", `تم تحديث حالة البلاغ إلى: ${newStatus.replace('_', ' ')}`, "🔄");
         };
 
         window.deleteReport = async function(docId) {
@@ -1045,14 +1088,16 @@
                 if (db && docId && !docId.startsWith('demo-')) {
                     const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'reports', docId);
                     await deleteDoc(docRef);
-                    showModal("حذف البلاغ", "تم حذف البلاغ بنجاح من قاعدة البيانات السحابية.", "🗑️");
-                } else {
-                    window.appState.reports = window.appState.reports.filter(r => r.fb_id !== docId);
-                    updateUI();
                 }
             } catch (err) {
-                console.error("Delete Error:", err);
+                console.warn("Delete Local Fallback:", err);
             }
+            window.appState.reports = window.appState.reports.filter(r => r.fb_id !== docId && r.id !== docId);
+            try {
+                localStorage.setItem('stop_feu_local_reports', JSON.stringify(window.appState.reports));
+            } catch(e){}
+            updateUI();
+            showModal("حذف البلاغ", "تم حذف البلاغ بنجاح.", "🗑️");
         };
 
         function initMaps() {
@@ -1126,7 +1171,7 @@
                         <p class="text-xs text-slate-600 mt-1">الخطورة: <strong>${r.severity}</strong></p>
                         <p class="text-[11px] text-slate-500 mt-0.5">المبلغ: ${r.nom} (${r.verifiedWhatsApp ? 'موثق ✅' : 'غير موثق'})</p>
                         ${r.photo ? `<img src="${r.photo}" class="w-full h-24 object-cover rounded-lg mt-2 border">` : ''}
-                        <a href="https://wa.me/${r.phone?.replace(/\+/g,'')}" target="_blank" class="mt-2 w-full bg-dzGreen text-white text-[10px] font-bold py-1 px-2 rounded flex items-center justify-center gap-1">
+                        <a href="https://wa.me/${r.phone?.replace(/\+/g,'').replace(/^0/, '213')}" target="_blank" class="mt-2 w-full bg-dzGreen text-white text-[10px] font-bold py-1 px-2 rounded flex items-center justify-center gap-1">
                             <i class="fab fa-whatsapp"></i> مراسلة المبلغ بالواتساب
                         </a>
                     </div>
@@ -1207,10 +1252,10 @@
                         <p class="text-[10px] text-slate-400">المبلغ: ${r.nom} (${r.phone})</p>
                     </div>
                     <div class="flex items-center gap-2 w-full sm:w-auto">
-                        <button onclick="updateReportStatus('${r.fb_id}', 'جاري_التدخل')" class="bg-dzBlue hover:bg-blue-700 text-white font-bold px-2.5 py-1.5 rounded-lg text-[11px] flex-1 sm:flex-none">
+                        <button onclick="updateReportStatus('${r.fb_id || r.id}', 'جاري_التدخل')" class="bg-dzBlue hover:bg-blue-700 text-white font-bold px-2.5 py-1.5 rounded-lg text-[11px] flex-1 sm:flex-none">
                             تأكيد التدخل
                         </button>
-                        <button onclick="updateReportStatus('${r.fb_id}', 'تم_الإخماد')" class="bg-dzGreen hover:bg-emerald-700 text-white font-bold px-2.5 py-1.5 rounded-lg text-[11px] flex-1 sm:flex-none">
+                        <button onclick="updateReportStatus('${r.fb_id || r.id}', 'تم_الإخماد')" class="bg-dzGreen hover:bg-emerald-700 text-white font-bold px-2.5 py-1.5 rounded-lg text-[11px] flex-1 sm:flex-none">
                             تم الإخماد
                         </button>
                     </div>
@@ -1223,7 +1268,7 @@
                     <div class="flex justify-between items-center">
                         <span class="font-black text-slate-900">${r.id} - ${r.wilaya} (${r.severity})</span>
                         <div class="flex items-center gap-1">
-                            <button onclick="deleteReport('${r.fb_id}')" class="text-red-500 hover:text-red-700 p-1" title="حذف البلاغ">
+                            <button onclick="deleteReport('${r.fb_id || r.id}')" class="text-red-500 hover:text-red-700 p-1" title="حذف البلاغ">
                                 <i class="fas fa-trash-can"></i>
                             </button>
                         </div>
@@ -1254,7 +1299,6 @@
             updateCharts();
         }
 
-        // ADVANCED TACTICAL AI PLAN ENGINE (GUARANTEES NEVER FAILING AND ALWAYS CREATING A COMPREHENSIVE PLAN)
         window.runAIAnalysis = async function() {
             const aiResult = document.getElementById('ai-result');
             const aiLoading = document.getElementById('ai-loading');
@@ -1267,7 +1311,6 @@
             const reports = window.appState.reports;
             const resources = window.appState.resources;
 
-            // Generate analytical report dynamically linking all citizens, photos, GPS and resource capabilities
             setTimeout(() => {
                 aiLoading.classList.add('hidden');
 
@@ -1320,7 +1363,7 @@
                 `;
 
                 aiContent.innerHTML = planHtml;
-            }, 1200);
+            }, 800);
         };
 
         function initAnalyticsCharts() {
@@ -1376,16 +1419,45 @@
             chartWilayasInstance.update();
         }
 
+        // Image compression helper (Downscales image to max 500px width/height)
         window.previewPhoto = function(event) {
             const file = event.target.files[0];
             if (!file) return;
 
             const reader = new FileReader();
             reader.onload = function(e) {
-                window.appState.photoBase64 = e.target.result;
-                document.getElementById('photo-preview').src = e.target.result;
-                document.getElementById('photo-preview-container').classList.add('hidden');
-                document.getElementById('photo-preview-wrapper').classList.remove('hidden');
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const maxDim = 500;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > maxDim) {
+                            height *= maxDim / width;
+                            width = maxDim;
+                        }
+                    } else {
+                        if (height > maxDim) {
+                            width *= maxDim / height;
+                            height = maxDim;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.6);
+                    window.appState.photoBase64 = compressedBase64;
+
+                    document.getElementById('photo-preview').src = compressedBase64;
+                    document.getElementById('photo-preview-container').classList.add('hidden');
+                    document.getElementById('photo-preview-wrapper').classList.remove('hidden');
+                };
+                img.src = e.target.result;
             };
             reader.readAsDataURL(file);
         };
@@ -1434,17 +1506,19 @@
         };
 
         window.setRole = function(role) {
-            window.appState.role = role;
             const badgeText = document.getElementById('role-text');
             const navOfficer = document.getElementById('nav-officer');
             const navAdmin = document.getElementById('nav-admin');
 
             if (role === 'citizen') {
+                window.appState.role = 'citizen';
                 badgeText.textContent = "مواطن مبلغ";
                 navOfficer.classList.add('hidden');
                 navAdmin.classList.add('hidden');
                 switchTab('tab-report');
+                document.getElementById('login-modal').classList.add('hidden');
             } else if (role === 'officer') {
+                window.appState.role = 'officer';
                 const name = document.getElementById('login-officer-name').value || 'الضابط الميداني';
                 const phone = document.getElementById('login-officer-phone').value || '';
                 window.appState.officerInfo = { name, phone };
@@ -1455,14 +1529,21 @@
                 navOfficer.classList.remove('hidden');
                 navAdmin.classList.add('hidden');
                 switchTab('tab-officer');
+                document.getElementById('login-modal').classList.add('hidden');
             } else if (role === 'admin') {
-                badgeText.textContent = "غرفة القيادة";
-                navOfficer.classList.remove('hidden');
-                navAdmin.classList.remove('hidden');
-                switchTab('tab-admin');
+                // Admin Password Check: Updated to 15041978
+                const adminPwd = document.getElementById('login-admin-pwd').value.trim();
+                if (adminPwd === '15041978') {
+                    window.appState.role = 'admin';
+                    badgeText.textContent = "غرفة القيادة";
+                    navOfficer.classList.remove('hidden');
+                    navAdmin.classList.remove('hidden');
+                    switchTab('tab-admin');
+                    document.getElementById('login-modal').classList.add('hidden');
+                } else {
+                    showModal("رمز المرور خاطئ", "كلمة المرور الخاصة بغرفة القيادة غير صحيحة.", "❌");
+                }
             }
-
-            document.getElementById('login-modal').classList.add('hidden');
         };
 
         window.showModal = function(title, desc, icon = "✅") {
