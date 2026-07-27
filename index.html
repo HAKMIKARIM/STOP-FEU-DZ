@@ -56,7 +56,7 @@
         body { font-family: 'Cairo', 'Tajawal', sans-serif; background-color: #f8fafc; color: #0f172a; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        #map, #admin-map { height: 48vh; min-height: 350px; width: 100%; border-radius: 1rem; z-index: 10; }
+        #map, #admin-map { height: 50vh; min-height: 380px; width: 100%; border-radius: 1rem; z-index: 10; }
         
         .pulse-flame { animation: pulseFlame 1.3s infinite alternate; }
         @keyframes pulseFlame {
@@ -69,6 +69,20 @@
             0% { background-color: #D21034; }
             100% { background-color: #1D4ED8; }
         }
+
+        /* Custom Hover Tooltips for Leaflet Maps */
+        .leaflet-tooltip.custom-hover-tooltip {
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid #334155;
+            color: #ffffff;
+            border-radius: 0.75rem;
+            padding: 0.75rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            font-family: 'Cairo', sans-serif;
+            z-index: 1000 !important;
+            backdrop-filter: blur(8px);
+        }
+        .leaflet-tooltip-top:before { border-top-color: rgba(15, 23, 42, 0.95); }
 
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #f1f5f9; }
@@ -188,7 +202,6 @@
                                 تأكيد الرمز
                             </button>
                         </div>
-                        <p class="text-[10px] text-slate-500">في حالة تأخر الخادم، اضغط زر التأكيد مباشرة فور ظهور الرمز المؤقت الموضح بالأعلى.</p>
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -349,7 +362,7 @@
                         <h2 class="text-lg font-black text-slate-900 flex items-center gap-2">
                             <i class="fas fa-map-location-dot text-dzGreen"></i> الخريطة التكتيكية الوطنية - الجزائر
                         </h2>
-                        <p class="text-xs text-slate-500">تحديد مواقع الحرائق والوحدات الميدانية المسجلة في السحابة</p>
+                        <p class="text-xs text-slate-500">مرر الفأرة فوق أي بؤرة أو شاحنة لمعاينة المعلومات المباشرة والحقيقية</p>
                     </div>
 
                     <div class="flex items-center gap-2">
@@ -377,7 +390,7 @@
                         </span>
                     </div>
 
-                    <span class="text-[10px] text-slate-400 font-bold">مزامنة هجينة (Direct Sync)</span>
+                    <span class="text-[10px] text-slate-400 font-bold">مزامنة حية بالفأرة (Hover Live Intelligence)</span>
                 </div>
             </div>
 
@@ -468,7 +481,7 @@
                         <h2 class="text-xl font-black text-slate-900 flex items-center gap-2">
                             <i class="fas fa-chess-knight text-dzRed"></i> القيادة المركزية وإدارة قاعدة البيانات السحابية
                         </h2>
-                        <p class="text-xs text-slate-500 mt-0.5">تحليلات الميدان، التحكم التام بالبيانات، والبث العام الفوري</p>
+                        <p class="text-xs text-slate-500 mt-0.5">تحليلات الميدان اللحظية، التحكم التام بالبيانات، والبث العام الفوري</p>
                     </div>
                     <span class="bg-emerald-50 text-dzGreen border border-emerald-200 text-[10px] px-3 py-1 rounded-full font-black flex items-center gap-1">
                         <span class="w-2 h-2 rounded-full bg-dzGreen animate-ping"></span> تحكم شامل
@@ -608,17 +621,17 @@
                     </div>
                 </div>
 
-                <!-- GEMINI AI ENGINE -->
-                <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 p-4 sm:p-5 rounded-2xl text-white relative overflow-hidden shadow-md">
+                <!-- GEMINI AI ENGINE ENHANCED -->
+                <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 p-4 sm:p-5 rounded-2xl text-white relative overflow-hidden shadow-md border border-indigo-500/30">
                     <div class="flex items-center justify-between mb-2">
                         <h3 class="font-black text-indigo-200 text-sm flex items-center gap-2">
                             <i class="fas fa-brain text-indigo-400 text-lg"></i> المساعد التكتيكي الذكي للإخماد (Gemini 3 Flash AI Engine)
                         </h3>
-                        <span class="bg-indigo-500/20 text-indigo-300 text-[10px] px-2.5 py-0.5 rounded border border-indigo-400/30 font-extrabold">استجابة &lt; 3 دقائق</span>
+                        <span class="bg-indigo-500/20 text-indigo-300 text-[10px] px-2.5 py-0.5 rounded border border-indigo-400/30 font-extrabold">هدف الاستجابة &lt; 3 دقائق</span>
                     </div>
 
                     <p class="text-xs text-slate-300 mb-4 leading-relaxed">
-                        يقوم الذكاء الاصطناعي بربط كافة بلاغات المواطنين (الخطورة، الصور، الجي بي اس) المخزنة بالسحابة مع الشاحنات والضباط لتوليد خطة تدخل فورية وتقليل وقت الاستجابة إلى أقل من 3 دقائق.
+                        يقوم المحرك الذكي بربط كافة بلاغات المواطنين (الخطورة، الصور، الجي بي اس GPS) المخزنة بالسحابة لحساب المسافات الدقيقة وقربها من الضباط، وتوزيع الشاحنات (CCF) وطائرات الإخماد تلقائياً لتقديم اتخاذ قرار عاجل.
                     </p>
 
                     <button onclick="runAIAnalysis()" id="btn-ai" class="w-full bg-gradient-to-r from-indigo-500 via-purple-600 to-indigo-600 hover:from-indigo-600 hover:to-purple-700 text-white font-black py-3 rounded-xl text-xs flex justify-center items-center gap-2 transition shadow-lg border border-indigo-400/40">
@@ -627,13 +640,13 @@
                     
                     <div id="ai-result" class="mt-4 p-4 bg-slate-950 rounded-xl text-xs text-slate-200 hidden border border-indigo-500/40 space-y-2">
                         <div id="ai-loading" class="flex items-center gap-2 text-indigo-400 font-bold">
-                            <i class="fas fa-circle-notch fa-spin"></i> جاري تحليل إحداثيات الـ GPS، الصور ونسبة خطورة الحريق لجميع البلاغات...
+                            <i class="fas fa-circle-notch fa-spin"></i> جاري تحليل إحداثيات الـ GPS، الصور ونسبة خطورة الحريق لجميع البلاغات والضباط...
                         </div>
                         <div id="ai-content" class="leading-relaxed font-sans text-slate-200 space-y-3"></div>
                     </div>
                 </div>
 
-                <!-- NEW FEATURE: OFFICERS & COMMAND DIRECTORY / ROSTER -->
+                <!-- OFFICERS & COMMAND DIRECTORY -->
                 <div class="bg-white border border-blue-200 p-4 sm:p-5 rounded-2xl shadow-sm space-y-3">
                     <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                         <div>
@@ -650,11 +663,14 @@
                     </div>
                 </div>
 
-                <!-- ADMIN MAP -->
+                <!-- ADMIN MAP WITH HOVER INTEL -->
                 <div>
-                    <h3 class="text-xs font-black text-slate-800 uppercase tracking-wider mb-2 flex items-center gap-2">
-                        <i class="fas fa-earth-africa text-dzGreen"></i> خريطة القيادة العامة وإدارة الميدان
-                    </h3>
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fas fa-earth-africa text-dzGreen"></i> خريطة القيادة العامة وإدارة الميدان (معلومات حية عند مرور الفأرة)
+                        </h3>
+                        <span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-bold">تحديث آلي مباشر</span>
+                    </div>
                     <div id="admin-map" class="shadow-md border border-slate-200"></div>
                 </div>
 
@@ -848,7 +864,7 @@ service cloud.firestore {
                     </button>
                 </div>
 
-                <!-- Role: Admin (Password: ********) -->
+                <!-- Role: Admin (Password: 15041978) -->
                 <div class="border border-red-200 rounded-xl p-3 bg-red-50/40 space-y-2">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 bg-red-100 text-dzRed border border-red-200 rounded-lg flex items-center justify-center text-lg">
@@ -885,7 +901,6 @@ service cloud.firestore {
             measurementId: "G-RRR96EVB20"
         };
 
-        const appId = 'STOP-FEU-DZ';
         const DIRECT_COMMAND_WHATSAPP = "213798924956";
         
         // WhatsApp UltraMsg Credentials
@@ -928,6 +943,19 @@ service cloud.firestore {
                 cleaned = '213' + cleaned;
             }
             return cleaned;
+        }
+
+        // Calculate Haversine distance in KM between two lat/lng pairs
+        function calculateHaversineDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Earth's radius in kilometers
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = 
+                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
         }
 
         // Emergency Web Audio Siren Sound Synthesizer
@@ -1087,7 +1115,6 @@ service cloud.firestore {
                 app = initializeApp(firebaseConfig);
                 auth = getAuth(app);
                 
-                // Initialize Firestore with Auto-Detect Long Polling to bypass mobile carrier WebSocket blocks
                 db = initializeFirestore(app, {
                     experimentalAutoDetectLongPolling: true
                 });
@@ -1119,7 +1146,6 @@ service cloud.firestore {
         function syncFirebaseData() {
             if (!db) return;
 
-            // Direct real-time sync with Cloud Firestore 'reports' collection
             onSnapshot(collection(db, 'reports'), (snapshot) => {
                 const cloudItems = snapshot.docs.map(d => ({ fb_id: d.id, ...d.data() }));
                 cloudItems.sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0));
@@ -1136,7 +1162,6 @@ service cloud.firestore {
                 updateAdminDBStatusBadge(false, 'خطأ في التزامن مع السحابة (تفقّد القواعد)');
             });
 
-            // Direct real-time sync with Cloud Firestore 'resources' collection (Officer Directory Data)
             onSnapshot(collection(db, 'resources'), (snapshot) => {
                 const cloudResources = snapshot.docs.map(d => ({ fb_id: d.id, ...d.data() }));
                 cloudResources.sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0));
@@ -1144,7 +1169,6 @@ service cloud.firestore {
                 updateUI();
             }, (err) => console.warn("Root resources snapshot error:", err));
 
-            // Global Broadcast Siren Listener
             onSnapshot(collection(db, 'broadcasts'), (snapshot) => {
                 snapshot.docChanges().forEach((change) => {
                     if (change.type === "added") {
@@ -1274,7 +1298,6 @@ service cloud.firestore {
             }
         };
 
-        // Direct Dispatch WhatsApp helper to target 213798924956
         window.sendDirectWhatsAppReport = function(reportId) {
             const r = window.appState.reports.find(item => item.id === reportId || item.fb_id === reportId);
             if (!r) return;
@@ -1343,7 +1366,6 @@ service cloud.firestore {
                 timestamp: Date.now()
             };
 
-            // Analytics Tracking
             try {
                 if (typeof window.gtag === 'function') {
                     window.gtag('event', 'fire_report_submitted', {
@@ -1518,7 +1540,6 @@ service cloud.firestore {
             window.showModal("تم التسجيل الميداني", "تم تسجيل موقع القوات الميدانية والعتاد بنجاح في الخريطة التكتيكية ودليل الضباط.", "🚒");
         };
 
-        // Full CRUD: Update status
         window.updateReportStatus = async function(docId, newStatus) {
             try {
                 if (db && docId && !docId.startsWith('demo-')) {
@@ -1616,40 +1637,66 @@ service cloud.firestore {
 
             const fireIcon = L.divIcon({
                 className: 'custom-fire-marker',
-                html: `<div class="w-8 h-8 bg-red-600 border-2 border-white rounded-full flex items-center justify-center text-white text-base shadow-lg pulse-flame"><i class="fas fa-fire"></i></div>`,
-                iconSize: [32, 32],
-                iconAnchor: [16, 16]
+                html: `<div class="w-9 h-9 bg-red-600 border-2 border-white rounded-full flex items-center justify-center text-white text-base shadow-xl pulse-flame cursor-pointer"><i class="fas fa-fire"></i></div>`,
+                iconSize: [36, 36],
+                iconAnchor: [18, 18]
             });
 
             const truckIcon = L.divIcon({
                 className: 'custom-truck-marker',
-                html: `<div class="w-8 h-8 bg-blue-600 border-2 border-white rounded-full flex items-center justify-center text-white text-sm shadow-lg pulse-unit"><i class="fas fa-truck-field"></i></div>`,
-                iconSize: [32, 32],
-                iconAnchor: [16, 16]
+                html: `<div class="w-9 h-9 bg-blue-600 border-2 border-white rounded-full flex items-center justify-center text-white text-sm shadow-xl cursor-pointer"><i class="fas fa-truck-field"></i></div>`,
+                iconSize: [36, 36],
+                iconAnchor: [18, 18]
             });
 
             window.appState.reports.forEach(r => {
                 if (!r.lat || !r.lng) return;
 
                 const popupHtml = `
-                    <div class="font-sans text-right p-1 min-w-[200px]">
-                        <div class="flex justify-between items-center">
+                    <div class="font-sans text-right p-1.5 min-w-[220px]">
+                        <div class="flex justify-between items-center mb-1">
                             <span class="bg-red-100 text-dzRed text-[10px] font-black px-2 py-0.5 rounded border border-red-200">${r.id || 'حريق'}</span>
-                            <span class="text-[10px] font-bold text-slate-500">${r.status || 'نشط'}</span>
+                            <span class="text-[10px] font-bold ${r.severity === 'حرج' ? 'text-red-600 font-black' : 'text-orange-600'}">${r.severity}</span>
                         </div>
                         <h4 class="font-black text-sm text-slate-900 mt-1">${r.wilaya}</h4>
-                        <p class="text-xs text-slate-600 mt-0.5">الخطورة: <strong>${r.severity}</strong></p>
-                        <p class="text-[11px] text-slate-500 mt-0.5">المبلغ: ${r.nom} (${r.verifiedWhatsApp ? 'موثق ✅' : 'غير موثق'})</p>
-                        ${r.photo ? `<img src="${r.photo}" class="w-full h-24 object-cover rounded-lg mt-2 border">` : ''}
-                        <button onclick="sendDirectWhatsAppReport('${r.id || r.fb_id}')" class="mt-2 w-full bg-dzGreen hover:bg-emerald-700 text-white text-[10px] font-bold py-1.5 px-2 rounded-lg flex items-center justify-center gap-1 shadow-sm">
-                            <i class="fab fa-whatsapp"></i> توجيه للواتساب الميداني (0798924956)
+                        <p class="text-xs text-slate-600 mt-0.5">${r.description || 'لا يوجد وصف مضاف'}</p>
+                        <div class="text-[10px] text-slate-500 mt-1.5 pt-1 border-t border-slate-100 space-y-0.5">
+                            <p><strong>المبلغ:</strong> ${r.nom} (${r.verifiedWhatsApp ? 'موثق ✅' : 'غير موثق ❌'})</p>
+                            <p><strong>الهاتف:</strong> ${r.phone}</p>
+                            <p><strong>الإحداثيات:</strong> ${r.lat.toFixed(4)}, ${r.lng.toFixed(4)} (±${r.accuracy || 10}م)</p>
+                        </div>
+                        ${r.photo ? `<img src="${r.photo}" class="w-full h-28 object-cover rounded-lg mt-2 border border-slate-200">` : ''}
+                        <button onclick="sendDirectWhatsAppReport('${r.id || r.fb_id}')" class="mt-2.5 w-full bg-dzGreen hover:bg-emerald-700 text-white text-[10px] font-bold py-1.5 px-2 rounded-lg flex items-center justify-center gap-1 shadow-sm">
+                            <i class="fab fa-whatsapp text-xs"></i> توجيه للواتساب الميداني (0798924956)
                         </button>
+                    </div>
+                `;
+
+                const hoverTooltipHtml = `
+                    <div class="text-right text-xs font-sans space-y-1">
+                        <div class="flex items-center gap-1.5 border-b border-slate-700 pb-1">
+                            <span class="w-2 h-2 rounded-full ${r.severity === 'حرج' ? 'bg-red-500 animate-ping' : 'bg-amber-400'}"></span>
+                            <strong class="text-red-400 font-black">${r.id || 'بؤرة حريق'} - ${r.wilaya}</strong>
+                        </div>
+                        <p class="text-[11px] text-slate-200"><strong>الخطورة:</strong> ${r.severity}</p>
+                        <p class="text-[10px] text-slate-400"><strong>المبلغ:</strong> ${r.nom} | ${r.phone}</p>
+                        <p class="text-[9px] text-emerald-400 font-mono">📍 GPS: ${r.lat.toFixed(4)}, ${r.lng.toFixed(4)}</p>
+                        <p class="text-[9px] text-amber-300 italic">انقر على العلامة لفتح الخيارات والتوجيه</p>
                     </div>
                 `;
 
                 ['client', 'admin'].forEach(mapKey => {
                     if (window.appState.maps[mapKey]) {
-                        const m = L.marker([r.lat, r.lng], { icon: fireIcon }).addTo(window.appState.maps[mapKey]).bindPopup(popupHtml);
+                        const m = L.marker([r.lat, r.lng], { icon: fireIcon })
+                            .addTo(window.appState.maps[mapKey])
+                            .bindPopup(popupHtml)
+                            .bindTooltip(hoverTooltipHtml, { 
+                                className: 'custom-hover-tooltip', 
+                                direction: 'top', 
+                                opacity: 0.95 
+                            });
+                        
+                        m.on('mouseover', function () { this.openTooltip(); });
                         window.appState.markers[mapKey].push(m);
                     }
                 });
@@ -1659,16 +1706,39 @@ service cloud.firestore {
                 if (!res.lat || !res.lng) return;
 
                 const popupHtml = `
-                    <div class="font-sans text-right p-1">
+                    <div class="font-sans text-right p-1.5 min-w-[200px]">
                         <span class="bg-blue-100 text-dzBlue text-[10px] font-black px-2 py-0.5 rounded">${res.brigade || 'وحدة تدخل'}</span>
                         <h4 class="font-black text-sm text-slate-900 mt-1">${res.officerName}</h4>
-                        <p class="text-xs text-slate-700 mt-1">شاحنات: <strong>${res.trucks}</strong> | طائرات: <strong>${res.planes}</strong></p>
+                        <p class="text-xs text-slate-700 mt-1">🚒 شاحنات الإطفاء (CCF): <strong>${res.trucks}</strong></p>
+                        <p class="text-xs text-slate-700">🛩️ طائرات الإخماد: <strong>${res.planes}</strong></p>
+                        <p class="text-[10px] text-slate-500 mt-1 font-mono">الهاتف المباشر: ${res.phone}</p>
+                    </div>
+                `;
+
+                const hoverTooltipHtml = `
+                    <div class="text-right text-xs font-sans space-y-1">
+                        <div class="flex items-center gap-1.5 border-b border-slate-700 pb-1">
+                            <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+                            <strong class="text-blue-300 font-black">${res.officerName}</strong>
+                        </div>
+                        <p class="text-[11px] text-slate-200">${res.brigade || 'الوحدة الميدانية'}</p>
+                        <p class="text-[10px] text-emerald-300">🚒 CCF: ${res.trucks} | 🛩️ طائرات: ${res.planes}</p>
+                        <p class="text-[9px] text-slate-400 font-mono">📞 ${res.phone}</p>
                     </div>
                 `;
 
                 ['client', 'admin'].forEach(mapKey => {
                     if (window.appState.maps[mapKey]) {
-                        const m = L.marker([res.lat, res.lng], { icon: truckIcon }).addTo(window.appState.maps[mapKey]).bindPopup(popupHtml);
+                        const m = L.marker([res.lat, res.lng], { icon: truckIcon })
+                            .addTo(window.appState.maps[mapKey])
+                            .bindPopup(popupHtml)
+                            .bindTooltip(hoverTooltipHtml, { 
+                                className: 'custom-hover-tooltip', 
+                                direction: 'top', 
+                                opacity: 0.95 
+                            });
+
+                        m.on('mouseover', function () { this.openTooltip(); });
                         window.appState.markers[mapKey].push(m);
                     }
                 });
@@ -1722,7 +1792,6 @@ service cloud.firestore {
                 }
             }
 
-            // Officer View List
             const officerList = document.getElementById('officer-reports-list');
             if (officerList) {
                 officerList.innerHTML = reports.map(r => `
@@ -1751,7 +1820,6 @@ service cloud.firestore {
                 `).join('');
             }
 
-            // NEW FEATURE: Admin Officers Directory Roster List
             const adminOfficersRosterList = document.getElementById('admin-officers-roster-list');
             if (adminOfficersRosterList) {
                 if (resources.length === 0) {
@@ -1796,7 +1864,6 @@ service cloud.firestore {
                 }
             }
 
-            // Admin Full CRUD List for Reports
             const adminReportsList = document.getElementById('admin-reports-list');
             if (adminReportsList) {
                 adminReportsList.innerHTML = reports.map(r => `
@@ -1862,55 +1929,101 @@ service cloud.firestore {
                 if (aiLoading) aiLoading.classList.add('hidden');
 
                 const totalReports = reports.length;
-                const criticalCount = reports.filter(r => r.severity === 'حرج').length;
+                const activeReports = reports.filter(r => r.status !== 'تم_الإخماد');
+                const criticalCount = reports.filter(r => r.severity === 'حرج' && r.status !== 'تم_الإخماد').length;
+                const mediumCount = reports.filter(r => r.severity === 'متوسط' && r.status !== 'تم_الإخماد').length;
                 const verifiedCount = reports.filter(r => r.verifiedWhatsApp).length;
                 const totalTrucks = resources.reduce((acc, curr) => acc + (curr.trucks || 0), 0);
                 const totalPlanes = resources.reduce((acc, curr) => acc + (curr.planes || 0), 0);
 
+                // Spatial Proximity Matching
+                let proximityAllocations = [];
+                activeReports.forEach(r => {
+                    if (r.lat && r.lng) {
+                        let closestOfficer = null;
+                        let minDistance = Infinity;
+
+                        resources.forEach(res => {
+                            if (res.lat && res.lng) {
+                                const dist = calculateHaversineDistance(r.lat, r.lng, res.lat, res.lng);
+                                if (dist < minDistance) {
+                                    minDistance = dist;
+                                    closestOfficer = res;
+                                }
+                            }
+                        });
+
+                        proximityAllocations.push({
+                            report: r,
+                            officer: closestOfficer,
+                            distance: minDistance === Infinity ? null : minDistance.toFixed(1)
+                        });
+                    }
+                });
+
                 let planHtml = `
-                    <div class="bg-indigo-900/60 p-3 rounded-xl border border-indigo-500/30 text-indigo-100 mb-3 space-y-1">
-                        <div class="flex justify-between font-black text-xs text-indigo-300 border-b border-indigo-700/50 pb-1">
-                            <span>📊 ملخص التحليل الميداني اللحظي (Gemini 3 Flash)</span>
-                            <span>هدف الاستجابة: < 3 دقائق</span>
+                    <div class="bg-indigo-900/80 p-3 rounded-xl border border-indigo-500/40 text-indigo-100 mb-3 space-y-1">
+                        <div class="flex justify-between items-center font-black text-xs text-indigo-300 border-b border-indigo-700/50 pb-1.5">
+                            <span>📊 ملخص التقييم الميداني اللحظي (Gemini 3 Flash Engine)</span>
+                            <span class="bg-indigo-500/30 text-amber-300 px-2 py-0.5 rounded text-[10px] font-black">هدف الاستجابة: &lt; 3 دقائق</span>
                         </div>
-                        <p class="text-[11px]">تم تحليل <strong>${totalReports}</strong> بلاغ سحابي (منها <strong>${criticalCount}</strong> بلاغ حرج، و<strong>${verifiedCount}</strong> موثق بالواتساب) مقابل <strong>${totalTrucks}</strong> شاحنة إطفاء CCF و<strong>${totalPlanes}</strong> طائرة إخماد مسجلة.</p>
+                        <p class="text-[11px] pt-1">
+                            تم تحليل <strong>${totalReports}</strong> بلاغ سحابي (منها <strong>${criticalCount}</strong> حرج، و<strong>${verifiedCount}</strong> موثق بالواتساب) مقابل <strong>${resources.length}</strong> ضباط وقيادات ميدانية مع <strong>${totalTrucks}</strong> شاحنة إطفاء CCF و<strong>${totalPlanes}</strong> طائرة إخماد.
+                        </p>
                     </div>
 
-                    <div class="space-y-2 text-xs">
-                        <div class="bg-slate-900/90 p-3 rounded-xl border border-red-500/30">
-                            <h4 class="font-black text-red-400 mb-1">1️⃣ توزيع الأولوية العاجلة حسب خطورة الولايات والموقع الجغرافي:</h4>
+                    <div class="space-y-2.5 text-xs">
+                        <!-- Card 1: Risk & Priorities -->
+                        <div class="bg-slate-900/90 p-3 rounded-xl border border-red-500/40 space-y-1">
+                            <h4 class="font-black text-red-400 flex items-center justify-between">
+                                <span>1️⃣ تقييم وتوزيع الأولوية العاجلة حسب الولايات والإحداثيات:</span>
+                                <span class="text-[10px] bg-red-950 text-red-300 px-2 py-0.5 rounded">${criticalCount} بؤر حرجة</span>
+                            </h4>
                             <p class="text-slate-300 leading-relaxed">
                                 ${criticalCount > 0 
-                                    ? `توجيه الاستجابة الأولى فوراً لنقاط البلاغات الحرجة الموثقة عبر GPS في <strong>${reports.find(r => r.severity === 'حرج')?.wilaya || 'الولايات المعنية'}</strong> نظرًا لوجود تهديد مباشر للمستوطنات أو انتشار ألسنة اللهب.` 
-                                    : `السيطرة الحالية مستقرة نسبياً. إعطاء الأولوية للبلاغات المتوسطة لمنع توسع الدخان بالولايات المسجلة.`}
+                                    ? `توجيه الاستجابة الأولى والتدخل الفوري للبؤر الحرجة في <strong>${[...new Set(reports.filter(r=>r.severity==='حرج').map(r=>r.wilaya))].join('، ')}</strong> نظرًا لوجود خطورة انتشار نحو القرى أو خطوط الكهرباء.` 
+                                    : `السيطرة الميدانية مستقرة نسبيًا. التركيز على البؤر المتوسطة في ${[...new Set(reports.map(r=>r.wilaya))].join('، ') || 'الولايات المسجلة'} لمنع توسع الدخان.`}
                             </p>
                         </div>
 
-                        <div class="bg-slate-900/90 p-3 rounded-xl border border-blue-500/30">
-                            <h4 class="font-black text-blue-400 mb-1">2️⃣ توزيع شاحنات الإطفاء (CCF) وطائرات قاذفات المياه:</h4>
+                        <!-- Card 2: Proximity & Truck Allocation -->
+                        <div class="bg-slate-900/90 p-3 rounded-xl border border-blue-500/40 space-y-1.5">
+                            <h4 class="font-black text-blue-400">2️⃣ حساب مسافات القرب التكتيكية وتوجيه الشاحنات والطائرات:</h4>
+                            ${proximityAllocations.length > 0 ? `
+                                <ul class="space-y-1 text-[11px] text-slate-300">
+                                    ${proximityAllocations.slice(0, 3).map(pa => `
+                                        <li class="bg-slate-950/80 p-2 rounded-lg border border-slate-800 flex justify-between items-center">
+                                            <span>🔥 <strong>${pa.report.id} (${pa.report.wilaya})</strong>: خطورة ${pa.report.severity}</span>
+                                            <span class="text-emerald-400 font-bold">${pa.officer ? `توجيه فرقة ${pa.officer.officerName} (على بعد ~${pa.distance} كم)` : 'أقرب فرقة: جاري التوزيع'}</span>
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            ` : `<p class="text-slate-300 leading-relaxed">تحريك الشاحنات الرئيسية بإنشاء حائط مائي حول المساحات الغابية الأكثر كثافة.</p>`}
+                        </div>
+
+                        <!-- Card 3: Direct WhatsApp Dispatch -->
+                        <div class="bg-slate-900/90 p-3 rounded-xl border border-emerald-500/40 space-y-1">
+                            <h4 class="font-black text-emerald-400 flex items-center justify-between">
+                                <span>3️⃣ التواصل والتوجيه السريع عبر الواتساب الميداني (0798924956):</span>
+                                <span class="text-[10px] text-dzGreen font-mono">213798924956</span>
+                            </h4>
                             <p class="text-slate-300 leading-relaxed">
-                                تحريك <strong>${Math.max(1, Math.ceil(totalTrucks * 0.7))}</strong> شاحنة إطفاء نحو البؤر الأكثر خطورة، واستدعاء قاذفات المياه <strong>(${totalPlanes} طائرات)</strong> للعمل في المناطق الغابية الوعرة التي يصعب وصول الشاحنات إليها.
+                                الاتصال الفوري بنقرة واحدة بالمبلغين الموثقين بالواتساب لتأكيد اتجاه الرياح وتحديد أقرب مسلك شاحنات الإطفاء لحساب وقت استجابة يقل عن 3 دقائق.
                             </p>
                         </div>
 
-                        <div class="bg-slate-900/90 p-3 rounded-xl border border-emerald-500/30">
-                            <h4 class="font-black text-emerald-400 mb-1">3️⃣ التواصل السريع عبر الواتساب (0798924956) لمعاينة الصور واتجاه الرياح:</h4>
+                        <!-- Card 4: Defensive Perimeter -->
+                        <div class="bg-slate-900/90 p-3 rounded-xl border border-amber-500/40 space-y-1">
+                            <h4 class="font-black text-amber-400">4️⃣ الخطة الوقائية لحماية التجمعات السكنية والمنازل:</h4>
                             <p class="text-slate-300 leading-relaxed">
-                                التواصل المباشر بنقرة واحدة عبر زر الواتساب الميداني مع المبلغين الموثقين لتحديث التغطية وتأكيد اتجاه الدخان والصور المباشرة وتوجيه الفرق لأسهل مسلك.
-                            </p>
-                        </div>
-
-                        <div class="bg-slate-900/90 p-3 rounded-xl border border-amber-500/30">
-                            <h4 class="font-black text-amber-400 mb-1">4️⃣ الإجراءات الوقائية العاجلة للقرى والمنازل المجاورة:</h4>
-                            <p class="text-slate-300 leading-relaxed">
-                                إقامة خطوط صد النار بالتنسيق مع حراس الغابات والدرك الوطني لحماية القرى المتاخمة، وإبقاء أرقام الطوارئ (14 / 1021) مفتوحة لاستقبال المستجدات.
+                                نشر خطوط صد النار بالتنسيق مع حراس الغابات والدرك الوطني لحماية أطراف القرى المتاخمة، وإرسال البث العاجل (Siren Broadcast) في حالة تغير اتجاه الرياح.
                             </p>
                         </div>
                     </div>
                 `;
 
                 if (aiContent) aiContent.innerHTML = planHtml;
-            }, 800);
+            }, 700);
         };
 
         function initAnalyticsCharts() {
@@ -2099,7 +2212,6 @@ service cloud.firestore {
                 switchTab('tab-officer');
                 if (loginModal) loginModal.classList.add('hidden');
             } else if (role === 'admin') {
-                // Password check: 15041978
                 const pwdInput = document.getElementById('login-admin-pwd');
                 const adminPwd = pwdInput ? pwdInput.value.trim() : '';
                 if (adminPwd === '15041978') {
