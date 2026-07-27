@@ -1098,39 +1098,28 @@ service cloud.firestore {
         function syncFirebaseData() {
             if (!db) return;
 
-            // Direct sync on ROOT collections 'reports', 'resources', 'broadcasts' + artifacts fallback
-            const handleReportsData = (cloudItems) => {
-                if (cloudItems.length > 0 || window.appState.reports.length > 0) {
-                    // Merge and deduplicate reports
-                    const map = new Map();
-                    [...cloudItems, ...window.appState.reports].forEach(item => {
-                        const key = item.fb_id || item.id;
-                        if (!map.has(key)) map.set(key, item);
-                    });
-                    window.appState.reports = Array.from(map.values());
-                    window.appState.reports.sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0));
-                    try {
-                        localStorage.setItem('stop_feu_local_reports', JSON.stringify(window.appState.reports));
-                    } catch(e){}
-                }
-                updateUI();
-            };
-
-            // Root collection listener
+            // Direct real-time sync with Cloud Firestore 'reports' collection as single source of truth
             onSnapshot(collection(db, 'reports'), (snapshot) => {
                 const cloudItems = snapshot.docs.map(d => ({ fb_id: d.id, ...d.data() }));
-                handleReportsData(cloudItems);
-            }, (err) => console.warn("Root reports snapshot error:", err));
+                cloudItems.sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0));
+                
+                // Set app state directly from cloud Firestore to guarantee 100% sync across Mobile & PC
+                window.appState.reports = cloudItems;
+                try {
+                    localStorage.setItem('stop_feu_local_reports', JSON.stringify(cloudItems));
+                } catch(e){}
+                
+                updateAdminDBStatusBadge(true, 'متصل ومزامن بالسحابة (indrive-95741)');
+                updateUI();
+            }, (err) => {
+                console.warn("Root reports snapshot error:", err);
+                updateAdminDBStatusBadge(false, 'خطأ في التزامن مع السحابة (تفقّد القواعد)');
+            });
 
-            // Nested collection listener (legacy compatibility)
-            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'reports'), (snapshot) => {
-                const cloudItems = snapshot.docs.map(d => ({ fb_id: d.id, ...d.data() }));
-                handleReportsData(cloudItems);
-            }, (err) => console.warn("Artifacts reports snapshot error:", err));
-
-            // Resources Listener (Root level + nested)
+            // Direct real-time sync with Cloud Firestore 'resources' collection
             onSnapshot(collection(db, 'resources'), (snapshot) => {
                 const cloudResources = snapshot.docs.map(d => ({ fb_id: d.id, ...d.data() }));
+                cloudResources.sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0));
                 window.appState.resources = cloudResources;
                 updateUI();
             }, (err) => console.warn("Root resources snapshot error:", err));
@@ -1313,7 +1302,7 @@ service cloud.firestore {
 
             if (submitBtn) {
                 submitBtn.disabled = true;
-                submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> جاري حفظ التبليغ محلياً ورَفعه للسحابة...`;
+                submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> جاري حفظ التبليغ ورَفعه للسحابة...`;
             }
 
             const now = new Date();
@@ -1329,16 +1318,10 @@ service cloud.firestore {
                 lat: window.appState.userCoords.lat,
                 lng: window.appState.userCoords.lng,
                 accuracy: window.appState.gpsAccuracy || 10,
-                status: 'نشط', // Options: 'نشط', 'جاري_الإخماد', 'تم_الإخماد', 'بلاغ_غير_دقيق'
+                status: 'نشط',
                 time: now.toLocaleTimeString('ar-DZ', { hour: '2-digit', minute: '2-digit' }),
                 timestamp: Date.now()
             };
-
-            // Instant Local Persistence
-            window.appState.reports.unshift(reportData);
-            try {
-                localStorage.setItem('stop_feu_local_reports', JSON.stringify(window.appState.reports));
-            } catch(e){}
 
             // Analytics Tracking
             try {
@@ -1355,20 +1338,22 @@ service cloud.firestore {
             if (db && navigator.onLine) {
                 try {
                     const savePromise = addDoc(collection(db, 'reports'), reportData);
-                    const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 3500));
+                    const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 4000));
                     await Promise.race([savePromise, timeoutPromise]);
                     savedToCloud = true;
                 } catch (e) {
                     console.warn("Firestore save fallback queued to offline:", e);
                     window.appState.offlineQueue.push(reportData);
                     localStorage.setItem('stop_feu_offline_queue', JSON.stringify(window.appState.offlineQueue));
+                    window.appState.reports.unshift(reportData);
+                    updateUI();
                 }
             } else {
                 window.appState.offlineQueue.push(reportData);
                 localStorage.setItem('stop_feu_offline_queue', JSON.stringify(window.appState.offlineQueue));
+                window.appState.reports.unshift(reportData);
+                updateUI();
             }
-
-            updateUI();
 
             window.showModal("تم تسليم التبليغ بنجاح", savedToCloud 
                 ? "تم رفع التبليغ مع إحداثيات GPS والصورة المرفقة مباشرة إلى السحابة والغرفة المركزية." 
@@ -1530,7 +1515,7 @@ service cloud.firestore {
 
         window.deleteReport = async function(docId) {
             try {
-                if (db && docId && !docId.startsWith('demo-')) {
+                if (db && docId) {
                     const docRef = doc(db, 'reports', docId);
                     await deleteDoc(docRef);
                 }
@@ -1542,7 +1527,7 @@ service cloud.firestore {
                 localStorage.setItem('stop_feu_local_reports', JSON.stringify(window.appState.reports));
             } catch(e){}
             updateUI();
-            window.showModal("حذف البلاغ", "تم حذف البلاغ نهائياً.", "🗑️");
+            window.showModal("حذف البلاغ", "تم حذف البلاغ نهائياً من السحابة.", "🗑️");
         };
 
         function initMaps() {
