@@ -95,7 +95,7 @@
 
         <div class="flex items-center gap-2">
             <span id="network-status-badge" class="bg-emerald-100 text-emerald-800 border border-emerald-300 px-2.5 py-1 rounded-xl text-[11px] font-black flex items-center gap-1.5 shadow-sm">
-                <span class="w-2 h-2 rounded-full bg-dzGreen animate-pulse"></span> <span id="network-text">متصل بالسحابة (indrive-95741)</span>
+                <span id="network-dot" class="w-2 h-2 rounded-full bg-dzGreen animate-pulse"></span> <span id="network-text">متصل بالسحابة (indrive-95741)</span>
             </span>
             <span id="user-role-badge" class="bg-slate-100 text-slate-700 border border-slate-200 px-3 py-1 rounded-xl text-xs font-black flex items-center gap-1.5 shadow-sm">
                 <i class="fas fa-user-shield text-dzGreen"></i> <span id="role-text">مواطن مبلغ</span>
@@ -855,7 +855,7 @@ service cloud.firestore {
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { initializeFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // Verified Firebase Project Config
         const firebaseConfig = {
@@ -1069,7 +1069,11 @@ service cloud.firestore {
             try {
                 app = initializeApp(firebaseConfig);
                 auth = getAuth(app);
-                db = getFirestore(app);
+                
+                // Initialize Firestore with Auto-Detect Long Polling to bypass mobile carrier WebSocket blocks
+                db = initializeFirestore(app, {
+                    experimentalAutoDetectLongPolling: true
+                });
 
                 await signInAnonymously(auth);
                 currentUser = auth.currentUser;
