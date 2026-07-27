@@ -17,7 +17,7 @@
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Icons & Leaflet CSS/JS -->
+    <!-- FontAwesome Icons & Leaflet Map Library -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -27,7 +27,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     
-    <!-- Chart.js -->
+    <!-- Chart.js Visualization Library -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
@@ -56,7 +56,7 @@
         body { font-family: 'Cairo', 'Tajawal', sans-serif; background-color: #f8fafc; color: #0f172a; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        #map, #admin-map { height: 50vh; min-height: 380px; width: 100%; border-radius: 1rem; z-index: 10; }
+        #map, #admin-map { height: 50vh; min-height: 390px; width: 100%; border-radius: 1rem; z-index: 10; }
         
         .pulse-flame { animation: pulseFlame 1.3s infinite alternate; }
         @keyframes pulseFlame {
@@ -70,7 +70,7 @@
             100% { background-color: #1D4ED8; }
         }
 
-        /* Custom Hover Tooltips for Leaflet Maps */
+        /* Custom Hover Tooltips for Tactical Leaflet Maps */
         .leaflet-tooltip.custom-hover-tooltip {
             background: rgba(15, 23, 42, 0.95);
             border: 1px solid #334155;
@@ -103,7 +103,7 @@
                     <h1 class="font-black text-lg sm:text-xl tracking-wide text-slate-900">STOP FEU DZ</h1>
                     <span class="bg-dzGreen/10 text-dzGreen border border-dzGreen/30 text-[10px] px-2 py-0.5 rounded-full font-black tracking-wider">الجزائر</span>
                 </div>
-                <p class="text-[11px] text-slate-500 font-bold">الحماية المدنية • المديرية العامة للغابات • المزامنة السحابية المباشرة</p>
+                <p class="text-[11px] text-slate-500 font-bold">الحماية المدنية • المديرية العامة للغابات • المنصة السحابية</p>
             </div>
         </div>
 
@@ -362,10 +362,13 @@
                         <h2 class="text-lg font-black text-slate-900 flex items-center gap-2">
                             <i class="fas fa-map-location-dot text-dzGreen"></i> الخريطة التكتيكية الوطنية - الجزائر
                         </h2>
-                        <p class="text-xs text-slate-500">مرر الفأرة فوق أي بؤرة أو شاحنة لمعاينة المعلومات المباشرة والحقيقية</p>
+                        <p class="text-xs text-slate-500">تظهر كافة البلاغات المسجلة عبر الـ 69 ولاية في الجزائر مع إمكانية ملاءمة العرض</p>
                     </div>
 
                     <div class="flex items-center gap-2">
+                        <button onclick="fitMapToAllMarkers('client')" class="bg-dzBlue hover:bg-blue-800 text-white text-xs px-3 py-1.5 rounded-xl border border-blue-600 font-bold flex items-center gap-1.5 shadow-sm">
+                            <i class="fas fa-expand"></i> إظهار جميع البلاغات (Fit All)
+                        </button>
                         <button onclick="toggleMapLayer()" id="btn-map-layer" class="bg-slate-100 hover:bg-slate-200 text-xs px-3 py-1.5 rounded-xl border border-slate-200 font-bold flex items-center gap-1.5 text-slate-700">
                             <i class="fas fa-layer-group text-dzAmber"></i> القمر الصناعي
                         </button>
@@ -390,7 +393,7 @@
                         </span>
                     </div>
 
-                    <span class="text-[10px] text-slate-400 font-bold">مزامنة حية بالفأرة (Hover Live Intelligence)</span>
+                    <span id="active-map-pins-count" class="text-[11px] bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg font-black border border-slate-200">0 بؤرة معروضة</span>
                 </div>
             </div>
 
@@ -589,7 +592,7 @@
                     </div>
                     <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
                         <h4 class="text-xs font-black text-slate-800 mb-2 flex items-center gap-1.5">
-                            <i class="fas fa-chart-bar text-dzBlue"></i> تووزع البلاغات والإمكانيات حسب الولايات
+                            <i class="fas fa-chart-bar text-dzBlue"></i> توزيع البلاغات والإمكانيات حسب الولايات
                         </h4>
                         <div class="h-44">
                             <canvas id="chart-wilayas"></canvas>
@@ -665,11 +668,16 @@
 
                 <!-- ADMIN MAP WITH HOVER INTEL -->
                 <div>
-                    <div class="flex items-center justify-between mb-2">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
                         <h3 class="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-2">
                             <i class="fas fa-earth-africa text-dzGreen"></i> خريطة القيادة العامة وإدارة الميدان (معلومات حية عند مرور الفأرة)
                         </h3>
-                        <span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-bold">تحديث آلي مباشر</span>
+                        <div class="flex items-center gap-2">
+                            <button onclick="fitMapToAllMarkers('admin')" class="bg-dzBlue hover:bg-blue-800 text-white text-[11px] px-2.5 py-1 rounded-lg font-bold flex items-center gap-1 shadow-sm">
+                                <i class="fas fa-expand"></i> إظهار الكل (Fit All)
+                            </button>
+                            <span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-bold">تحديث آلي مباشر</span>
+                        </div>
                     </div>
                     <div id="admin-map" class="shadow-md border border-slate-200"></div>
                 </div>
@@ -908,6 +916,79 @@ service cloud.firestore {
         const ULTRAMSG_INSTANCE = "instance181309";
         const ULTRAMSG_API_URL = `https://api.ultramsg.com/${ULTRAMSG_INSTANCE}/messages/chat`;
 
+        // 69 WILAYAS GEOCODING DICTIONARY
+        const WILAYA_COORDS = {
+            "01 - أدرار": { lat: 27.8742, lng: -0.2939 },
+            "02 - الشلف": { lat: 36.1652, lng: 1.3344 },
+            "03 - الأغواط": { lat: 33.8000, lng: 2.8651 },
+            "04 - أم البواقي": { lat: 35.8754, lng: 7.1135 },
+            "05 - باتنة": { lat: 35.5559, lng: 6.1741 },
+            "06 - بجاية": { lat: 36.7511, lng: 5.0567 },
+            "07 - بسكرة": { lat: 34.8516, lng: 5.7280 },
+            "08 - بشار": { lat: 31.6182, lng: -2.2158 },
+            "09 - البليدة": { lat: 36.4700, lng: 2.8300 },
+            "10 - البويرة": { lat: 36.3749, lng: 3.9020 },
+            "11 - تمنراست": { lat: 22.7850, lng: 5.5228 },
+            "12 - تبسة": { lat: 35.4041, lng: 8.1242 },
+            "13 - تلمسان": { lat: 34.8783, lng: -1.3150 },
+            "14 - تيارت": { lat: 35.3710, lng: 1.3170 },
+            "15 - تيزي وزو": { lat: 36.7118, lng: 4.0459 },
+            "16 - الجزائر العاصمة": { lat: 36.7538, lng: 3.0588 },
+            "17 - الجلفة": { lat: 34.6728, lng: 3.2630 },
+            "18 - جيجل": { lat: 36.8205, lng: 5.7667 },
+            "19 - سطيف": { lat: 36.1911, lng: 5.4137 },
+            "20 - سعيدة": { lat: 34.8303, lng: 0.1517 },
+            "21 - سكيكدة": { lat: 36.8792, lng: 6.9032 },
+            "22 - سيدي بلعباس": { lat: 35.1899, lng: -0.6308 },
+            "23 - عنابة": { lat: 36.9000, lng: 7.7667 },
+            "24 - قالمة": { lat: 36.4621, lng: 7.4261 },
+            "25 - قسنطينة": { lat: 36.3650, lng: 6.6147 },
+            "26 - المدية": { lat: 36.2642, lng: 2.7539 },
+            "27 - مستغانم": { lat: 35.9311, lng: 0.0892 },
+            "28 - المسيلة": { lat: 35.7058, lng: 4.5419 },
+            "29 - معسكر": { lat: 35.3966, lng: 0.1403 },
+            "30 - ورقلة": { lat: 31.9493, lng: 5.3250 },
+            "31 - وهران": { lat: 35.6971, lng: -0.6308 },
+            "32 - البيض": { lat: 33.6831, lng: 1.0192 },
+            "33 - إيليزي": { lat: 26.4833, lng: 8.4667 },
+            "34 - برج بوعريريج": { lat: 36.0732, lng: 4.7621 },
+            "35 - بومرداس": { lat: 36.7664, lng: 3.4772 },
+            "36 - الطارف": { lat: 36.7672, lng: 8.3138 },
+            "37 - تندوف": { lat: 27.6742, lng: -8.1478 },
+            "38 - تسمسيلت": { lat: 35.6072, lng: 1.8103 },
+            "39 - الوادي": { lat: 33.3683, lng: 6.8674 },
+            "40 - خنشلة": { lat: 35.4358, lng: 7.1433 },
+            "41 - سوق أهراس": { lat: 36.2864, lng: 7.9511 },
+            "42 - تيبازة": { lat: 36.5897, lng: 2.4475 },
+            "43 - ميلة": { lat: 36.4503, lng: 6.2644 },
+            "44 - عين الدفلى": { lat: 36.2591, lng: 1.9679 },
+            "45 - النعامة": { lat: 33.2667, lng: -0.3167 },
+            "46 - عين تموشنت": { lat: 35.2975, lng: -1.1404 },
+            "47 - غرداية": { lat: 32.4900, lng: 3.6730 },
+            "48 - غليزان": { lat: 35.7373, lng: 0.5558 },
+            "49 - تيميمون": { lat: 29.2639, lng: 0.2310 },
+            "50 - برج باجي مختار": { lat: 21.3278, lng: 0.9542 },
+            "51 - أولاد جلال": { lat: 34.4192, lng: 5.0658 },
+            "52 - بني عباس": { lat: 30.1333, lng: -2.1667 },
+            "53 - عين صالح": { lat: 27.1939, lng: 2.4828 },
+            "54 - عين قزام": { lat: 19.5686, lng: 5.7728 },
+            "55 - تقرت": { lat: 33.1053, lng: 6.0683 },
+            "56 - المغير": { lat: 33.9500, lng: 5.9167 },
+            "57 - المنيعة": { lat: 30.5833, lng: 2.8833 },
+            "58 - الأفلو": { lat: 34.1133, lng: 2.0967 },
+            "59 - بوسعادة": { lat: 35.2133, lng: 4.1833 },
+            "60 - عين وسارة": { lat: 35.4514, lng: 2.9128 },
+            "61 - مسعد": { lat: 34.1611, lng: 3.3325 },
+            "62 - قصر البخاري": { lat: 35.8889, lng: 2.7489 },
+            "63 - العلمة": { lat: 36.1528, lng: 5.6906 },
+            "64 - بريكة": { lat: 35.3889, lng: 5.3658 },
+            "65 - شلغوم العيد": { lat: 36.1628, lng: 6.1667 },
+            "66 - خميس مليانة": { lat: 36.2611, lng: 2.2208 },
+            "67 - الأخضرية": { lat: 36.5083, lng: 3.5936 },
+            "68 - الأربعاء": { lat: 36.5628, lng: 3.1417 },
+            "69 - فرندة": { lat: 35.0625, lng: 1.0492 }
+        };
+
         let app, db, auth, currentUser;
         let generatedOTP = null;
         let isWhatsAppVerified = false;
@@ -1043,7 +1124,7 @@ service cloud.firestore {
                 },
                 (err) => {
                     console.warn("GPS Location Warning:", err.message);
-                    if (coordsDisplay) coordsDisplay.textContent = "تعذر الحصول على GPS (استخدام المركز الافتراضي)";
+                    if (coordsDisplay) coordsDisplay.textContent = "تعذر الحصول على GPS (استخدام المركز الافتراضي للولاية)";
                     if (accuracyDisplay) accuracyDisplay.textContent = "يرجى التثبت من تفعيل خيار الموقع بالهاتف";
                     if (gpsIcon) gpsIcon.className = "w-10 h-10 bg-dzAmber text-white rounded-xl flex items-center justify-center text-lg shadow-sm";
                 },
@@ -1249,7 +1330,7 @@ service cloud.firestore {
                 if (result.status === 'success' || result.sent === 'true' || result.sent === true) {
                     window.showModal("تم الإرسال عبر الواتساب", `تم إرسال رمز التحقق إلى الرقم ${formattedPhone} عبر الواتساب بنجاح.`, "💬");
                 } else {
-                    window.showModal("رمز التحقق التلقائي", `رمز التوثيق الخاص بك هو [ ${generatedOTP} ]. أدخله في الخانة المخصصة للتأكيد الفوري.\n(أو اضغط زر التواصل المباشر بالواتساب).`, "ℹ️");
+                    window.showModal("رمز التحقق التلقائي", `رمز التوثيق الخاص بك هو [ ${generatedOTP} ]. أدخله في الخانة المخصصة للتأكيد الفوري.`, "ℹ️");
                 }
             } catch (err) {
                 console.warn("WhatsApp API direct fetch fallback engaged:", err);
@@ -1348,6 +1429,15 @@ service cloud.firestore {
                 submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> جاري حفظ التبليغ ورَفعه للسحابة...`;
             }
 
+            // Resolve coordinates: Use GPS if active, otherwise fallback to Wilaya central coordinates
+            let targetLat = window.appState.userCoords.lat;
+            let targetLng = window.appState.userCoords.lng;
+
+            if (!window.appState.gpsActive && WILAYA_COORDS[wilaya]) {
+                targetLat = WILAYA_COORDS[wilaya].lat;
+                targetLng = WILAYA_COORDS[wilaya].lng;
+            }
+
             const now = new Date();
             const reportData = {
                 id: 'FEU-' + Math.floor(100 + Math.random() * 900),
@@ -1358,8 +1448,8 @@ service cloud.firestore {
                 severity: severity,
                 description: description,
                 photo: window.appState.photoBase64 || null,
-                lat: window.appState.userCoords.lat,
-                lng: window.appState.userCoords.lng,
+                lat: targetLat,
+                lng: targetLng,
                 accuracy: window.appState.gpsAccuracy || 10,
                 status: 'نشط',
                 time: now.toLocaleTimeString('ar-DZ', { hour: '2-digit', minute: '2-digit' }),
@@ -1589,12 +1679,12 @@ service cloud.firestore {
         function initMaps() {
             const center = [window.appState.userCoords.lat, window.appState.userCoords.lng];
 
-            window.appState.maps.client = L.map('map').setView(center, 9);
+            window.appState.maps.client = L.map('map').setView(center, 7);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '© OpenStreetMap | STOP FEU DZ'
             }).addTo(window.appState.maps.client);
 
-            window.appState.maps.admin = L.map('admin-map').setView(center, 8);
+            window.appState.maps.admin = L.map('admin-map').setView(center, 7);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '© OpenStreetMap | القيادة العامة'
             }).addTo(window.appState.maps.admin);
@@ -1625,8 +1715,21 @@ service cloud.firestore {
 
         window.recenterMap = function() {
             const pos = [window.appState.userCoords.lat, window.appState.userCoords.lng];
-            if (window.appState.maps.client) window.appState.maps.client.flyTo(pos, 12);
-            if (window.appState.maps.admin) window.appState.maps.admin.flyTo(pos, 11);
+            if (window.appState.maps.client) window.appState.maps.client.flyTo(pos, 10);
+            if (window.appState.maps.admin) window.appState.maps.admin.flyTo(pos, 10);
+        };
+
+        window.fitMapToAllMarkers = function(mapKey = 'client') {
+            const targetMap = window.appState.maps[mapKey];
+            const markers = window.appState.markers[mapKey];
+
+            if (!targetMap || !markers || markers.length === 0) {
+                window.showModal("تنبيه الخريطة", "لا توجد بؤر حرائق أو وحدات معروضة حالياً على الخريطة.", "ℹ️");
+                return;
+            }
+
+            const group = L.featureGroup(markers);
+            targetMap.fitBounds(group.getBounds().pad(0.15));
         };
 
         function updateMapMarkers() {
@@ -1649,8 +1752,35 @@ service cloud.firestore {
                 iconAnchor: [18, 18]
             });
 
-            window.appState.reports.forEach(r => {
-                if (!r.lat || !r.lng) return;
+            let activePinsCount = 0;
+
+            // Anti-overlap jitter tracker
+            const locationOccurrences = {};
+
+            window.appState.reports.forEach((r, idx) => {
+                let pLat = parseFloat(r.lat);
+                let pLng = parseFloat(r.lng);
+
+                if (isNaN(pLat) || isNaN(pLng)) {
+                    if (r.wilaya && WILAYA_COORDS[r.wilaya]) {
+                        pLat = WILAYA_COORDS[r.wilaya].lat;
+                        pLng = WILAYA_COORDS[r.wilaya].lng;
+                    } else {
+                        return;
+                    }
+                }
+
+                // Micro jitter to prevent direct stacking
+                const locKey = `${pLat.toFixed(3)}_${pLng.toFixed(3)}`;
+                if (locationOccurrences[locKey]) {
+                    locationOccurrences[locKey]++;
+                    pLat += (Math.random() - 0.5) * 0.008;
+                    pLng += (Math.random() - 0.5) * 0.008;
+                } else {
+                    locationOccurrences[locKey] = 1;
+                }
+
+                activePinsCount++;
 
                 const popupHtml = `
                     <div class="font-sans text-right p-1.5 min-w-[220px]">
@@ -1663,7 +1793,7 @@ service cloud.firestore {
                         <div class="text-[10px] text-slate-500 mt-1.5 pt-1 border-t border-slate-100 space-y-0.5">
                             <p><strong>المبلغ:</strong> ${r.nom} (${r.verifiedWhatsApp ? 'موثق ✅' : 'غير موثق ❌'})</p>
                             <p><strong>الهاتف:</strong> ${r.phone}</p>
-                            <p><strong>الإحداثيات:</strong> ${r.lat.toFixed(4)}, ${r.lng.toFixed(4)} (±${r.accuracy || 10}م)</p>
+                            <p><strong>الإحداثيات:</strong> ${pLat.toFixed(4)}, ${pLng.toFixed(4)} (±${r.accuracy || 10}م)</p>
                         </div>
                         ${r.photo ? `<img src="${r.photo}" class="w-full h-28 object-cover rounded-lg mt-2 border border-slate-200">` : ''}
                         <button onclick="sendDirectWhatsAppReport('${r.id || r.fb_id}')" class="mt-2.5 w-full bg-dzGreen hover:bg-emerald-700 text-white text-[10px] font-bold py-1.5 px-2 rounded-lg flex items-center justify-center gap-1 shadow-sm">
@@ -1680,14 +1810,14 @@ service cloud.firestore {
                         </div>
                         <p class="text-[11px] text-slate-200"><strong>الخطورة:</strong> ${r.severity}</p>
                         <p class="text-[10px] text-slate-400"><strong>المبلغ:</strong> ${r.nom} | ${r.phone}</p>
-                        <p class="text-[9px] text-emerald-400 font-mono">📍 GPS: ${r.lat.toFixed(4)}, ${r.lng.toFixed(4)}</p>
+                        <p class="text-[9px] text-emerald-400 font-mono">📍 GPS: ${pLat.toFixed(4)}, ${pLng.toFixed(4)}</p>
                         <p class="text-[9px] text-amber-300 italic">انقر على العلامة لفتح الخيارات والتوجيه</p>
                     </div>
                 `;
 
                 ['client', 'admin'].forEach(mapKey => {
                     if (window.appState.maps[mapKey]) {
-                        const m = L.marker([r.lat, r.lng], { icon: fireIcon })
+                        const m = L.marker([pLat, pLng], { icon: fireIcon })
                             .addTo(window.appState.maps[mapKey])
                             .bindPopup(popupHtml)
                             .bindTooltip(hoverTooltipHtml, { 
@@ -1703,7 +1833,9 @@ service cloud.firestore {
             });
 
             window.appState.resources.forEach(res => {
-                if (!res.lat || !res.lng) return;
+                const resLat = parseFloat(res.lat);
+                const resLng = parseFloat(res.lng);
+                if (isNaN(resLat) || isNaN(resLng)) return;
 
                 const popupHtml = `
                     <div class="font-sans text-right p-1.5 min-w-[200px]">
@@ -1729,7 +1861,7 @@ service cloud.firestore {
 
                 ['client', 'admin'].forEach(mapKey => {
                     if (window.appState.maps[mapKey]) {
-                        const m = L.marker([res.lat, res.lng], { icon: truckIcon })
+                        const m = L.marker([resLat, resLng], { icon: truckIcon })
                             .addTo(window.appState.maps[mapKey])
                             .bindPopup(popupHtml)
                             .bindTooltip(hoverTooltipHtml, { 
@@ -1743,6 +1875,9 @@ service cloud.firestore {
                     }
                 });
             });
+
+            const pinsBadge = document.getElementById('active-map-pins-count');
+            if (pinsBadge) pinsBadge.textContent = `${activePinsCount} بؤرة معروضة على الخريطة`;
         }
 
         function updateUI() {
@@ -1848,7 +1983,7 @@ service cloud.firestore {
                                 </div>
 
                                 <div class="flex items-center justify-between pt-1 text-[10px]">
-                                    <span class="text-slate-500 font-mono"><i class="fas fa-location-pin text-dzRed"></i> ${res.lat ? `${res.lat.toFixed(3)}, ${res.lng.toFixed(3)}` : 'موقع GPS غير مسجل'}</span>
+                                    <span class="text-slate-500 font-mono"><i class="fas fa-location-pin text-dzRed"></i> ${res.lat ? `${parseFloat(res.lat).toFixed(3)}, ${parseFloat(res.lng).toFixed(3)}` : 'موقع GPS غير مسجل'}</span>
                                     <div class="flex gap-1.5">
                                         <a href="tel:${res.phone}" class="bg-blue-100 hover:bg-blue-200 text-dzBlue px-2 py-1 rounded-md font-bold flex items-center gap-1 border border-blue-200">
                                             <i class="fas fa-phone"></i> اتصال
@@ -1931,7 +2066,6 @@ service cloud.firestore {
                 const totalReports = reports.length;
                 const activeReports = reports.filter(r => r.status !== 'تم_الإخماد');
                 const criticalCount = reports.filter(r => r.severity === 'حرج' && r.status !== 'تم_الإخماد').length;
-                const mediumCount = reports.filter(r => r.severity === 'متوسط' && r.status !== 'تم_الإخماد').length;
                 const verifiedCount = reports.filter(r => r.verifiedWhatsApp).length;
                 const totalTrucks = resources.reduce((acc, curr) => acc + (curr.trucks || 0), 0);
                 const totalPlanes = resources.reduce((acc, curr) => acc + (curr.planes || 0), 0);
@@ -1945,7 +2079,7 @@ service cloud.firestore {
 
                         resources.forEach(res => {
                             if (res.lat && res.lng) {
-                                const dist = calculateHaversineDistance(r.lat, r.lng, res.lat, res.lng);
+                                const dist = calculateHaversineDistance(parseFloat(r.lat), parseFloat(r.lng), parseFloat(res.lat), parseFloat(res.lng));
                                 if (dist < minDistance) {
                                     minDistance = dist;
                                     closestOfficer = res;
