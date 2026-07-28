@@ -70,7 +70,6 @@
             100% { background-color: #1D4ED8; }
         }
 
-        /* Custom Hover Tooltips for Tactical Leaflet Maps */
         .leaflet-tooltip.custom-hover-tooltip {
             background: rgba(15, 23, 42, 0.95);
             border: 1px solid #334155;
@@ -103,7 +102,7 @@
                     <h1 class="font-black text-lg sm:text-xl tracking-wide text-slate-900">STOP FEU DZ</h1>
                     <span class="bg-dzGreen/10 text-dzGreen border border-dzGreen/30 text-[10px] px-2 py-0.5 rounded-full font-black tracking-wider">الجزائر</span>
                 </div>
-                <p class="text-[11px] text-slate-500 font-bold">الحماية المدنية • المديرية العامة للغابات • المنصة السحابية</p>
+                <p class="text-[11px] text-slate-500 font-bold">الحماية المدنية • المديرية العامة للغابات • UltraMsg Instance 186581</p>
             </div>
         </div>
 
@@ -178,7 +177,7 @@
                         <div>
                             <label class="block text-xs font-black text-slate-700 mb-1">رقم الهاتف (التحقق عبر الواتساب) *</label>
                             <div class="flex gap-2">
-                                <input type="tel" id="citizen-phone" required placeholder="مثال: 0798924956" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm text-slate-800 placeholder-slate-400 focus:border-dzRed focus:bg-white outline-none transition font-semibold">
+                                <input type="tel" id="citizen-phone" required placeholder="مثال: 0798924956 أو 0670472249" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm text-slate-800 placeholder-slate-400 focus:border-dzRed focus:bg-white outline-none transition font-semibold">
                                 <button type="button" onclick="sendWhatsAppOTP()" id="btn-send-whatsapp" class="bg-dzGreen hover:bg-emerald-700 text-white font-bold px-3.5 py-2 rounded-xl text-xs whitespace-nowrap flex items-center gap-1 shadow-sm transition active:scale-95">
                                     <i class="fab fa-whatsapp text-base"></i> تأكيد الواتساب
                                 </button>
@@ -192,7 +191,7 @@
                     <div id="otp-container" class="hidden bg-emerald-50 border border-emerald-300 p-4 rounded-xl space-y-2.5">
                         <div class="flex items-center justify-between">
                             <p class="text-xs font-black text-emerald-900 flex items-center gap-1.5">
-                                <i class="fab fa-whatsapp text-dzGreen text-base"></i> أدخل رمز التحقق المرسل إلى الواتساب (UltraMsg):
+                                <i class="fab fa-whatsapp text-dzGreen text-base"></i> أدخل رمز التحقق المرسل إلى الواتساب (UltraMsg instance186581):
                             </p>
                             <span id="demo-otp-badge" class="bg-emerald-200 text-emerald-900 text-[10px] px-2 py-0.5 rounded font-black"></span>
                         </div>
@@ -600,23 +599,23 @@
                     </div>
                 </div>
 
-                <!-- WHATSAPP TEST TOOL -->
+                <!-- WHATSAPP TEST TOOL (ULTRAMSG INSTANCE 186581) -->
                 <div class="bg-emerald-950/90 text-emerald-100 p-4 rounded-2xl border border-emerald-500/40 space-y-3">
                     <div class="flex items-center justify-between">
                         <h3 class="font-black text-sm text-emerald-300 flex items-center gap-2">
-                            <i class="fab fa-whatsapp text-lg text-dzGreen"></i> أداة اختبار وإرسال الواتساب الميداني (0798924956)
+                            <i class="fab fa-whatsapp text-lg text-dzGreen"></i> أداة اختبار الواتساب - UltraMsg Instance 186581 (متصل)
                         </h3>
-                        <span class="bg-dzGreen text-white text-[9px] px-2 py-0.5 rounded font-black">213798924956</span>
+                        <span class="bg-dzGreen text-white text-[9px] px-2 py-0.5 rounded font-black">instance186581</span>
                     </div>
                     
                     <p class="text-xs text-slate-300 leading-relaxed">
-                        اختبار خادم UltraMsg وتأكيد توجيه البلاغات تلقائياً إلى الرقم الميداني المعتمد (<strong>0798924956 / 213798924956</strong>):
+                        اختبار خادم UltraMsg النشط وتأكيد توجيه التنبيهات تلقائياً بالنظام الدولي دون رمز + (مثال: <strong>213670472249</strong> أو <strong>213798924956</strong>):
                     </p>
 
                     <div class="flex flex-wrap gap-2">
-                        <input type="tel" id="admin-test-whatsapp-num" value="0798924956" placeholder="0798924956" class="bg-slate-900 border border-emerald-500/50 rounded-xl p-2.5 text-xs text-white font-mono outline-none focus:ring-2 focus:ring-dzGreen flex-1 min-w-[180px]">
+                        <input type="tel" id="admin-test-whatsapp-num" value="0670472249" placeholder="0670472249" class="bg-slate-900 border border-emerald-500/50 rounded-xl p-2.5 text-xs text-white font-mono outline-none focus:ring-2 focus:ring-dzGreen flex-1 min-w-[180px]">
                         <button onclick="adminTestWhatsAppSend()" id="btn-admin-test-wa" class="bg-dzGreen hover:bg-emerald-700 text-white text-xs font-extrabold px-4 py-2.5 rounded-xl transition shadow-md whitespace-nowrap">
-                            <i class="fab fa-whatsapp"></i> إرسال تجريبي عبر UltraMsg
+                            <i class="fab fa-whatsapp"></i> إرسال تجريبي عبر instance186581
                         </button>
                     </div>
 
@@ -898,7 +897,7 @@ service cloud.firestore {
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { initializeFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Verified Firebase Project Config
+        // Verified Firebase Project Config (indrive-95741)
         const firebaseConfig = {
             apiKey: "AIzaSyA-ym_XLB2XXXFdRcNYzzfiGlaypoMmQ0U",
             authDomain: "indrive-95741.firebaseapp.com",
@@ -911,9 +910,9 @@ service cloud.firestore {
 
         const DIRECT_COMMAND_WHATSAPP = "213798924956";
         
-        // WhatsApp UltraMsg Credentials
-        const ULTRAMSG_TOKEN = "0slilsu9t71ld540";
-        const ULTRAMSG_INSTANCE = "instance181309";
+        // Active Connected UltraMsg Credentials (instance186581)
+        const ULTRAMSG_TOKEN = "ax7mhaerrvu7r64k";
+        const ULTRAMSG_INSTANCE = "instance186581";
         const ULTRAMSG_API_URL = `https://api.ultramsg.com/${ULTRAMSG_INSTANCE}/messages/chat`;
 
         // 69 WILAYAS GEOCODING DICTIONARY
@@ -1315,7 +1314,7 @@ service cloud.firestore {
                 });
 
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 4000);
+                const timeoutId = setTimeout(() => controller.abort(), 8000);
 
                 const response = await fetch(ULTRAMSG_API_URL, {
                     method: 'POST',
@@ -1327,8 +1326,8 @@ service cloud.firestore {
 
                 const result = await response.json();
 
-                if (result.status === 'success' || result.sent === 'true' || result.sent === true) {
-                    window.showModal("تم الإرسال عبر الواتساب", `تم إرسال رمز التحقق إلى الرقم ${formattedPhone} عبر الواتساب بنجاح.`, "💬");
+                if (result.status === 'success' || result.sent === 'true' || result.sent === true || result.id) {
+                    window.showModal("تم الإرسال عبر الواتساب", `تم إرسال رمز التحقق إلى الرقم ${formattedPhone} عبر UltraMsg (Instance 186581) بنجاح.`, "💬");
                 } else {
                     window.showModal("رمز التحقق التلقائي", `رمز التوثيق الخاص بك هو [ ${generatedOTP} ]. أدخله في الخانة المخصصة للتأكيد الفوري.`, "ℹ️");
                 }
@@ -1346,16 +1345,16 @@ service cloud.firestore {
         window.adminTestWhatsAppSend = async function() {
             const inputEl = document.getElementById('admin-test-whatsapp-num');
             const logEl = document.getElementById('admin-wa-log');
-            const num = inputEl ? inputEl.value.trim() : '0798924956';
+            const num = inputEl ? inputEl.value.trim() : '0670472249';
             const formatted = formatAlgerianPhone(num);
 
             if (logEl) {
                 logEl.classList.remove('hidden');
-                logEl.innerHTML = `<i class="fas fa-spinner fa-spin"></i> جاري إرسال الرسالة عبر UltraMsg لـ ${formatted}...`;
+                logEl.innerHTML = `<i class="fas fa-spinner fa-spin"></i> جاري إرسال الرسالة عبر UltraMsg (instance186581) لـ ${formatted}...`;
             }
 
             try {
-                const testMsg = `اختبار التوثيق المباشر لمنصة STOP FEU DZ للحماية المدنية. رمز التوثيق التجريبي هو: 1504`;
+                const testMsg = `اختبار التوثيق المباشر لمنصة STOP FEU DZ للحماية المدنية عبر UltraMsg Instance 186581. الرمز التجريبي هو: 1504`;
                 const params = new URLSearchParams({
                     token: ULTRAMSG_TOKEN,
                     to: formatted,
@@ -1370,7 +1369,7 @@ service cloud.firestore {
 
                 const res = await response.json();
                 if (logEl) {
-                    logEl.innerHTML = `<strong>الاستجابة من UltraMsg:</strong><br>${JSON.stringify(res)}<br><a href="https://wa.me/${formatted}" target="_blank" class="text-emerald-400 font-bold underline mt-1 inline-block"><i class="fab fa-whatsapp"></i> فتح محادثة WhatsApp مباشرة لـ ${formatted}</a>`;
+                    logEl.innerHTML = `<strong>الاستجابة من UltraMsg (instance186581):</strong><br>${JSON.stringify(res)}<br><a href="https://wa.me/${formatted}" target="_blank" class="text-emerald-400 font-bold underline mt-1 inline-block"><i class="fab fa-whatsapp"></i> فتح محادثة WhatsApp مباشرة لـ ${formatted}</a>`;
                 }
             } catch(e) {
                 if (logEl) {
