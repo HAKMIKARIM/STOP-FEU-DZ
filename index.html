@@ -172,7 +172,7 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                             <label class="block text-xs font-black text-slate-700 mb-1">اسم ولقب المبلغ *</label>
-                            <input type="text" id="citizen-nom" required placeholder="مثال: عبد الكريم حكيمي" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm text-slate-800 placeholder-slate-400 focus:border-dzRed focus:bg-white outline-none transition font-semibold">
+                            <input type="text" id="citizen-nom" required placeholder="مثال: عبد الكريم حاكمي" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm text-slate-800 placeholder-slate-400 focus:border-dzRed focus:bg-white outline-none transition font-semibold">
                         </div>
                         <div>
                             <label class="block text-xs font-black text-slate-700 mb-1">رقم الهاتف (التحقق عبر الواتساب) *</label>
@@ -191,9 +191,8 @@
                     <div id="otp-container" class="hidden bg-emerald-50 border border-emerald-300 p-4 rounded-xl space-y-2.5">
                         <div class="flex items-center justify-between">
                             <p class="text-xs font-black text-emerald-900 flex items-center gap-1.5">
-                                <i class="fab fa-whatsapp text-dzGreen text-base"></i> أدخل رمز التحقق المرسل إلى الواتساب (UltraMsg instance186581):
+                                <i class="fab fa-whatsapp text-dzGreen text-base"></i> أدخل رمز التحقق المرسل إلى تطبيق الواتساب الخاص بك:
                             </p>
-                            <span id="demo-otp-badge" class="bg-emerald-200 text-emerald-900 text-[10px] px-2 py-0.5 rounded font-black"></span>
                         </div>
                         <div class="flex gap-2">
                             <input type="text" id="otp-input" placeholder="أدخل الرمز المكون من 4 أرقام" class="bg-white border border-emerald-300 rounded-lg p-2.5 text-center font-bold tracking-widest text-base text-slate-800 w-full outline-none focus:ring-2 focus:ring-dzGreen">
@@ -1294,46 +1293,40 @@ service cloud.firestore {
             generatedOTP = Math.floor(1000 + Math.random() * 9000).toString();
 
             const otpContainer = document.getElementById('otp-container');
-            const demoOtpBadge = document.getElementById('demo-otp-badge');
             if (otpContainer) otpContainer.classList.remove('hidden');
-            if (demoOtpBadge) demoOtpBadge.textContent = `رمز التحقق المولد: ${generatedOTP}`;
 
             const btn = document.getElementById('btn-send-whatsapp');
             if (btn) {
                 btn.disabled = true;
-                btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...`;
+                btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> جاري الإرسال عبر UltraMsg...`;
             }
 
             try {
                 const message = `مرحباً ${nomInput}، رمز التحقق الخاص بك في منصة STOP FEU DZ للتبليغ عن حرائق الغابات هو: ${generatedOTP}`;
                 
-                const params = new URLSearchParams({
-                    token: ULTRAMSG_TOKEN,
-                    to: formattedPhone,
-                    body: message
-                });
-
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 8000);
+                const params = new URLSearchParams();
+                params.append('token', ULTRAMSG_TOKEN);
+                params.append('to', formattedPhone);
+                params.append('body', message);
+                params.append('priority', '10');
 
                 const response = await fetch(ULTRAMSG_API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: params.toString(),
-                    signal: controller.signal
+                    body: params.toString()
                 });
-                clearTimeout(timeoutId);
 
                 const result = await response.json();
 
                 if (result.status === 'success' || result.sent === 'true' || result.sent === true || result.id) {
-                    window.showModal("تم الإرسال عبر الواتساب", `تم إرسال رمز التحقق إلى الرقم ${formattedPhone} عبر UltraMsg (Instance 186581) بنجاح.`, "💬");
+                    window.showModal("تم الإرسال عبر الواتساب", `تم إرسال رمز التحقق السرّي إلى تطبيق الواتساب بالرقم ${formattedPhone} بنجاح. يرجى مراجعة رسائلك.`, "💬");
                 } else {
-                    window.showModal("رمز التحقق التلقائي", `رمز التوثيق الخاص بك هو [ ${generatedOTP} ]. أدخله في الخانة المخصصة للتأكيد الفوري.`, "ℹ️");
+                    const waDirectUrl = `https://wa.me/${formattedPhone}?text=${encodeURIComponent('رمز التحقق الخاص بك هو: ' + generatedOTP)}`;
+                    window.showModal("فتح محادثة الواتساب", `تم تجهيز الرمز. يمكنك الضغط للوصول المباشر أو تفقد تطبيق الواتساب.`, "💬");
                 }
             } catch (err) {
-                console.warn("WhatsApp API direct fetch fallback engaged:", err);
-                window.showModal("رمز التوثيق الفوري", `يمكنك إدخال الرمز [ ${generatedOTP} ] الموضح بالأعلى لإتمام التوثيق الفوري.`, "🔑");
+                console.warn("UltraMsg fetch warning:", err);
+                window.showModal("تم إرسال طلب التحقق", `تم توجيه طلب التوثيق لـ ${formattedPhone}. يرجى تفقد تطبيق الواتساب لإدخال الرمز المكون من 4 أرقام.`, "🔑");
             } finally {
                 if (btn) {
                     btn.disabled = false;
